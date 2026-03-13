@@ -248,7 +248,7 @@ Selanjutnya refresh tampilan pada alamat http://localhost:8080/about
 
 ### 1. Persiapan Database
 Membuat database `lab_ci4` dan tabel `artikel` di MySQL melalui phpMyAdmin. Tabel ini memiliki kolom seperti id, judul, isi, gambar, status, dan slug. Selanjutnya, melakukan konfigurasi koneksi database pada file `.env` di CodeIgniter agar aplikasi terhubung ke MySQL.
-> ![Screenshot Database](D:\XAMPP\htdocs\lab11_ci\Lab7Web-2\Screenshot\Cuplikan layar 2026-03-13 095347.png)
+> ![Screenshot Database](Screenshot\ss_artikel.png)
 
 ### 2. Membuat Model
 Membuat file `ArtikelModel.php` di dalam folder `app/Models/`. Model ini bertugas untuk merepresentasikan tabel `artikel` dan mengatur kolom mana saja yang diizinkan untuk diisi data (`$allowedFields = ['judul', 'isi', 'status', 'slug', 'gambar']`).
