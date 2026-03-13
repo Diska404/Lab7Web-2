@@ -242,6 +242,32 @@ Selanjutnya refresh tampilan pada alamat http://localhost:8080/about
 
 <img width="960" alt="8" src="https://github.com/ZahraNurhaliza/Lab14Web/assets/115614417/04a70275-f855-4e96-a75d-413db35dc637">
 
+---
+
+## Modul Praktikum 2: Framework Lanjutan (CRUD)
+
+### 1. Persiapan Database
+Membuat database `lab_ci4` dan tabel `artikel` di MySQL melalui phpMyAdmin. Tabel ini memiliki kolom seperti id, judul, isi, gambar, status, dan slug. Selanjutnya, melakukan konfigurasi koneksi database pada file `.env` di CodeIgniter agar aplikasi terhubung ke MySQL.
+> ![Screenshot Database](D:\XAMPP\htdocs\lab11_ci\Lab7Web-2\Screenshot\Cuplikan layar 2026-03-13 095347.png)
+
+### 2. Membuat Model
+Membuat file `ArtikelModel.php` di dalam folder `app/Models/`. Model ini bertugas untuk merepresentasikan tabel `artikel` dan mengatur kolom mana saja yang diizinkan untuk diisi data (`$allowedFields = ['judul', 'isi', 'status', 'slug', 'gambar']`).
+> ![Screenshot Kode Model](isi_dengan_link_atau_path_gambar_screenshot_model_kamu)
+
+### 3. Membuat Controller dan View (Menampilkan Data)
+Membuat file `Artikel.php` di folder `app/Controllers/` dengan fungsi `index()` untuk mengambil semua data dari model. Data tersebut kemudian dikirim ke file `app/Views/artikel/index.php` untuk ditampilkan ke pengguna menggunakan perulangan `foreach`. Dibuat juga fitur Detail Artikel yang akan menampilkan isi penuh artikel berdasarkan parameter slug.
+> ![Screenshot Halaman Daftar Artikel](isi_dengan_link_atau_path_gambar_screenshot_daftar_artikel_kamu)
+> ![Screenshot Halaman Detail Artikel](isi_dengan_link_atau_path_gambar_screenshot_detail_artikel_kamu)
+
+### 4. Membuat Menu Admin (Sistem CRUD)
+Membuat rute khusus admin (`/admin/artikel`) untuk mengelola data secara dinamis.
+- **Read:** Menampilkan data dari database dalam bentuk tabel rapi lengkap dengan tombol aksi.
+- **Create:** Membuat fungsi `add()` di Controller dan file view `form_add.php` untuk menginput artikel baru.
+- **Update:** Membuat fungsi `edit()` di Controller dan file view `form_edit.php` yang menampilkan data lama di dalam kotak isian untuk kemudian diperbarui.
+- **Delete:** Membuat fungsi `delete()` di Controller untuk menghapus baris data dari database berdasarkan ID artikel tanpa memerlukan view tambahan.
+> ![Screenshot Halaman Admin](isi_dengan_link_atau_path_gambar_screenshot_halaman_admin_kamu)
+> ![Screenshot Form Tambah/Ubah](isi_dengan_link_atau_path_gambar_screenshot_form_tambah_kamu)
+
 
 # SELESAI
 
