@@ -38,18 +38,8 @@ dan menggunakan composer. Pada praktikum ini kita menggunakan cara manual.
 
 ### Menjalankan CLI (Command Line Interface)
 Codeigniter 4 menyediakan CLI untuk mempermudah proses development. Untuk mengakses
-CLI buka terminal/command prompt.
-
-<img width="458" alt="4" src="https://github.com/ZahraNurhaliza/Lab14Web/assets/115614417/6337c773-927c-407f-a857-45c1e66f5270">
-
-
-Arahkan lokasi direktori sesuai dengan direktori kerja project dibuat
-(xampp/**htdocs/lab11_ci/ci4/**)
-
-Perintah yang dapat dijalankan untuk memanggil CLI Codeigniter adalah:
-`php spark`
-
-<img width="552" alt="5" src="https://github.com/ZahraNurhaliza/Lab14Web/assets/115614417/89c95cf3-aefc-49b2-b4b8-7282580f966f">
+CLI buka terminal pada VScode dengan menginpu "php spark serve" seperti pada hasil screenshot ini:
+> ![Screenshot Database](Screenshot/ss_cli.png)
 
 
 ### Mengaktifkan Mode Debugging
