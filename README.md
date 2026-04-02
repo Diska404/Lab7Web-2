@@ -20,7 +20,7 @@ klik **Config -> PHP.ini**
 Pada bagian extention, hilangkan tanda ; (titik koma) pada ekstensi yang akan diaktifkan.
 Kemudian simpan kembali filenya dan restart Apache web server.
 
-<img width="606" alt="2" src="https://github.com/ZahraNurhaliza/Lab14Web/assets/115614417/b0d313d8-c12f-48c0-8b59-0424d777a122">
+> ![Screenshot Database](Screenshot/ss_note.png)
 
 
 ### Instalasi Codeigniter 4
