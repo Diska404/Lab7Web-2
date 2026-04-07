@@ -45,13 +45,7 @@ CLI buka terminal pada VScode dengan menginpu "php spark serve" seperti pada has
 ### Mengaktifkan Mode Debugging
 Codeigniter 4 menyediakan fitur **debugging** untuk memudahkan developer untuk mengetahui
 pesan error apabila terjadi kesalahan dalam membuat kode program.
-Secara default fitur ini belum aktif. Ketika terjadi error pada aplikasi akan ditampilkan pesan
-kesalahan seperti berikut.
-
-<img width="960" alt="6" src="https://github.com/ZahraNurhaliza/Lab14Web/assets/115614417/00bc02f8-34d1-4035-94c9-db9c24cd5e4b">
-
-
-Semua jenis error akan ditampilkan sama. Untuk memudahkan mengetahui jenis errornya,
+Secara default fitur ini belum aktif.                       Semua jenis error akan ditampilkan sama. Untuk memudahkan mengetahui jenis errornya,
 maka perlu diaktifkan mode debugging dengan mengubah nilai konfigurasi pada environment
 variable **CI_ENVIRINMENT** menjadi **development**.
 Ubah nama file **env** menjadi **.env** kemudian buka file tersebut dan ubah nilai variable
@@ -258,6 +252,104 @@ Membuat rute khusus admin (`/admin/artikel`) untuk mengelola data secara dinamis
 > ![Screenshot Halaman Admin](isi_dengan_link_atau_path_gambar_screenshot_halaman_admin_kamu)
 > ![Screenshot Form Tambah/Ubah](isi_dengan_link_atau_path_gambar_screenshot_form_tambah_kamu)
 
+
+## Praktikum 3: View Layout dan View Cell
+
+### Tujuan
+Pada praktikum ini saya mempelajari penggunaan **View Layout** dan **View Cell** pada CodeIgniter 4.  
+View Layout digunakan untuk membuat template tampilan yang konsisten, sedangkan View Cell digunakan untuk menampilkan komponen yang dapat dipakai ulang, seperti sidebar artikel terbaru.
+
+---
+
+### 1. Membuat Layout Utama
+Pada tahap ini dibuat file `app/Views/layout/main.php` sebagai layout utama aplikasi.  
+Layout ini berisi struktur halaman, menu navigasi, area konten utama dengan `renderSection('content')`, dan sidebar yang memanggil View Cell `ArtikelTerkini`.
+
+> ![Screenshot Layout Main](Screenshot/ss1_main_php.png)
+
+---
+
+### 2. Modifikasi File View
+File view seperti `home.php`, `about.php`, dan `contact.php` diubah agar menggunakan layout baru dengan sintaks `extend('layout/main')` dan `section('content')`.
+
+#### a. home.php
+> ![Screenshot Home PHP](Screenshot/ss2_home_php.png)
+
+#### b. about.php
+> ![Screenshot About PHP](Screenshot/ss3_about_php.png)
+
+#### c. contact.php
+> ![Screenshot Contact PHP](Screenshot/ss4_contact_php.png)
+
+---
+
+### 3. Membuat Class View Cell
+Selanjutnya dibuat file `app/Cells/ArtikelTerkini.php`.  
+Class ini bertugas mengambil 5 artikel terbaru dari database berdasarkan field `created_at`, lalu mengirimkannya ke view komponen.
+
+> ![Screenshot ArtikelTerkini PHP](Screenshot/ss5_artikel_terkini_php.png)
+
+---
+
+### 4. Membuat View untuk View Cell
+Setelah class View Cell dibuat, dibuat juga file `app/Views/components/artikel_terkini.php` untuk menampilkan daftar artikel terbaru pada sidebar.
+
+> ![Screenshot Komponen Artikel Terkini](Screenshot/ss6_artikel_terkini_component.png)
+
+---
+
+### 5. Menyesuaikan Struktur Database
+Agar artikel terbaru dapat diambil berdasarkan waktu pembuatan, tabel `artikel` pada database ditambahkan field:
+- `created_at`
+- `updated_at`
+
+> ![Screenshot Struktur Database Artikel](Screenshot/ss7_database_artikel.png)
+
+---
+
+### 6. Hasil Pengujian Tampilan
+
+#### a. Halaman Home
+Hasil pengujian menunjukkan bahwa halaman home berhasil menggunakan layout utama dan sidebar artikel terkini tampil dengan benar.
+
+> ![Screenshot Halaman Home](Screenshot/ss8_halaman_home.png)
+
+#### b. Halaman About
+Halaman about juga berhasil menggunakan layout yang sama sehingga tampilan antar halaman menjadi konsisten.
+
+> ![Screenshot Halaman About](Screenshot/ss9_halaman_about.png)
+
+#### c. Halaman Contact
+Halaman contact berhasil menampilkan isi halaman dengan layout utama dan sidebar yang sama.
+
+> ![Screenshot Halaman Contact](Screenshot/ss10_halaman_contact.png)
+
+#### d. Halaman Artikel
+Halaman artikel berhasil menampilkan daftar artikel dan tetap menggunakan layout utama beserta sidebar.
+
+> ![Screenshot Halaman Artikel](Screenshot/ss11_halaman_artikel.png)
+
+---
+
+### 7. Pembahasan
+
+#### Apa manfaat utama dari penggunaan View Layout dalam pengembangan aplikasi?
+View Layout memudahkan pengembang dalam membuat tampilan yang konsisten pada banyak halaman.  
+Dengan View Layout, bagian umum seperti header, navigasi, sidebar, dan footer tidak perlu ditulis berulang pada setiap file view, sehingga kode menjadi lebih rapi, mudah dirawat, dan efisien.
+
+#### Jelaskan perbedaan antara View Cell dan View biasa.
+View biasa digunakan untuk menampilkan isi halaman utama yang dipanggil langsung dari controller.  
+Sedangkan View Cell digunakan untuk menampilkan komponen kecil yang dapat digunakan ulang di berbagai halaman, misalnya sidebar, widget, menu, atau daftar artikel terbaru.
+
+#### Ubah View Cell agar hanya menampilkan post dengan kategori tertentu.
+View Cell dapat dimodifikasi dengan menambahkan filter kategori pada query model.  
+Contohnya, jika tabel artikel memiliki field `kategori`, maka query dapat diubah menjadi:
+
+```php
+$artikel = $model->where('kategori', 'Teknologi')
+                 ->orderBy('created_at', 'DESC')
+                 ->limit(5)
+                 ->findAll();
 
 # SELESAI
 

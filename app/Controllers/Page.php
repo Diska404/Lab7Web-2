@@ -4,36 +4,36 @@ namespace App\Controllers;
 
 class Page extends BaseController
 {
-    public function about()
+    public function about(): string
     {
         return view('about', [
-            'title' => 'Halaman About',
+            'title'   => 'Halaman About',
             'content' => 'Ini adalah halaman about yang menjelaskan tentang isi halaman ini.'
         ]);
     }
 
-    public function contact()
+    public function contact(): string
     {
         return view('contact', [
-            'title' => 'Halaman Contact',
+            'title'   => 'Halaman Contact',
             'content' => 'Ini adalah halaman kontak. Silakan hubungi kami di sini.'
         ]);
     }
 
-    public function faqs()
+    public function faqs(): void
     {
-        echo "Ini halaman FAQ";
-    }
-    
-    public function tos()
-    {
-        echo "ini halaman Term of Services";
+        echo 'Ini halaman FAQ';
     }
 
-    public function artikel()
+    public function tos(): void
+    {
+        echo 'Ini halaman Term of Services';
+    }
+
+    public function artikel(): string
     {
         return view('artikel', [
-            'title' => 'Halaman Artikel',
+            'title'   => 'Halaman Artikel',
             'content' => 'Ini adalah halaman yang berisi daftar artikel terbaru.'
         ]);
     }

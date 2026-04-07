@@ -1,5 +1,7 @@
-<?= $this->include('template/header'); ?>
-<h1><?= $title; ?></h1>
+<?= $this->extend('layout/main'); ?>
+
+<?= $this->section('content'); ?>
+<h1><?= esc($title); ?></h1>
 <hr>
-<p><?= $content; ?></p>
-<?= $this->include('template/footer'); ?>
+<p><?= esc($content); ?></p>
+<?= $this->endSection(); ?>
