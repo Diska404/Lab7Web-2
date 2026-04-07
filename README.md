@@ -350,7 +350,9 @@ $artikel = $model->where('kategori', 'Teknologi')
                  ->orderBy('created_at', 'DESC')
                  ->limit(5)
                  ->findAll();
+```
 
+---
 
 ## Praktikum 4: Framework Lanjutan (Modul Login)
 
@@ -470,7 +472,7 @@ Dengan demikian, halaman admin hanya dapat diakses setelah user berhasil login.
 #### a. Halaman Login
 Setelah semua konfigurasi selesai, halaman login berhasil ditampilkan melalui route `/user/login`.
 
-> ![Screenshot Halaman Login](Screenshot/ss_modul4_halaman_login.png)
+> ![Screenshot Halaman Login](Screenshot/ss_modul4_login_view.png)
 
 #### b. Login Berhasil Masuk ke Halaman Admin
 Setelah login menggunakan akun admin, sistem berhasil mengarahkan user ke halaman admin artikel.
@@ -478,9 +480,9 @@ Setelah login menggunakan akun admin, sistem berhasil mengarahkan user ke halama
 > ![Screenshot Admin Artikel](Screenshot/ss_modul4_admin_artikel.png)
 
 #### c. Redirect ke Login
-Saat user belum login atau setelah session dihapus, sistem akan mengarahkan kembali ke halaman login.
+Saat user belum login atau setelah session dihapus, sistem akan mengarahkan kembali ke halaman login. Karena tampilan akhirnya sama dengan halaman login biasa, dokumentasi ini menggunakan screenshot form login yang sama.
 
-> ![Screenshot Redirect Login](Screenshot/ss_modul4_redirect_login.png)
+> ![Screenshot Redirect Login](Screenshot/ss_modul4_login_view.png)
 
 ---
 
@@ -514,5 +516,4 @@ Pada praktikum ini saya berhasil membuat modul login pada CodeIgniter 4 dengan f
 - dan logout untuk menghapus session.
 
 Dengan adanya modul login ini, akses ke halaman admin menjadi lebih aman dan terkontrol.
-# SELESAI
 
