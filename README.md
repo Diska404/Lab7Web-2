@@ -351,5 +351,168 @@ $artikel = $model->where('kategori', 'Teknologi')
                  ->limit(5)
                  ->findAll();
 
+## Praktikum 4: Framework Lanjutan (Modul Login)
+
+### Tujuan
+Pada praktikum ini saya mempelajari pembuatan **modul login** menggunakan CodeIgniter 4.  
+Selain itu, saya juga mempelajari konsep **Auth Filter**, **session**, dan **database seeder** untuk membatasi akses ke halaman admin dan mengelola proses autentikasi user.
+
+---
+
+### 1. Membuat Tabel User
+Langkah pertama adalah membuat tabel `user` pada database.  
+Tabel ini digunakan untuk menyimpan data akun yang akan dipakai dalam proses login.
+
+Struktur tabel yang digunakan terdiri dari:
+- `id`
+- `username`
+- `useremail`
+- `userpassword`
+
+> ![Screenshot Struktur Tabel User](Screenshot/ss_modul4_struktur_tabel_user.png)
+
+---
+
+### 2. Menambahkan Data User
+Setelah tabel dibuat, langkah berikutnya adalah menambahkan data user ke database.  
+Data user ini akan digunakan sebagai akun login saat pengujian modul.
+
+> ![Screenshot Data User](Screenshot/ss_modul4_data_user.png)
+
+---
+
+### 3. Membuat Model User
+Kemudian dibuat file `app/Models/UserModel.php`.  
+Model ini digunakan untuk memproses data user dari tabel `user`, khususnya saat proses autentikasi login.
+
+> ![Screenshot UserModel](Screenshot/ss_modul4_usermodel.png)
+
+---
+
+### 4. Membuat Controller User
+Selanjutnya dibuat file `app/Controllers/User.php`.  
+Controller ini berfungsi untuk:
+- menampilkan data user,
+- memproses login,
+- menyimpan session login,
+- dan menangani proses logout.
+
+Pada method `login()`, sistem akan:
+1. mengambil input email dan password,
+2. mencari user berdasarkan email,
+3. mencocokkan password menggunakan `password_verify()`,
+4. menyimpan data login ke session,
+5. dan mengarahkan user ke halaman admin artikel.
+
+> ![Screenshot User Controller](Screenshot/ss_modul4_user_controller.png)
+
+---
+
+### 5. Membuat View Login
+File `app/Views/user/login.php` dibuat untuk menampilkan form login.  
+Form ini berisi input email dan password yang akan diproses oleh controller `User`.
+
+> ![Screenshot Login View](Screenshot/ss_modul4_login_view.png)
+
+---
+
+### 6. Membuat Seeder User
+Agar proses pengujian lebih mudah, dibuat file `app/Database/Seeds/UserSeeder.php`.  
+Seeder ini digunakan untuk menambahkan akun admin secara otomatis ke database.
+
+Akun yang digunakan:
+- Email: `admin@email.com`
+- Password: `admin123`
+
+Password disimpan dalam bentuk hash menggunakan `password_hash()`.
+
+> ![Screenshot UserSeeder](Screenshot/ss_modul4_user_seeder.png)
+
+---
+
+### 7. Membuat Auth Filter
+Agar halaman admin tidak bisa diakses oleh user yang belum login, dibuat file `app/Filters/Auth.php`.  
+Filter ini akan memeriksa apakah session `logged_in` tersedia atau tidak.  
+Jika user belum login, maka sistem akan mengarahkan user ke halaman `/user/login`.
+
+> ![Screenshot Auth Filter](Screenshot/ss_modul4_auth_filter.png)
+
+---
+
+### 8. Menambahkan Alias Filter pada Filters.php
+Setelah Auth Filter dibuat, file `app/Config/Filters.php` diperbarui dengan menambahkan alias filter.
+
+Alias adalah nama singkat dari class filter.  
+Pada modul ini digunakan alias `'auth' => Auth::class`.
+
+Dengan alias tersebut, filter dapat dipanggil secara singkat pada route tanpa perlu menuliskan nama class lengkap.
+
+> ![Screenshot Config Filters](Screenshot/ss_modul4_config_filters.png)
+
+---
+
+### 9. Mengatur Route Login dan Route Admin
+File `app/Config/Routes.php` kemudian diperbarui untuk:
+- menambahkan route `/user/login`,
+- menambahkan route `/user/logout`,
+- membuat route group `admin`,
+- dan menerapkan filter `auth` pada route admin.
+
+Dengan demikian, halaman admin hanya dapat diakses setelah user berhasil login.
+
+> ![Screenshot Config Routes](Screenshot/ss_modul4_config_routes.png)
+
+---
+
+### 10. Hasil Pengujian
+
+#### a. Halaman Login
+Setelah semua konfigurasi selesai, halaman login berhasil ditampilkan melalui route `/user/login`.
+
+> ![Screenshot Halaman Login](Screenshot/ss_modul4_login_view.png)
+
+#### b. Login Berhasil Masuk ke Halaman Admin
+Setelah login menggunakan akun admin, sistem berhasil mengarahkan user ke halaman admin artikel.
+
+> ![Screenshot Admin Artikel](Screenshot/ss_modul4_admin_artikel.png)
+
+#### c. Redirect ke Login
+Saat user belum login atau setelah session dihapus, sistem akan mengarahkan kembali ke halaman login.
+
+> ![Screenshot Redirect Login](Screenshot/ss_modul4_login_view.png)
+
+---
+
+### 11. Pembahasan
+
+#### Apa fungsi Auth Filter?
+Auth Filter digunakan untuk membatasi akses ke halaman tertentu.  
+Pada modul ini, Auth Filter dipakai untuk melindungi halaman admin agar hanya dapat diakses oleh user yang sudah login.
+
+#### Apa fungsi alias pada Filters.php?
+Alias adalah nama singkat untuk filter.  
+Dengan alias, filter dapat dipanggil dengan lebih sederhana pada route, misalnya cukup menggunakan `auth`.
+
+#### Mengapa password disimpan dalam bentuk hash?
+Password disimpan dalam bentuk hash untuk meningkatkan keamanan data user.  
+Saat login, password diverifikasi dengan `password_verify()`.
+
+#### Apa fungsi session dalam login?
+Session digunakan untuk menyimpan status autentikasi user.  
+Dengan session, sistem dapat mengetahui apakah user sedang login atau belum.
+
+---
+
+### 12. Kesimpulan
+Pada praktikum ini saya berhasil membuat modul login pada CodeIgniter 4 dengan fitur:
+- form login,
+- validasi email dan password,
+- session login,
+- Auth Filter untuk proteksi halaman admin,
+- database seeder untuk akun dummy,
+- dan logout untuk menghapus session.
+
+Dengan adanya modul login ini, akses ke halaman admin menjadi lebih aman dan terkontrol.
+
 # SELESAI
 

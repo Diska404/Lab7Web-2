@@ -4,7 +4,11 @@
 <h1><?= esc($title); ?></h1>
 <hr>
 <p>
-    <a class="btn btn-large" href="<?= base_url('/admin/artikel/add'); ?>">Tambah Artikel</a>
+    Selamat datang, <strong><?= esc(session()->get('user_name') ?? 'Admin'); ?></strong>
+    | <a href="<?= base_url('/user/logout'); ?>">Logout</a>
+</p>
+<p>
+    <a class="btn btn-primary" href="<?= base_url('/admin/artikel/add'); ?>">Tambah Artikel</a>
 </p>
 
 <table class="table">
