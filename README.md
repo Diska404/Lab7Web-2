@@ -75,7 +75,7 @@ berikut.
 
 `php spark routes`
 
-<img width="594" alt="7" src="https://github.com/ZahraNurhaliza/Lab14Web/assets/115614417/b67ebb75-9e8f-4c1d-b58b-bbf75e1b1a61">
+> ![Screenshot Database](Screenshot/ss_routes.png)
 
 
 Selanjutnya coba akses route yang telah dibuat dengan mengakses alamat url
