@@ -60,13 +60,13 @@ $navActive = static function (string $page) use ($segment1, $segment2, $currentP
                 </div>
                 <div class="widget-box">
                     <h3 class="title">Widget Text</h3>
-                    <p>Gunakan menu di kanan atas untuk masuk ke halaman admin tanpa perlu mengetik URL login secara manual.</p>
+                    <p>Masih Kosong :v</p>
                 </div>
             </aside>
         </section>
 
         <footer>
-            <p>&copy; 2021 Universitas Pelita Bangsa</p>
+            <p>&copy; 2026 Diska Kurnia Azzahra Putra</p>
         </footer>
     </div>
 </body>

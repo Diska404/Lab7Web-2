@@ -8,7 +8,7 @@ class Home extends BaseController
     {
         return view('home', [
             'title'   => 'Halaman Home',
-            'content' => 'Selamat datang di website praktikum Web 2. Silakan jelajahi artikel, pelajari halaman lain, atau masuk ke panel admin untuk mengelola konten.',
+            'content' => 'Merupakan Halaman Utama Dari Halaman Home.',
         ]);
     }
 }
