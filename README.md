@@ -236,12 +236,10 @@ Membuat database `lab_ci4` dan tabel `artikel` di MySQL melalui phpMyAdmin. Tabe
 
 ### 2. Membuat Model
 Membuat file `ArtikelModel.php` di dalam folder `app/Models/`. Model ini bertugas untuk merepresentasikan tabel `artikel` dan mengatur kolom mana saja yang diizinkan untuk diisi data (`$allowedFields = ['judul', 'isi', 'status', 'slug', 'gambar']`).
-> ![Screenshot Kode Model](isi_dengan_link_atau_path_gambar_screenshot_model_kamu)
-
+> ![Screenshot Kode Model](Screenshot/ss_model.png)
 ### 3. Membuat Controller dan View (Menampilkan Data)
 Membuat file `Artikel.php` di folder `app/Controllers/` dengan fungsi `index()` untuk mengambil semua data dari model. Data tersebut kemudian dikirim ke file `app/Views/artikel/index.php` untuk ditampilkan ke pengguna menggunakan perulangan `foreach`. Dibuat juga fitur Detail Artikel yang akan menampilkan isi penuh artikel berdasarkan parameter slug.
-> ![Screenshot Halaman Daftar Artikel](isi_dengan_link_atau_path_gambar_screenshot_daftar_artikel_kamu)
-> ![Screenshot Halaman Detail Artikel](isi_dengan_link_atau_path_gambar_screenshot_detail_artikel_kamu)
+> ![Screenshot Kode Model](Screenshot/ss_artikel.png)
 
 ### 4. Membuat Menu Admin (Sistem CRUD)
 Membuat rute khusus admin (`/admin/artikel`) untuk mengelola data secara dinamis.
@@ -249,8 +247,7 @@ Membuat rute khusus admin (`/admin/artikel`) untuk mengelola data secara dinamis
 - **Create:** Membuat fungsi `add()` di Controller dan file view `form_add.php` untuk menginput artikel baru.
 - **Update:** Membuat fungsi `edit()` di Controller dan file view `form_edit.php` yang menampilkan data lama di dalam kotak isian untuk kemudian diperbarui.
 - **Delete:** Membuat fungsi `delete()` di Controller untuk menghapus baris data dari database berdasarkan ID artikel tanpa memerlukan view tambahan.
-> ![Screenshot Halaman Admin](isi_dengan_link_atau_path_gambar_screenshot_halaman_admin_kamu)
-> ![Screenshot Form Tambah/Ubah](isi_dengan_link_atau_path_gambar_screenshot_form_tambah_kamu)
+> ![Screenshot Kode Model](Screenshot/ss_modul4_admin_artikel.png)
 
 
 ## Praktikum 3: View Layout dan View Cell
