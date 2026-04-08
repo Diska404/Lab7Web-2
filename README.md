@@ -224,7 +224,7 @@ Kemudian ubah file **app/view/about.php** seperti berikut.
 
 Selanjutnya refresh tampilan pada alamat http://localhost:8080/about
 
-<img width="960" alt="8" src="https://github.com/ZahraNurhaliza/Lab14Web/assets/115614417/04a70275-f855-4e96-a75d-413db35dc637">
+> ![Screenshot Database](Screenshot/ss_halaman_utama.png)
 
 ---
 
