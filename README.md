@@ -1,369 +1,277 @@
-# Lab14Web
+# Lab7Web
 
-## Langkah-langkah Praktikum
+Repository ini berisi hasil praktikum **Pemrograman Web 2** menggunakan **CodeIgniter 4**.  
+Pengembangan aplikasi dilakukan secara bertahap dari **Praktikum 1** sampai **Praktikum 4**, dimulai dari instalasi framework, pembuatan routing dan tampilan dasar, pengembangan fitur **CRUD artikel**, penerapan **View Layout** dan **View Cell**, hingga pembuatan **modul login** untuk membatasi akses halaman admin.
 
-### Persiapan
-Sebelum memulai menggunakan Framework Codeigniter, perlu dilakukan konfigurasi pada
-webserver. Beberapa ekstensi PHP perlu diaktifkan untuk kebutuhan pengembangan
-Codeigniter 4.
-Berikut beberapa ekstensi yang perlu diaktifkan:
-• **php-json** ekstension untuk bekerja dengan JSON;
-• **php-mysqlnd** native driver untuk MySQL;
-• **php-xml** ekstension untuk bekerja dengan XML;
-• **php-intl** ekstensi untuk membuat aplikasi multibahasa;
-• **libcurl** (opsional), jika ingin pakai Curl.
-Untuk mengaktifkan ekstentsi tersebut, melalu **XAMPP Control Panel**, pada bagian Apache
-klik **Config -> PHP.ini**
-<img width="1920" height="1080" alt="Cuplikan layar 2026-02-26 105947" src="https://github.com/user-attachments/assets/fe1dfcca-cd47-4967-9ef2-7f622e475c64" />
+## Teknologi yang Digunakan
+- PHP 8
+- CodeIgniter 4
+- MySQL / MariaDB
+- XAMPP
+- Visual Studio Code
+- phpMyAdmin
 
-
-Pada bagian extention, hilangkan tanda ; (titik koma) pada ekstensi yang akan diaktifkan.
-Kemudian simpan kembali filenya dan restart Apache web server.
-
-> ![Screenshot Database](Screenshot/ss_note.png)
-
-
-### Instalasi Codeigniter 4
-Untuk melakukan instalasi Codeigniter 4 dapat dilakukan dengan dua cara, yaitu cara manual
-dan menggunakan composer. Pada praktikum ini kita menggunakan cara manual.
-
-• Unduh **Codeigniter** dari website https://codeigniter.com/download
-• Extrak file zip Codeigniter ke direktori **htdocs/lab11_ci**.
-• Ubah nama direktory **framework-4.x.xx** menjadi **ci4**.
-• Buka browser dengan alamat http://localhost/lab11_ci/ci4/public/
-
-<img width="1837" height="1032" alt="Cuplikan layar 2026-02-26 110613" src="https://github.com/user-attachments/assets/0ba1ed10-cc02-4065-8ee4-fc7ceb11eaf7" />
-
-
-
-### Menjalankan CLI (Command Line Interface)
-Codeigniter 4 menyediakan CLI untuk mempermudah proses development. Untuk mengakses
-CLI buka terminal pada VScode dengan menginpu "php spark serve" seperti pada hasil screenshot ini:
-> ![Screenshot Database](Screenshot/ss_cli.png)
-
-
-### Mengaktifkan Mode Debugging
-Codeigniter 4 menyediakan fitur **debugging** untuk memudahkan developer untuk mengetahui
-pesan error apabila terjadi kesalahan dalam membuat kode program.
-Secara default fitur ini belum aktif.                       Semua jenis error akan ditampilkan sama. Untuk memudahkan mengetahui jenis errornya,
-maka perlu diaktifkan mode debugging dengan mengubah nilai konfigurasi pada environment
-variable **CI_ENVIRINMENT** menjadi **development**.
-Ubah nama file **env** menjadi **.env** kemudian buka file tersebut dan ubah nilai variable
-**CI_ENVIRINMENT** menjadi **development**.
-Contoh error yang terjadi. Untuk mencoba error tersebut, ubah kode pada file
-**app/Controller/Home.php** hilangkan titik koma pada akhir kode.
-
-
-### Membuat Route Baru.
-Pada Codeigniter, request yang diterima oleh file index.php akan diarahkan ke Router untuk
-meudian oleh router tesebut diarahkan ke Controller.
-Router terletak pada file **app/config/Routes.php**
-Pada file tersebut kita dapat mendefinisikan route untuk aplikasi yang kita buat.
-Contoh:
-```php
-$routes->get('/', 'Home::index');
-```
-Kode tersebut akan mengarahkan rute untuk halaman home.
-Tambahkan kode berikut di dalam Routes.php
-```php
-$routes->get('/about', 'Page::about');
-$routes->get('/contact', 'Page::contact');
-$routes->get('/faqs', 'Page::faqs');
-```
-Untuk mengetahui route yang ditambahkan sudah benar, buka CLI dan jalankan perintah
-berikut.
-
-`php spark routes`
-
-> ![Screenshot Database](Screenshot/ss_routes.png)
-
-
-Selanjutnya coba akses route yang telah dibuat dengan mengakses alamat url
-http://localhost:8080/about
-
-
-### Membuat Controller
-Selanjutnya adalah membuat Controller Page. Buat file baru dengan nama page.php pada
-direktori Controller kemudian isi kodenya seperti berikut.
-```php
-<?php
-
-namespace App\Controllers;
-
-class Page extends BaseController
-{
-    public function about()
-    {
-    echo "Ini halaman About";
-    }
-    public function contact()
-    {
-    echo "Ini halaman Contact";
-    }
-    public function faqs()
-    {
-    echo "Ini halaman FAQ";
-    }
-}
-```
-
-
-### Auto Routing
-Secara default fitur autoroute pada Codeiginiter sudah aktif. Untuk mengubah status autoroute
-dapat mengubah nilai variabelnya. Untuk menonaktifkan ubah nilai true menjadi false.
-`$routes->setAutoRoute(true);`
-
-Tambahkan method baru pada **Controller Page** seperti berikut.
-```php
-public function tos()
-{
-echo "ini halaman Term of Services";
-}
-```
-
-Method ini belum ada pada **routing**, sehingga cara mengaksesnya dengan menggunakan
-alamat: http://localhost:8080/page/tos
-
-
-### Membuat View
-Selanjutnya adalam membuat view untuk tampilan web agar lebih menarik. Buat file baru
-dengan nama about.php pada direktori view **(app/view/about.php)** kemudian isi kodenya seperti berikut.
-
-```html
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title><?= $title; ?></title>
-</head>
-<body>
-    <h1><?= $title; ?></h1>
-    <hr>
-    <p><?= $content; ?></p>
-</body>
-</html>
-```
-
-Ubah **method about** pada class **Controller Page** menjadi seperti berikut:
-
-```php
-public function about()
-{
-    return view('about', [
-        'title' => 'Halaman Abot',
-        'content' => 'Ini adalah halaman abaut yang menjelaskan tentang isi halaman ini.'
-    ]);
-}
-```
-
-Lakukan refresh pada halaman tersebut.
-
-Kemudian buat folder **template** pada direktori **view** kemudian buat file **header.php** dan
-**footer.php**
-File **app/view/template/header.php**
-
-```php
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title><?= $title; ?></title>
-    <link rel="stylesheet" href="<?= base_url('/style.css');?>">
-</head>
-<body>
-    <div id="container">
-    <header>
-        <h1>Layout Sederhana</h1>
-    </header>
-    <nav>
-        <a href="<?= base_url('/');?>" class="active">Home</a>
-        <a href="<?= base_url('/artikel');?>">Artikel</a>
-        <a href="<?= base_url('/about');?>">About</a>
-        <a href="<?= base_url('/contact');?>">Kontak</a>
-    </nav>
-    <section id="wrapper">
-        <section id="main">
-```
-
-File **app/view/template/footer.php**
-
-```html
-        </section>
-        <aside id="sidebar">
-            <div class="widget-box">
-                <h3 class="title">Widget Header</h3>
-                <ul>
-                    <li><a href="#">Widget Link</a></li>
-                    <li><a href="#">Widget Link</a></li>
-                </ul>
-            </div>
-            <div class="widget-box">
-                <h3 class="title">Widget Text</h3>
-                <p>Vestibulum lorem elit, iaculis in nisl volutpat,
-                malesuada tincidunt arcu. Proin in leo fringilla, vestibulum mi porta,
-                faucibus felis. Integer pharetra est nunc, nec pretium nunc pretium ac.</p>
-            </div>
-        </aside>
-    </section>
-    <footer>
-        <p>&copy; 2021 - Universitas Pelita Bangsa</p>
-    </footer>
-    </div>
-</body>
-</html>
-```
-
-Kemudian ubah file **app/view/about.php** seperti berikut.
-```php
-<?= $this->include('template/header'); ?>
-<h1><?= $title; ?></h1>
-<hr>
-<p><?= $content; ?></p>
-<?= $this->include('template/footer'); ?>
-```
-
-Selanjutnya refresh tampilan pada alamat http://localhost:8080/about
-
-> ![Screenshot Database](Screenshot/ss_halaman_utama.png)
+## Struktur Pembahasan
+1. Praktikum 1: PHP Framework (CodeIgniter)
+2. Praktikum 2: Framework Lanjutan (CRUD)
+3. Praktikum 3: View Layout dan View Cell
+4. Praktikum 4: Framework Lanjutan (Modul Login)
 
 ---
 
-## Modul Praktikum 2: Framework Lanjutan (CRUD)
+# Praktikum 1: PHP Framework (CodeIgniter)
 
-### 1. Persiapan Database
-Membuat database `lab_ci4` dan tabel `artikel` di MySQL melalui phpMyAdmin. Tabel ini memiliki kolom seperti id, judul, isi, gambar, status, dan slug. Selanjutnya, melakukan konfigurasi koneksi database pada file `.env` di CodeIgniter agar aplikasi terhubung ke MySQL.
-> ![Screenshot Database](Screenshot/ss_artikel.png)
+## Tujuan
+Pada praktikum ini saya mempelajari dasar penggunaan **Framework CodeIgniter 4**, mulai dari proses persiapan lingkungan pengembangan, instalasi framework, penggunaan CLI, aktivasi mode debugging, pembuatan routing, controller, view, hingga penerapan layout sederhana untuk beberapa halaman.
 
-### 2. Membuat Model
-Membuat file `ArtikelModel.php` di dalam folder `app/Models/`. Model ini bertugas untuk merepresentasikan tabel `artikel` dan mengatur kolom mana saja yang diizinkan untuk diisi data (`$allowedFields = ['judul', 'isi', 'status', 'slug', 'gambar']`).
-> ![Screenshot Kode Model](Screenshot/ss_model.png)
-### 3. Membuat Controller dan View (Menampilkan Data)
-Membuat file `Artikel.php` di folder `app/Controllers/` dengan fungsi `index()` untuk mengambil semua data dari model. Data tersebut kemudian dikirim ke file `app/Views/artikel/index.php` untuk ditampilkan ke pengguna menggunakan perulangan `foreach`. Dibuat juga fitur Detail Artikel yang akan menampilkan isi penuh artikel berdasarkan parameter slug.
-> ![Screenshot Kode Model](Screenshot/ss_artikel.png)
+## 1. Persiapan Lingkungan
+Sebelum menggunakan CodeIgniter, beberapa ekstensi PHP perlu diaktifkan pada XAMPP agar framework dapat berjalan dengan baik. Ekstensi yang digunakan antara lain:
+- `php-json`
+- `php-mysqlnd`
+- `php-xml`
+- `php-intl`
+- `libcurl` (opsional)
 
-### 4. Membuat Menu Admin (Sistem CRUD)
-Membuat rute khusus admin (`/admin/artikel`) untuk mengelola data secara dinamis.
-- **Read:** Menampilkan data dari database dalam bentuk tabel rapi lengkap dengan tombol aksi.
-- **Create:** Membuat fungsi `add()` di Controller dan file view `form_add.php` untuk menginput artikel baru.
-- **Update:** Membuat fungsi `edit()` di Controller dan file view `form_edit.php` yang menampilkan data lama di dalam kotak isian untuk kemudian diperbarui.
-- **Delete:** Membuat fungsi `delete()` di Controller untuk menghapus baris data dari database berdasarkan ID artikel tanpa memerlukan view tambahan.
-> ![Screenshot Kode Model](Screenshot/ss_modul4_admin_artikel.png)
+Ekstensi tersebut diaktifkan melalui **XAMPP Control Panel** pada menu **Apache > Config > PHP.ini**, lalu menghapus tanda titik koma (`;`) pada ekstensi yang dibutuhkan.
 
+> ![Screenshot Konfigurasi PHP](Screenshot/ss_note.png)
 
-## Praktikum 3: View Layout dan View Cell
+## 2. Instalasi CodeIgniter 4
+Instalasi CodeIgniter dilakukan secara manual dengan langkah berikut:
+- mengunduh CodeIgniter dari situs resminya,
+- mengekstrak file ke direktori `htdocs`,
+- menyesuaikan nama folder project,
+- lalu menjalankan aplikasi melalui browser.
 
-### Tujuan
+Setelah instalasi berhasil, halaman default CodeIgniter dapat ditampilkan dengan baik.
+
+> ![Screenshot Instalasi CodeIgniter](Screenshot/ss_instalasi.png)
+
+## 3. Menjalankan CLI CodeIgniter
+CodeIgniter menyediakan **Command Line Interface (CLI)** yang mempermudah proses pengembangan.  
+CLI dijalankan melalui terminal VS Code dengan perintah:
+
+```bash
+php spark serve
+```
+
+Perintah ini digunakan untuk menjalankan web server lokal bawaan CodeIgniter sehingga aplikasi dapat diakses melalui `http://localhost:8080`.
+
+> ![Screenshot CLI CodeIgniter](Screenshot/ss_cli.png)
+
+## 4. Mengaktifkan Mode Debugging
+Agar proses pengembangan lebih mudah, mode debugging diaktifkan dengan mengubah file `env` menjadi `.env`, lalu mengatur nilai:
+
+```env
+CI_ENVIRONMENT = development
+```
+
+Dengan mode ini, pesan error akan tampil lebih jelas sehingga memudahkan proses analisis ketika terjadi kesalahan pada kode.
+
+## 5. Membuat Route Baru
+Setelah project berhasil dijalankan, langkah berikutnya adalah menambahkan route baru pada file `app/Config/Routes.php`.  
+Route digunakan untuk menghubungkan URL tertentu dengan controller yang akan memprosesnya.
+
+Route yang ditambahkan antara lain:
+- `/about`
+- `/contact`
+- `/faqs`
+
+Untuk mengecek daftar route yang aktif, digunakan perintah:
+
+```bash
+php spark routes
+```
+
+> ![Screenshot Routes](Screenshot/ss_routes.png)
+
+## 6. Membuat Controller Page
+Setelah route dibuat, kemudian dibuat controller `Page.php` pada folder `app/Controllers`.  
+Controller ini berisi method:
+- `about()`
+- `contact()`
+- `faqs()`
+- `tos()`
+
+Controller ini berfungsi untuk menangani request dari route yang telah dibuat sebelumnya.
+
+## 7. Menggunakan Auto Routing
+CodeIgniter juga menyediakan fitur **auto routing**, sehingga method controller yang belum didaftarkan secara manual di file route tetap dapat diakses melalui pola URL tertentu.  
+Pada tahap ini ditambahkan method `tos()` pada controller `Page` untuk menguji fitur tersebut.
+
+## 8. Membuat View dan Layout Dasar
+Agar tampilan aplikasi menjadi lebih baik, dibuat file view seperti `about.php`, kemudian dilanjutkan dengan pembuatan layout sederhana menggunakan:
+- `template/header.php`
+- `template/footer.php`
+- `public/style.css`
+
+Dengan struktur ini, halaman-halaman seperti Home, About, Artikel, dan Kontak memiliki tampilan yang konsisten.
+
+> ![Screenshot Hasil Tampilan Awal](Screenshot/ss_halaman_utama.png)
+
+## Kesimpulan Praktikum 1
+Pada praktikum pertama, saya berhasil:
+- menyiapkan lingkungan pengembangan CodeIgniter 4,
+- menginstal framework,
+- menjalankan CLI,
+- mengaktifkan debugging,
+- membuat route dan controller,
+- serta membangun tampilan awal aplikasi dengan layout sederhana.
+
+---
+
+# Praktikum 2: Framework Lanjutan (CRUD)
+
+## Tujuan
+Pada praktikum ini saya mempelajari konsep **Model** dan implementasi **CRUD** (Create, Read, Update, Delete) menggunakan CodeIgniter 4 dengan studi kasus data artikel.
+
+## 1. Persiapan Database
+Tahap pertama adalah membuat database `lab_ci4` dan tabel `artikel` di MySQL.  
+Tabel `artikel` digunakan untuk menyimpan data konten dengan field:
+- `id`
+- `judul`
+- `isi`
+- `gambar`
+- `status`
+- `slug`
+
+Setelah itu, koneksi database dikonfigurasi melalui file `.env` agar aplikasi dapat terhubung ke MySQL.
+
+## 2. Membuat Model Artikel
+Selanjutnya dibuat file `ArtikelModel.php` pada folder `app/Models`.  
+Model ini digunakan untuk merepresentasikan tabel `artikel` dan mendefinisikan field yang dapat diisi, sehingga proses manipulasi data lebih terstruktur.
+
+> ![Screenshot ArtikelModel](Screenshot/ss_model.png)
+
+## 3. Menampilkan Data Artikel
+Setelah model selesai dibuat, dibuat controller `Artikel.php` dan view `app/Views/artikel/index.php` untuk menampilkan daftar artikel dari database.  
+Data yang berhasil ditambahkan ke tabel kemudian ditampilkan pada halaman artikel menggunakan perulangan.
+
+> ![Screenshot Halaman Artikel](Screenshot/ss_artikel.png)
+
+## 4. Membuat Detail Artikel
+Agar setiap artikel dapat dibuka secara terpisah, dibuat method `view($slug)` pada controller `Artikel`.  
+Method ini mengambil artikel berdasarkan nilai `slug`, lalu menampilkan isi lengkap artikel pada halaman detail.
+
+## 5. Membuat Menu Admin untuk CRUD
+Setelah fitur baca data berhasil, pengembangan dilanjutkan ke halaman admin artikel melalui route `/admin/artikel`.  
+Pada bagian ini diterapkan fitur:
+- **Create** untuk menambahkan artikel baru,
+- **Read** untuk menampilkan daftar artikel di panel admin,
+- **Update** untuk mengubah artikel,
+- **Delete** untuk menghapus artikel dari database.
+
+Fitur CRUD ini membuat pengelolaan artikel menjadi lebih dinamis karena tidak lagi dilakukan langsung melalui phpMyAdmin.
+
+## Kesimpulan Praktikum 2
+Pada praktikum kedua, saya berhasil:
+- membuat database artikel,
+- menghubungkan aplikasi dengan MySQL,
+- membangun model dan controller artikel,
+- menampilkan daftar artikel dan detail artikel,
+- serta membuat fitur CRUD sederhana melalui halaman admin.
+
+---
+
+# Praktikum 3: View Layout dan View Cell
+
+## Tujuan
 Pada praktikum ini saya mempelajari penggunaan **View Layout** dan **View Cell** pada CodeIgniter 4.  
-View Layout digunakan untuk membuat template tampilan yang konsisten, sedangkan View Cell digunakan untuk menampilkan komponen yang dapat dipakai ulang, seperti sidebar artikel terbaru.
+View Layout digunakan untuk membuat template tampilan yang konsisten, sedangkan View Cell digunakan untuk menampilkan komponen yang dapat dipakai ulang, seperti daftar artikel terbaru di sidebar.
 
----
-
-### 1. Membuat Layout Utama
+## 1. Membuat Layout Utama
 Pada tahap ini dibuat file `app/Views/layout/main.php` sebagai layout utama aplikasi.  
-Layout ini berisi struktur halaman, menu navigasi, area konten utama dengan `renderSection('content')`, dan sidebar yang memanggil View Cell `ArtikelTerkini`.
+Layout ini berisi:
+- header,
+- menu navigasi,
+- area konten utama dengan `renderSection('content')`,
+- sidebar,
+- dan footer.
+
+Layout utama ini menjadi fondasi tampilan yang dipakai ulang pada beberapa halaman.
 
 > ![Screenshot Layout Main](Screenshot/ss1_main_php.png)
 
----
+## 2. Memodifikasi File View
+File view seperti `home.php`, `about.php`, dan `contact.php` disesuaikan agar menggunakan layout utama dengan sintaks:
+- `extend('layout/main')`
+- `section('content')`
 
-### 2. Modifikasi File View
-File view seperti `home.php`, `about.php`, dan `contact.php` diubah agar menggunakan layout baru dengan sintaks `extend('layout/main')` dan `section('content')`.
+### a. File Home
+> ![Screenshot home.php](Screenshot/ss2_home_php.png)
 
-#### a. home.php
-> ![Screenshot Home PHP](Screenshot/ss2_home_php.png)
+### b. File About
+> ![Screenshot about.php](Screenshot/ss3_about_php.png)
 
-#### b. about.php
-> ![Screenshot About PHP](Screenshot/ss3_about_php.png)
+### c. File Contact
+> ![Screenshot contact.php](Screenshot/ss4_contact_php.png)
 
-#### c. contact.php
-> ![Screenshot Contact PHP](Screenshot/ss4_contact_php.png)
-
----
-
-### 3. Membuat Class View Cell
+## 3. Membuat Class View Cell
 Selanjutnya dibuat file `app/Cells/ArtikelTerkini.php`.  
-Class ini bertugas mengambil 5 artikel terbaru dari database berdasarkan field `created_at`, lalu mengirimkannya ke view komponen.
+Class ini bertugas mengambil lima artikel terbaru dari database berdasarkan field `created_at`, lalu mengirimkannya ke komponen view sidebar.
 
-> ![Screenshot ArtikelTerkini PHP](Screenshot/ss5_artikel_terkini_php.png)
+> ![Screenshot ArtikelTerkini.php](Screenshot/ss5_artikel_terkini_php.png)
 
----
-
-### 4. Membuat View untuk View Cell
-Setelah class View Cell dibuat, dibuat juga file `app/Views/components/artikel_terkini.php` untuk menampilkan daftar artikel terbaru pada sidebar.
+## 4. Membuat View Komponen untuk Sidebar
+Setelah class View Cell selesai dibuat, langkah berikutnya adalah membuat file `app/Views/components/artikel_terkini.php` untuk menampilkan daftar artikel terbaru pada sidebar.
 
 > ![Screenshot Komponen Artikel Terkini](Screenshot/ss6_artikel_terkini_component.png)
 
----
-
-### 5. Menyesuaikan Struktur Database
-Agar artikel terbaru dapat diambil berdasarkan waktu pembuatan, tabel `artikel` pada database ditambahkan field:
+## 5. Menyesuaikan Struktur Database
+Agar data artikel terbaru dapat diurutkan berdasarkan waktu pembuatan, tabel `artikel` diperbarui dengan menambahkan field:
 - `created_at`
 - `updated_at`
 
 > ![Screenshot Struktur Database Artikel](Screenshot/ss7_database_artikel.png)
 
----
+## 6. Hasil Pengujian Tampilan
+Setelah layout dan View Cell diterapkan, seluruh halaman memiliki tampilan yang lebih konsisten.
 
-### 6. Hasil Pengujian Tampilan
-
-#### a. Halaman Home
-Hasil pengujian menunjukkan bahwa halaman home berhasil menggunakan layout utama dan sidebar artikel terkini tampil dengan benar.
-
+### a. Halaman Home
 > ![Screenshot Halaman Home](Screenshot/ss8_halaman_home.png)
 
-#### b. Halaman About
-Halaman about juga berhasil menggunakan layout yang sama sehingga tampilan antar halaman menjadi konsisten.
-
+### b. Halaman About
 > ![Screenshot Halaman About](Screenshot/ss9_halaman_about.png)
 
-#### c. Halaman Contact
-Halaman contact berhasil menampilkan isi halaman dengan layout utama dan sidebar yang sama.
-
+### c. Halaman Contact
 > ![Screenshot Halaman Contact](Screenshot/ss10_halaman_contact.png)
 
-#### d. Halaman Artikel
-Halaman artikel berhasil menampilkan daftar artikel dan tetap menggunakan layout utama beserta sidebar.
-
+### d. Halaman Artikel
 > ![Screenshot Halaman Artikel](Screenshot/ss11_halaman_artikel.png)
 
----
+## 7. Pembahasan
+### Apa manfaat utama penggunaan View Layout?
+View Layout memudahkan pengembang dalam membuat tampilan yang konsisten di banyak halaman.  
+Komponen umum seperti header, navigasi, sidebar, dan footer tidak perlu ditulis berulang kali, sehingga kode menjadi lebih rapi dan mudah dirawat.
 
-### 7. Pembahasan
-
-#### Apa manfaat utama dari penggunaan View Layout dalam pengembangan aplikasi?
-View Layout memudahkan pengembang dalam membuat tampilan yang konsisten pada banyak halaman.  
-Dengan View Layout, bagian umum seperti header, navigasi, sidebar, dan footer tidak perlu ditulis berulang pada setiap file view, sehingga kode menjadi lebih rapi, mudah dirawat, dan efisien.
-
-#### Jelaskan perbedaan antara View Cell dan View biasa.
+### Apa perbedaan View Cell dan View biasa?
 View biasa digunakan untuk menampilkan isi halaman utama yang dipanggil langsung dari controller.  
-Sedangkan View Cell digunakan untuk menampilkan komponen kecil yang dapat digunakan ulang di berbagai halaman, misalnya sidebar, widget, menu, atau daftar artikel terbaru.
+Sedangkan View Cell digunakan untuk menampilkan komponen kecil yang dapat digunakan ulang pada banyak halaman, seperti sidebar, widget, atau daftar artikel terbaru.
 
-#### Ubah View Cell agar hanya menampilkan post dengan kategori tertentu.
+### Bagaimana jika View Cell hanya ingin menampilkan kategori tertentu?
 View Cell dapat dimodifikasi dengan menambahkan filter kategori pada query model.  
-Contohnya, jika tabel artikel memiliki field `kategori`, maka query dapat diubah menjadi:
+Contohnya, jika tabel artikel memiliki field `kategori`, maka query bisa disesuaikan untuk hanya menampilkan artikel dari kategori tertentu.
 
-```php
-$artikel = $model->where('kategori', 'Teknologi')
-                 ->orderBy('created_at', 'DESC')
-                 ->limit(5)
-                 ->findAll();
-```
+## Kesimpulan Praktikum 3
+Pada praktikum ketiga, saya berhasil:
+- membuat layout utama berbasis View Layout,
+- memisahkan tampilan halaman ke dalam section,
+- membuat View Cell untuk artikel terbaru,
+- serta menampilkan data dinamis pada sidebar secara modular.
 
 ---
 
-## Praktikum 4: Framework Lanjutan (Modul Login)
+# Praktikum 4: Framework Lanjutan (Modul Login)
 
-### Tujuan
+## Tujuan
 Pada praktikum ini saya mempelajari pembuatan **modul login** menggunakan CodeIgniter 4.  
-Selain itu, saya juga mempelajari konsep **Auth Filter**, **session**, dan **database seeder** untuk membatasi akses ke halaman admin dan mengelola proses autentikasi user.
+Selain itu, saya juga mempelajari konsep **session**, **Auth Filter**, dan **database seeder** untuk membatasi akses ke halaman admin.
 
----
-
-### 1. Membuat Tabel User
+## 1. Membuat Tabel User
 Langkah pertama adalah membuat tabel `user` pada database.  
-Tabel ini digunakan untuk menyimpan data akun yang akan dipakai dalam proses login.
+Tabel ini digunakan untuk menyimpan akun yang akan dipakai pada proses login.
 
-Struktur tabel yang digunakan terdiri dari:
+Field yang digunakan terdiri dari:
 - `id`
 - `username`
 - `useremail`
@@ -371,56 +279,43 @@ Struktur tabel yang digunakan terdiri dari:
 
 > ![Screenshot Struktur Tabel User](Screenshot/ss_modul4_struktur_tabel_user.png)
 
----
-
-### 2. Menambahkan Data User
-Setelah tabel dibuat, langkah berikutnya adalah menambahkan data user ke database.  
-Data user ini akan digunakan sebagai akun login saat pengujian modul.
+## 2. Menambahkan Data User
+Setelah tabel dibuat, data user ditambahkan ke database untuk keperluan pengujian login.
 
 > ![Screenshot Data User](Screenshot/ss_modul4_data_user.png)
 
----
-
-### 3. Membuat Model User
-Kemudian dibuat file `app/Models/UserModel.php`.  
-Model ini digunakan untuk memproses data user dari tabel `user`, khususnya saat proses autentikasi login.
+## 3. Membuat Model User
+Kemudian dibuat file `app/Models/UserModel.php` untuk memproses data login dari tabel `user`.
 
 > ![Screenshot UserModel](Screenshot/ss_modul4_usermodel.png)
 
----
-
-### 4. Membuat Controller User
+## 4. Membuat Controller User
 Selanjutnya dibuat file `app/Controllers/User.php`.  
-Controller ini berfungsi untuk:
+Controller ini digunakan untuk:
 - menampilkan data user,
 - memproses login,
-- menyimpan session login,
-- dan menangani proses logout.
+- menyimpan session,
+- dan menangani logout.
 
-Pada method `login()`, sistem akan:
+Pada proses login, sistem:
 1. mengambil input email dan password,
 2. mencari user berdasarkan email,
-3. mencocokkan password menggunakan `password_verify()`,
-4. menyimpan data login ke session,
+3. memverifikasi password dengan `password_verify()`,
+4. menyimpan session login,
 5. dan mengarahkan user ke halaman admin artikel.
 
 > ![Screenshot User Controller](Screenshot/ss_modul4_user_controller.png)
 
----
-
-### 5. Membuat View Login
-File `app/Views/user/login.php` dibuat untuk menampilkan form login.  
-Form ini berisi input email dan password yang akan diproses oleh controller `User`.
+## 5. Membuat View Login
+File `app/Views/user/login.php` dibuat untuk menampilkan form login yang digunakan dalam proses autentikasi.
 
 > ![Screenshot Login View](Screenshot/ss_modul4_login_view.png)
 
----
-
-### 6. Membuat Seeder User
-Agar proses pengujian lebih mudah, dibuat file `app/Database/Seeds/UserSeeder.php`.  
+## 6. Membuat Seeder User
+Untuk mempermudah pengujian, dibuat file `app/Database/Seeds/UserSeeder.php`.  
 Seeder ini digunakan untuk menambahkan akun admin secara otomatis ke database.
 
-Akun yang digunakan:
+Akun default yang digunakan:
 - Email: `admin@email.com`
 - Password: `admin123`
 
@@ -428,89 +323,71 @@ Password disimpan dalam bentuk hash menggunakan `password_hash()`.
 
 > ![Screenshot UserSeeder](Screenshot/ss_modul4_user_seeder.png)
 
----
-
-### 7. Membuat Auth Filter
-Agar halaman admin tidak bisa diakses oleh user yang belum login, dibuat file `app/Filters/Auth.php`.  
-Filter ini akan memeriksa apakah session `logged_in` tersedia atau tidak.  
-Jika user belum login, maka sistem akan mengarahkan user ke halaman `/user/login`.
+## 7. Membuat Auth Filter
+Agar halaman admin tidak dapat diakses oleh user yang belum login, dibuat file `app/Filters/Auth.php`.  
+Filter ini memeriksa session `logged_in`. Jika session tidak tersedia, maka user akan diarahkan ke halaman login.
 
 > ![Screenshot Auth Filter](Screenshot/ss_modul4_auth_filter.png)
 
----
-
-### 8. Menambahkan Alias Filter pada Filters.php
-Setelah Auth Filter dibuat, file `app/Config/Filters.php` diperbarui dengan menambahkan alias filter.
-
-Alias adalah nama singkat dari class filter.  
-Pada modul ini digunakan alias `'auth' => Auth::class`.
-
-Dengan alias tersebut, filter dapat dipanggil secara singkat pada route tanpa perlu menuliskan nama class lengkap.
+## 8. Menambahkan Alias Filter pada Filters.php
+Setelah Auth Filter dibuat, file `app/Config/Filters.php` diperbarui dengan menambahkan alias filter, yaitu `auth`, agar filter dapat dipanggil lebih mudah pada routing.
 
 > ![Screenshot Config Filters](Screenshot/ss_modul4_config_filters.png)
 
----
-
-### 9. Mengatur Route Login dan Route Admin
+## 9. Mengatur Route Login dan Route Admin
 File `app/Config/Routes.php` kemudian diperbarui untuk:
-- menambahkan route `/user/login`,
-- menambahkan route `/user/logout`,
-- membuat route group `admin`,
+- menambahkan route login,
+- menambahkan route logout,
+- membuat group route `admin`,
 - dan menerapkan filter `auth` pada route admin.
-
-Dengan demikian, halaman admin hanya dapat diakses setelah user berhasil login.
 
 > ![Screenshot Config Routes](Screenshot/ss_modul4_config_routes.png)
 
----
-
-### 10. Hasil Pengujian
-
-#### a. Halaman Login
-Setelah semua konfigurasi selesai, halaman login berhasil ditampilkan melalui route `/user/login`.
+## 10. Hasil Pengujian
+### a. Halaman Login
+Setelah konfigurasi selesai, halaman login berhasil ditampilkan melalui route `/user/login`.
 
 > ![Screenshot Halaman Login](Screenshot/ss_modul4_login_view.png)
 
-#### b. Login Berhasil Masuk ke Halaman Admin
+### b. Login Berhasil Masuk ke Halaman Admin
 Setelah login menggunakan akun admin, sistem berhasil mengarahkan user ke halaman admin artikel.
 
 > ![Screenshot Admin Artikel](Screenshot/ss_modul4_admin_artikel.png)
 
-#### c. Redirect ke Login
-Saat user belum login atau setelah session dihapus, sistem akan mengarahkan kembali ke halaman login. Karena tampilan akhirnya sama dengan halaman login biasa, dokumentasi ini menggunakan screenshot form login yang sama.
+### c. Redirect ke Login
+Saat user belum login atau setelah session dihapus, sistem akan diarahkan kembali ke halaman login. Karena tampilan akhirnya sama dengan form login biasa, dokumentasi menggunakan screenshot login yang sama.
 
 > ![Screenshot Redirect Login](Screenshot/ss_modul4_login_view.png)
 
----
-
-### 11. Pembahasan
-
-#### Apa fungsi Auth Filter?
+## 11. Pembahasan
+### Apa fungsi Auth Filter?
 Auth Filter digunakan untuk membatasi akses ke halaman tertentu.  
-Pada modul ini, Auth Filter dipakai untuk melindungi halaman admin agar hanya dapat diakses oleh user yang sudah login.
+Pada modul ini, Auth Filter melindungi halaman admin agar hanya dapat diakses oleh user yang sudah login.
 
-#### Apa fungsi alias pada Filters.php?
-Alias adalah nama singkat untuk filter.  
-Dengan alias, filter dapat dipanggil dengan lebih sederhana pada route, misalnya cukup menggunakan `auth`.
+### Apa fungsi alias pada Filters.php?
+Alias adalah nama singkat dari class filter.  
+Dengan alias, filter dapat dipanggil lebih sederhana pada route, misalnya cukup menggunakan `auth`.
 
-#### Mengapa password disimpan dalam bentuk hash?
+### Mengapa password disimpan dalam bentuk hash?
 Password disimpan dalam bentuk hash untuk meningkatkan keamanan data user.  
-Saat login, password diverifikasi dengan `password_verify()`.
+Saat login, password diverifikasi menggunakan `password_verify()` sehingga password asli tidak disimpan dalam bentuk teks biasa.
 
-#### Apa fungsi session dalam login?
+### Apa fungsi session dalam login?
 Session digunakan untuk menyimpan status autentikasi user.  
 Dengan session, sistem dapat mengetahui apakah user sedang login atau belum.
 
+## Kesimpulan Praktikum 4
+Pada praktikum keempat, saya berhasil:
+- membuat tabel user,
+- membuat sistem login sederhana,
+- menambahkan akun dummy dengan seeder,
+- menerapkan Auth Filter untuk proteksi halaman admin,
+- dan mengimplementasikan logout berbasis session.
+
 ---
 
-### 12. Kesimpulan
-Pada praktikum ini saya berhasil membuat modul login pada CodeIgniter 4 dengan fitur:
-- form login,
-- validasi email dan password,
-- session login,
-- Auth Filter untuk proteksi halaman admin,
-- database seeder untuk akun dummy,
-- dan logout untuk menghapus session.
+# Penutup
+Melalui rangkaian praktikum ini, saya memahami alur pengembangan aplikasi web menggunakan CodeIgniter 4 secara bertahap.  
+Mulai dari instalasi framework, routing, MVC, pembuatan CRUD, pengelolaan layout modular, hingga implementasi sistem login, seluruh proses memberikan pemahaman yang lebih baik tentang cara membangun aplikasi web yang terstruktur, dinamis, dan mudah dikembangkan.
 
-Dengan adanya modul login ini, akses ke halaman admin menjadi lebih aman dan terkontrol.
-
+Repository ini menjadi dokumentasi hasil praktikum sekaligus media pembelajaran untuk memahami implementasi CodeIgniter 4 secara lebih utuh.
