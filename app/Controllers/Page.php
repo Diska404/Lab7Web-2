@@ -8,7 +8,7 @@ class Page extends BaseController
     {
         return view('about', [
             'title'   => 'Halaman About',
-            'content' => 'Ini adalah halaman about yang menjelaskan tentang isi halaman ini.'
+            'content' => 'Halaman ini berisi informasi singkat mengenai website praktikum yang dibangun menggunakan CodeIgniter 4.',
         ]);
     }
 
@@ -16,25 +16,17 @@ class Page extends BaseController
     {
         return view('contact', [
             'title'   => 'Halaman Contact',
-            'content' => 'Ini adalah halaman kontak. Silakan hubungi kami di sini.'
+            'content' => 'Silakan hubungi kami melalui email atau media lain yang tersedia untuk pertanyaan dan masukan.',
         ]);
     }
 
-    public function faqs(): void
+    public function faqs()
     {
-        echo 'Ini halaman FAQ';
+        return 'Ini halaman FAQ';
     }
 
-    public function tos(): void
+    public function tos()
     {
-        echo 'Ini halaman Term of Services';
-    }
-
-    public function artikel(): string
-    {
-        return view('artikel', [
-            'title'   => 'Halaman Artikel',
-            'content' => 'Ini adalah halaman yang berisi daftar artikel terbaru.'
-        ]);
+        return 'Ini halaman Term of Services';
     }
 }

@@ -11,12 +11,12 @@ class Auth implements FilterInterface
     public function before(RequestInterface $request, $arguments = null)
     {
         if (! session()->get('logged_in')) {
+            session()->setFlashdata('error', 'Silakan login terlebih dahulu untuk mengakses halaman admin.');
             return redirect()->to('/user/login');
         }
     }
 
     public function after(RequestInterface $request, ResponseInterface $response, $arguments = null)
     {
-        // Do nothing.
     }
 }

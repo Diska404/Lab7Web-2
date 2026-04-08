@@ -8,7 +8,7 @@ class Home extends BaseController
     {
         return view('home', [
             'title'   => 'Halaman Home',
-            'content' => 'Ini adalah halaman utama website praktikum CodeIgniter 4.'
+            'content' => 'Selamat datang di website praktikum Web 2. Silakan jelajahi artikel, pelajari halaman lain, atau masuk ke panel admin untuk mengelola konten.',
         ]);
     }
 }

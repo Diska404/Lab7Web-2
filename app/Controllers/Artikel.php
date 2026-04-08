@@ -3,7 +3,6 @@
 namespace App\Controllers;
 
 use App\Models\ArtikelModel;
-use CodeIgniter\Exceptions\PageNotFoundException;
 
 class Artikel extends BaseController
 {
@@ -11,18 +10,18 @@ class Artikel extends BaseController
     {
         $title = 'Daftar Artikel';
         $model = new ArtikelModel();
-        $artikel = $model->orderBy('created_at', 'DESC')->findAll();
+        $artikel = $model->findAll();
 
         return view('artikel/index', compact('artikel', 'title'));
     }
 
-    public function view(string $slug): string
+    public function view($slug): string
     {
         $model = new ArtikelModel();
         $artikel = $model->where(['slug' => $slug])->first();
 
-        if (!$artikel) {
-            throw PageNotFoundException::forPageNotFound();
+        if (! $artikel) {
+            throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
         }
 
         $title = $artikel['judul'];
@@ -33,74 +32,98 @@ class Artikel extends BaseController
     {
         $title = 'Daftar Artikel';
         $model = new ArtikelModel();
-        $artikel = $model->orderBy('created_at', 'DESC')->findAll();
+        $artikel = $model->findAll();
 
         return view('artikel/admin_index', compact('artikel', 'title'));
     }
 
     public function add()
     {
-        $validation = \Config\Services::validation();
-        $validation->setRules([
-            'judul' => 'required',
-            'isi'   => 'required',
-        ]);
+        helper(['form']);
 
-        $isDataValid = $validation->withRequest($this->request)->run();
+        if ($this->request->getMethod() === 'POST') {
+            $rules = [
+                'judul' => 'required|min_length[3]',
+                'isi'   => 'required|min_length[10]',
+            ];
 
-        if ($isDataValid) {
+            $data = [
+                'judul' => $this->request->getPost('judul'),
+                'isi'   => $this->request->getPost('isi'),
+            ];
+
+            if (! $this->validateData($data, $rules)) {
+                return view('artikel/form_add', [
+                    'title'      => 'Tambah Artikel',
+                    'validation' => $this->validator,
+                ]);
+            }
+
             $artikel = new ArtikelModel();
-            $judul = $this->request->getPost('judul');
-
             $artikel->insert([
-                'judul'  => $judul,
-                'isi'    => $this->request->getPost('isi'),
-                'slug'   => url_title($judul, '-', true),
-                'status' => 1,
+                'judul' => $data['judul'],
+                'isi'   => $data['isi'],
+                'slug'  => url_title($data['judul'], '-', true),
             ]);
 
-            return redirect()->to(base_url('/admin/artikel'));
+            session()->setFlashdata('success', 'Artikel berhasil ditambahkan.');
+            return redirect()->to('/admin/artikel');
         }
 
-        $title = 'Tambah Artikel';
-        return view('artikel/form_add', compact('title'));
+        return view('artikel/form_add', ['title' => 'Tambah Artikel']);
     }
 
     public function edit($id)
     {
-        $artikel = new ArtikelModel();
+        helper(['form']);
 
-        $validation = \Config\Services::validation();
-        $validation->setRules([
-            'judul' => 'required',
-            'isi'   => 'required',
-        ]);
+        $artikelModel = new ArtikelModel();
+        $data = $artikelModel->where('id', $id)->first();
 
-        $isDataValid = $validation->withRequest($this->request)->run();
-
-        if ($isDataValid) {
-            $judul = $this->request->getPost('judul');
-
-            $artikel->update($id, [
-                'judul' => $judul,
-                'isi'   => $this->request->getPost('isi'),
-                'slug'  => url_title($judul, '-', true),
-            ]);
-
-            return redirect()->to(base_url('/admin/artikel'));
+        if (! $data) {
+            throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
         }
 
-        $data = $artikel->where('id', $id)->first();
-        $title = 'Edit Artikel';
+        if ($this->request->getMethod() === 'POST') {
+            $rules = [
+                'judul' => 'required|min_length[3]',
+                'isi'   => 'required|min_length[10]',
+            ];
 
-        return view('artikel/form_edit', compact('title', 'data'));
+            $payload = [
+                'judul' => $this->request->getPost('judul'),
+                'isi'   => $this->request->getPost('isi'),
+            ];
+
+            if (! $this->validateData($payload, $rules)) {
+                return view('artikel/form_edit', [
+                    'title'      => 'Edit Artikel',
+                    'data'       => $data,
+                    'validation' => $this->validator,
+                ]);
+            }
+
+            $artikelModel->update($id, [
+                'judul' => $payload['judul'],
+                'isi'   => $payload['isi'],
+                'slug'  => url_title($payload['judul'], '-', true),
+            ]);
+
+            session()->setFlashdata('success', 'Artikel berhasil diperbarui.');
+            return redirect()->to('/admin/artikel');
+        }
+
+        return view('artikel/form_edit', [
+            'title' => 'Edit Artikel',
+            'data'  => $data,
+        ]);
     }
 
     public function delete($id)
     {
         $artikel = new ArtikelModel();
         $artikel->delete($id);
-
-        return redirect()->to(base_url('/admin/artikel'));
+        session()->setFlashdata('success', 'Artikel berhasil dihapus.');
+        return redirect()->to('/admin/artikel');
     }
 }

@@ -9,7 +9,7 @@ class ArtikelTerkini
     public function render(): string
     {
         $model = new ArtikelModel();
-        $artikel = $model->orderBy('created_at', 'DESC')->limit(5)->findAll();
+        $artikel = $model->orderBy('id', 'DESC')->limit(5)->findAll();
 
         return view('components/artikel_terkini', [
             'artikel' => $artikel,
