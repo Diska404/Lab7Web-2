@@ -164,7 +164,7 @@ Pada bagian ini diterapkan fitur:
 Fitur CRUD ini membuat pengelolaan artikel menjadi lebih dinamis karena tidak lagi dilakukan langsung melalui PHPMyAdmin.
 
 ## Kesimpulan Praktikum 2
-Pada praktikum kedua, saya berhasil:
+Progres yang berhasil dibuat pada Pratikum ini adalah:
 - membuat database artikel,
 - menghubungkan aplikasi dengan MySQL,
 - membangun model dan controller artikel,
@@ -177,7 +177,7 @@ Pada praktikum kedua, saya berhasil:
 
 ## Tujuan
 Pada praktikum ini saya mempelajari penggunaan **View Layout** dan **View Cell** pada CodeIgniter 4.  
-View Layout digunakan untuk membuat template tampilan yang konsisten, sedangkan View Cell digunakan untuk menampilkan komponen yang dapat dipakai ulang, seperti daftar artikel terbaru di sidebar.
+View Layout digunakan agar template tampilan tetap konsisten, sedangkan View Cell digunakan dalam menampilkan komponen yang dapat dipakai ulang, seperti daftar artikel terbaru di sidebar.
 
 ## 1. Membuat Layout Utama
 Pada tahap ini dibuat file `app/Views/layout/main.php` sebagai layout utama aplikasi.  
@@ -207,7 +207,7 @@ File view seperti `home.php`, `about.php`, dan `contact.php` disesuaikan agar me
 > ![Screenshot contact.php](Screenshot/ss4_contact_php.png)
 
 ## 3. Membuat Class View Cell
-Selanjutnya dibuat file `app/Cells/ArtikelTerkini.php`.  
+Selanjutnya membuat file `app/Cells/ArtikelTerkini.php`.  
 Class ini bertugas mengambil lima artikel terbaru dari database berdasarkan field `created_at`, lalu mengirimkannya ke komponen view sidebar.
 
 > ![Screenshot ArtikelTerkini.php](Screenshot/ss5_artikel_terkini_php.png)
@@ -241,20 +241,20 @@ Setelah layout dan View Cell diterapkan, seluruh halaman memiliki tampilan yang 
 
 ## 7. Pembahasan
 ### Apa manfaat utama penggunaan View Layout?
-View Layout memudahkan pengembang dalam membuat tampilan yang konsisten di banyak halaman.  
-Komponen umum seperti header, navigasi, sidebar, dan footer tidak perlu ditulis berulang kali, sehingga kode menjadi lebih rapi dan mudah dirawat.
+View Layout dapat memudahkan pengembang dalam membuat tampilan yang konsisten di banyak halaman.  
+Biasanya seperti header, navigasi, sidebar, dan footer tidak perlu ditulis berulang kali, sehingga kode menjadi lebih rapi dan mudah dirawat.
 
 ### Apa perbedaan View Cell dan View biasa?
-View biasa digunakan untuk menampilkan isi halaman utama yang dipanggil langsung dari controller.  
+View digunakan untuk menampilkan isi halaman utama yang dipanggil langsung dari controller.  
 Sedangkan View Cell digunakan untuk menampilkan komponen kecil yang dapat digunakan ulang pada banyak halaman, seperti sidebar, widget, atau daftar artikel terbaru.
 
 ### Bagaimana jika View Cell hanya ingin menampilkan kategori tertentu?
-View Cell dapat dimodifikasi dengan menambahkan filter kategori pada query model.  
+View Cell dapat dimodifikasi dengan penambahan filter kategori pada query model.  
 Contohnya, jika tabel artikel memiliki field `kategori`, maka query bisa disesuaikan untuk hanya menampilkan artikel dari kategori tertentu.
 
 ## Kesimpulan Praktikum 3
-Pada praktikum ketiga, saya berhasil:
-- membuat layout utama berbasis View Layout,
+Progress dari praktikum ini adalah:
+- pembuatan layout utama berbasis View Layout,
 - memisahkan tampilan halaman ke dalam section,
 - membuat View Cell untuk artikel terbaru,
 - serta menampilkan data dinamis pada sidebar secara modular.
@@ -264,8 +264,8 @@ Pada praktikum ketiga, saya berhasil:
 # Praktikum 4: Framework Lanjutan (Modul Login)
 
 ## Tujuan
-Pada praktikum ini saya mempelajari pembuatan **modul login** menggunakan CodeIgniter 4.  
-Selain itu, saya juga mempelajari konsep **session**, **Auth Filter**, dan **database seeder** untuk membatasi akses ke halaman admin.
+Pada praktikum 4 ini terdapat pembuatan **modul login** menggunakan CodeIgniter 4.  
+Selain itu, terdapat juga konsep **session**, **Auth Filter**, dan **database seeder** untuk membatasi akses ke halaman admin.
 
 ## 1. Membuat Tabel User
 Langkah pertama adalah membuat tabel `user` pada database.  
@@ -377,7 +377,7 @@ Session digunakan untuk menyimpan status autentikasi user.
 Dengan session, sistem dapat mengetahui apakah user sedang login atau belum.
 
 ## Kesimpulan Praktikum 4
-Pada praktikum keempat, saya berhasil:
+Progres dari Praktiku ini adalah:
 - membuat tabel user,
 - membuat sistem login sederhana,
 - menambahkan akun dummy dengan seeder,
@@ -387,7 +387,4 @@ Pada praktikum keempat, saya berhasil:
 ---
 
 # Penutup
-Melalui rangkaian praktikum ini, saya memahami alur pengembangan aplikasi web menggunakan CodeIgniter 4 secara bertahap.  
-Mulai dari instalasi framework, routing, MVC, pembuatan CRUD, pengelolaan layout modular, hingga implementasi sistem login, seluruh proses memberikan pemahaman yang lebih baik tentang cara membangun aplikasi web yang terstruktur, dinamis, dan mudah dikembangkan.
 
-Repository ini menjadi dokumentasi hasil praktikum sekaligus media pembelajaran untuk memahami implementasi CodeIgniter 4 secara lebih utuh.
