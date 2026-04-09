@@ -1,7 +1,7 @@
 # Lab7Web
 
-Repository ini berisi hasil praktikum **Pemrograman Web 2** menggunakan **CodeIgniter 4**.  
-Pengembangan aplikasi dilakukan secara bertahap dari **Praktikum 1** sampai **Praktikum 4**, dimulai dari instalasi framework, pembuatan routing dan tampilan dasar, pengembangan fitur **CRUD artikel**, penerapan **View Layout** dan **View Cell**, hingga pembuatan **modul login** untuk membatasi akses halaman admin.
+Repository ini untuk mencatat progress dari praktikum **Pemrograman Web 2** menggunakan **CodeIgniter 4**.  
+Proses ini dilakukan secara bertahap dari **Praktikum 1** Hingga **Praktikum 4**, dimulai dari instalasi framework, pembuatan routing dan tampilan dasar, pengembangan fitur **CRUD artikel**, penerapan **View Layout** dan **View Cell**, hingga pembuatan **modul login** untuk membatasi akses halaman admin.
 
 ## Teknologi yang Digunakan
 - PHP 8
@@ -22,17 +22,17 @@ Pengembangan aplikasi dilakukan secara bertahap dari **Praktikum 1** sampai **Pr
 # Praktikum 1: PHP Framework (CodeIgniter)
 
 ## Tujuan
-Pada praktikum ini saya mempelajari dasar penggunaan **Framework CodeIgniter 4**, mulai dari proses persiapan lingkungan pengembangan, instalasi framework, penggunaan CLI, aktivasi mode debugging, pembuatan routing, controller, view, hingga penerapan layout sederhana untuk beberapa halaman.
+Pada modul pertama ini menggunakan **Framework CodeIgniter 4**,di mulai dari proses persiapan instalasi framework, penggunaan CLI, aktivasi mode debugging, pembuatan routing, controller, view, hingga penerapan layout sederhana untuk beberapa halaman.
 
 ## 1. Persiapan Lingkungan
-Sebelum menggunakan CodeIgniter, beberapa ekstensi PHP perlu diaktifkan pada XAMPP agar framework dapat berjalan dengan baik. Ekstensi yang digunakan antara lain:
+Sebelum menggunakan CodeIgniter, ada beberapa extension PHP yang perlu diubah di XAMPP agar framework dapat berjalan. Ekstensi yang digunakan antara lain:
 - `php-json`
 - `php-mysqlnd`
 - `php-xml`
 - `php-intl`
-- `libcurl` (opsional)
+- `libcurl`
 
-Ekstensi tersebut diaktifkan melalui **XAMPP Control Panel** pada menu **Apache > Config > PHP.ini**, lalu menghapus tanda titik koma (`;`) pada ekstensi yang dibutuhkan.
+Ekstensi tersebut diubah melalui **XAMPP Control Panel** pada menu **Apache > Config > PHP.ini**, lalu menghapus tanda titik koma (`;`) pada ekstensi yang dibutuhkan.
 
 > ![Screenshot Konfigurasi PHP](Screenshot/ss_note.png)
 
@@ -60,7 +60,7 @@ Perintah ini digunakan untuk menjalankan web server lokal bawaan CodeIgniter seh
 > ![Screenshot CLI CodeIgniter](Screenshot/ss_cli.png)
 
 ## 4. Mengaktifkan Mode Debugging
-Agar proses pengembangan lebih mudah, mode debugging diaktifkan dengan mengubah file `env` menjadi `.env`, lalu mengatur nilai:
+Agar proses lebih mudah, mode debugging diaktifkan dengan mengubah file `env` menjadi `.env`, lalu mengatur nilai:
 
 ```env
 CI_ENVIRONMENT = development
@@ -69,7 +69,7 @@ CI_ENVIRONMENT = development
 Dengan mode ini, pesan error akan tampil lebih jelas sehingga memudahkan proses analisis ketika terjadi kesalahan pada kode.
 
 ## 5. Membuat Route Baru
-Setelah project berhasil dijalankan, langkah berikutnya adalah menambahkan route baru pada file `app/Config/Routes.php`.  
+Setelah project berhasil dijalankan, langkah selanjutnya adalah menambahkan route baru pada file `app/Config/Routes.php`.  
 Route digunakan untuk menghubungkan URL tertentu dengan controller yang akan memprosesnya.
 
 Route yang ditambahkan antara lain:
@@ -86,7 +86,7 @@ php spark routes
 > ![Screenshot Routes](Screenshot/ss_routes.png)
 
 ## 6. Membuat Controller Page
-Setelah route dibuat, kemudian dibuat controller `Page.php` pada folder `app/Controllers`.  
+Setelah route dibuat, kemudian dilanjutkan dengan membuat controller `Page.php` pada folder `app/Controllers`.  
 Controller ini berisi method:
 - `about()`
 - `contact()`
@@ -96,11 +96,11 @@ Controller ini berisi method:
 Controller ini berfungsi untuk menangani request dari route yang telah dibuat sebelumnya.
 
 ## 7. Menggunakan Auto Routing
-CodeIgniter juga menyediakan fitur **auto routing**, sehingga method controller yang belum didaftarkan secara manual di file route tetap dapat diakses melalui pola URL tertentu.  
+CodeIgniter juga menyediakan fitur **auto routing**, sehingga method controller yang belum didaftarkan secara manual di file route tetap dapat diakses melalui URL tertentu.  
 Pada tahap ini ditambahkan method `tos()` pada controller `Page` untuk menguji fitur tersebut.
 
 ## 8. Membuat View dan Layout Dasar
-Agar tampilan aplikasi menjadi lebih baik, dibuat file view seperti `about.php`, kemudian dilanjutkan dengan pembuatan layout sederhana menggunakan:
+Agar tampilan aplikasi menjadi lebih baik, dibuat file view seperti `about.php`, dilanjutkan dengan pembuatan layout sederhana menggunakan:
 - `template/header.php`
 - `template/footer.php`
 - `public/style.css`
@@ -110,9 +110,9 @@ Dengan struktur ini, halaman-halaman seperti Home, About, Artikel, dan Kontak me
 > ![Screenshot Hasil Tampilan Awal](Screenshot/ss_halaman_utama.png)
 
 ## Kesimpulan Praktikum 1
-Pada praktikum pertama, saya berhasil:
-- menyiapkan lingkungan pengembangan CodeIgniter 4,
-- menginstal framework,
+Progres yang sudah selesai dari Praktikum/Modul pertama adalah:
+- membuat lingkungan pengembangan CodeIgniter 4,
+- instalasi framework,
 - menjalankan CLI,
 - mengaktifkan debugging,
 - membuat route dan controller,
@@ -123,7 +123,7 @@ Pada praktikum pertama, saya berhasil:
 # Praktikum 2: Framework Lanjutan (CRUD)
 
 ## Tujuan
-Pada praktikum ini saya mempelajari konsep **Model** dan implementasi **CRUD** (Create, Read, Update, Delete) menggunakan CodeIgniter 4 dengan studi kasus data artikel.
+Pada praktikum kedua ini terdapat konsep **Model** dan implementasi **CRUD** (Create, Read, Update, Delete) menggunakan CodeIgniter 4 dengan studi kasus data artikel.
 
 ## 1. Persiapan Database
 Tahap pertama adalah membuat database `lab_ci4` dan tabel `artikel` di MySQL.  
@@ -161,7 +161,7 @@ Pada bagian ini diterapkan fitur:
 - **Update** untuk mengubah artikel,
 - **Delete** untuk menghapus artikel dari database.
 
-Fitur CRUD ini membuat pengelolaan artikel menjadi lebih dinamis karena tidak lagi dilakukan langsung melalui phpMyAdmin.
+Fitur CRUD ini membuat pengelolaan artikel menjadi lebih dinamis karena tidak lagi dilakukan langsung melalui PHPMyAdmin.
 
 ## Kesimpulan Praktikum 2
 Pada praktikum kedua, saya berhasil:
