@@ -476,139 +476,200 @@ footer {
     }
 }
 
-
-/* Contact page */
-.contact-hero {
-    margin-bottom: 22px;
-}
-
-.contact-badge {
-    display: inline-block;
-    margin-bottom: 10px;
-    padding: 6px 12px;
-    border-radius: 999px;
-    background: #e8f1fb;
-    color: var(--primary);
-    font-size: 0.85rem;
-    font-weight: bold;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-}
-
-.contact-lead {
-    color: var(--muted);
-    line-height: 1.7;
-    max-width: 680px;
-}
-
-.contact-grid {
-    display: grid;
-    gap: 18px;
-}
-
-.contact-card {
-    border: 1px solid #dbe6f2;
-    border-radius: 16px;
-    background: #fff;
-    padding: 20px;
-    box-shadow: 0 8px 24px rgba(18, 77, 135, 0.08);
-    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
-}
-
-.contact-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 14px 30px rgba(18, 77, 135, 0.12);
-    border-color: #bfd4eb;
-}
-
-.contact-card-primary {
+.form-search {
     display: flex;
-    align-items: center;
-    gap: 18px;
-    background: linear-gradient(135deg, #f9fcff 0%, #eef5fc 100%);
-}
-
-.contact-card-soft h3,
-.contact-card-body h2 {
-    margin-bottom: 10px;
-}
-
-.contact-card-body p {
-    color: var(--muted);
-    line-height: 1.7;
-    margin-bottom: 14px;
-}
-
-.contact-icon {
-    flex: 0 0 74px;
-    width: 74px;
-    height: 74px;
-    border-radius: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: #fff;
-    box-shadow: inset 0 0 0 1px #d7e5f3, 0 10px 22px rgba(66, 133, 244, 0.14);
-}
-
-.contact-icon svg {
-    width: 38px;
-    height: 38px;
-}
-
-.contact-email-link {
-    display: inline-flex;
     align-items: center;
     gap: 10px;
-    padding: 12px 16px;
-    border-radius: 12px;
-    background: #fff;
-    color: var(--primary);
-    text-decoration: none;
-    font-weight: bold;
-    box-shadow: inset 0 0 0 1px #d7e5f3;
-    transition: transform 0.2s ease, box-shadow 0.2s ease, color 0.2s ease;
-    word-break: break-all;
-}
-
-.contact-email-link:hover {
-    transform: translateY(-1px);
-    box-shadow: inset 0 0 0 1px #b8d1e9, 0 10px 20px rgba(26, 102, 178, 0.12);
-    color: var(--primary-dark);
-}
-
-.contact-actions {
-    display: flex;
+    margin: 16px 0;
     flex-wrap: wrap;
-    gap: 10px;
+}
+
+.form-search input[type="text"] {
+    min-width: 260px;
+    padding: 9px 12px;
+    border: 1px solid #cfd7e3;
+    border-radius: 4px;
+    outline: none;
+}
+
+.form-search input[type="text"]:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(26, 102, 178, 0.12);
+}
+
+.pagination-wrap {
     margin-top: 16px;
 }
 
-.contact-btn {
-    border-radius: 999px;
-    padding: 10px 16px;
+.pagination-wrap .pagination {
+    list-style: none;
+    display: flex;
+    gap: 8px;
+    padding-left: 0;
+    flex-wrap: wrap;
 }
 
-.contact-list {
-    margin: 0;
-    padding-left: 20px;
-    color: var(--muted);
+.pagination-wrap .pagination li a,
+.pagination-wrap .pagination li span {
+    display: inline-block;
+    min-width: 40px;
+    padding: 8px 12px;
+    border: 1px solid #d7dfe9;
+    border-radius: 4px;
+    text-decoration: none;
+    color: var(--primary);
+    background: #fff;
+}
+
+.pagination-wrap .pagination li.active span,
+.pagination-wrap .pagination li a:hover {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: #fff;
+}
+
+
+
+/* ===== Materi Kuliah Reader ===== */
+.materi-highlight {
+    background: #f5f9ff;
+    border: 1px solid #d7e6f7;
+    border-radius: 16px;
+    padding: 18px;
+    margin-bottom: 18px;
+}
+
+.materi-highlight h2 {
+    color: #163b63;
+    margin-bottom: 10px;
+}
+
+.materi-highlight p {
+    color: #43546a;
+    line-height: 1.7;
+}
+
+.materi-badge,
+.materi-chip {
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 999px;
+    background: #e8f1fb;
+    color: #1c5fa8;
+    font-size: 12px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.materi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 18px;
+    margin-bottom: 20px;
+}
+
+.materi-card {
+    border: 1px solid #d7e2f0;
+    border-radius: 16px;
+    padding: 16px;
+    background: #ffffff;
+    box-shadow: 0 8px 18px rgba(15, 23, 42, 0.05);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.materi-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 24px rgba(15, 23, 42, 0.10);
+}
+
+.materi-card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 6px;
+}
+
+.materi-size,
+.materi-file {
+    color: #68778c;
+    font-size: 13px;
+}
+
+.materi-title {
+    margin: 6px 0 10px;
+    font-size: 20px;
+    line-height: 1.35;
+}
+
+.materi-title-link {
+    color: #153e6f;
+    text-decoration: none;
+}
+
+.materi-title-link:hover {
+    color: #1a66b2;
+    text-decoration: underline;
+}
+
+.materi-desc {
+    color: #4f6075;
+    line-height: 1.75;
+    margin-bottom: 14px;
+}
+
+.materi-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.materi-reader-header {
+    margin-bottom: 14px;
+}
+
+.materi-reader-header h1 {
+    color: #163b63;
+}
+
+.materi-reader-desc {
+    color: #475569;
+    line-height: 1.7;
+}
+
+.materi-reader-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 18px;
+}
+
+.materi-reader-card {
+    background: #fff;
+    border: 1px solid #d7e2f0;
+    border-radius: 16px;
+    padding: 18px;
+    margin-bottom: 16px;
+    box-shadow: 0 8px 18px rgba(15, 23, 42, 0.05);
+}
+
+.materi-reader-card h2 {
+    color: #1c5fa8;
+    margin-bottom: 12px;
+}
+
+.materi-reader-card p {
+    color: #43546a;
+    line-height: 1.8;
+    margin-bottom: 10px;
+}
+
+.materi-reader-list {
+    margin-left: 18px;
+    color: #43546a;
     line-height: 1.8;
 }
 
-.contact-list li + li {
-    margin-top: 6px;
-}
-
-@media (max-width: 768px) {
-    .contact-card-primary {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-
-    .contact-icon {
-        width: 64px;
-        height: 64px;
-        border-radius: 16px;
-    }
+.materi-reader-note {
+    background: #f9fbff;
 }

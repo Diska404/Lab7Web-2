@@ -12,6 +12,8 @@ $routes->get('/faqs', 'Page::faqs');
 $routes->get('/tos', 'Page::tos');
 
 $routes->get('/artikel', 'Artikel::index');
+$routes->get('/artikel/materi/(:segment)', 'Artikel::materi/$1');
+$routes->get('/artikel/download/(:segment)', 'Artikel::downloadMateri/$1');
 $routes->get('/artikel/(:any)', 'Artikel::view/$1');
 
 $routes->match(['GET', 'POST'], '/user/login', 'User::login');

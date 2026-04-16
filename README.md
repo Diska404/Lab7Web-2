@@ -1,7 +1,7 @@
 # Lab7Web
 
 Repository ini untuk mencatat progress dari praktikum **Pemrograman Web 2** menggunakan **CodeIgniter 4**.  
-Proses ini dilakukan secara bertahap dari **Praktikum 1** Hingga **Praktikum 4**, dimulai dari instalasi framework, pembuatan routing dan tampilan dasar, pengembangan fitur **CRUD artikel**, penerapan **View Layout** dan **View Cell**, hingga pembuatan **modul login** untuk membatasi akses halaman admin.
+Proses ini dilakukan secara bertahap dari **Praktikum 1** Hingga **Praktikum 4**, dimulai dari instalasi framework, pembuatan routing dan tampilan dasar, pengembangan fitur **CRUD artikel**, penerapan **View Layout** dan **View Cell**, hingga pembuatan **modul login** untuk membatasi akses halaman admin, serta penerapan **pagination** dan **pencarian** pada halaman admin artikel.
 
 ## Teknologi yang Digunakan
 - PHP 8
@@ -16,6 +16,7 @@ Proses ini dilakukan secara bertahap dari **Praktikum 1** Hingga **Praktikum 4**
 2. Praktikum 2: Framework Lanjutan (CRUD)
 3. Praktikum 3: View Layout dan View Cell
 4. Praktikum 4: Framework Lanjutan (Modul Login)
+5. Praktikum 5: Pagination dan Pencarian
 
 ---
 
@@ -386,5 +387,55 @@ Progres dari Praktiku ini adalah:
 
 ---
 
-# Penutup
+---
+
+
+# Praktikum 5: Pagination dan Pencarian
+
+## Tujuan
+Pada praktikum ini terdapat penambahan fitur **pagination** dan **pencarian data** pada halaman admin artikel.  
+Pagination digunakan untuk membagi daftar artikel menjadi beberapa halaman, sedangkan pencarian digunakan untuk memfilter data berdasarkan judul artikel.
+
+## 1. Menambahkan Pagination pada Halaman Admin
+Perubahan pertama dilakukan pada method `admin_index()` di file `app/Controllers/Artikel.php`.  
+Data artikel sebelumnya ditampilkan seluruhnya, kemudian diubah menggunakan method `paginate(10)` agar data dibatasi menjadi **10 artikel per halaman**.  
+Selain itu ditambahkan juga object `pager` untuk menampilkan navigasi halaman.
+
+> ![Screenshot Controller Pagination](Screenshot/ss_modul5_admin_index.png)
+
+## 2. Menampilkan Navigasi Halaman
+Setelah controller diperbarui, file `app/Views/artikel/admin_index.php` disesuaikan agar menampilkan pagination pada bagian bawah tabel data artikel.  
+Pada tahap ini, daftar artikel yang jumlahnya lebih dari 10 data akan otomatis terbagi menjadi beberapa halaman.
+
+### a. Halaman Pagination Page 1
+> ![Screenshot Pagination Halaman 1](Screenshot/ss_modul5_page1.png)
+
+### b. Halaman Pagination Page 2
+> ![Screenshot Pagination Halaman 2](Screenshot/ss_modul5_page2.png)
+
+## 3. Menambahkan Form Pencarian
+Langkah berikutnya adalah menambahkan fitur pencarian pada halaman admin artikel.  
+Pada method `admin_index()`, query pencarian diambil dari parameter `q`, lalu digunakan dengan method `like('judul', $q)` untuk memfilter artikel berdasarkan judul.
+
+Selanjutnya pada file `app/Views/artikel/admin_index.php` ditambahkan form pencarian menggunakan method `GET`, sehingga kata kunci bisa dikirim melalui URL.
+
+> ![Screenshot Form Pencarian pada admin_index.php](Screenshot/ss_modul5_form_pencarian_code.png)
+
+## 4. Menampilkan Hasil Pencarian
+Setelah form pencarian ditambahkan, halaman admin artikel dapat menampilkan data berdasarkan kata kunci tertentu.  
+Pada pengujian ini digunakan kata kunci **HTML**, dan hasil yang muncul hanya artikel yang judulnya sesuai dengan pencarian.
+
+> ![Screenshot Hasil Pencarian](Screenshot/ss_modul5_hasil_pencarian.png)
+
+## Kesimpulan Praktikum 5
+Progress pada praktikum ini adalah:
+- menambahkan pagination pada halaman admin artikel,
+- membatasi tampilan data menjadi 10 record per halaman,
+- menambahkan form pencarian artikel,
+- memfilter artikel berdasarkan judul,
+- serta menjaga query pencarian tetap aktif saat berpindah halaman pagination.
+
+---
+
+# END
 

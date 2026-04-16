@@ -10,6 +10,14 @@
     <div class="alert alert-success"><?= esc(session()->getFlashdata('success')) ?></div>
 <?php endif; ?>
 
+<form method="get" class="form-search">
+    <input type="text" name="q" value="<?= esc($q ?? ''); ?>" placeholder="Cari data berdasarkan judul">
+    <input type="submit" value="Cari" class="btn btn-primary">
+    <?php if (! empty($q)): ?>
+        <a href="<?= base_url('/admin/artikel'); ?>" class="btn btn-secondary">Reset</a>
+    <?php endif; ?>
+</form>
+
 <table class="table">
     <thead>
         <tr>
@@ -26,20 +34,91 @@
                     <td><?= esc((string) $row['id']); ?></td>
                     <td>
                         <b><?= esc($row['judul']); ?></b>
-                        <p><small><?= esc(substr($row['isi'], 0, 50)); ?></small></p>
+                        <p><small><?= esc(substr($row['isi'], 0, 80)); ?></small></p>
                     </td>
                     <td><?= esc((string) ($row['status'] ?? 0)); ?></td>
                     <td>
                         <a class="btn btn-secondary" href="<?= base_url('/admin/artikel/edit/' . $row['id']); ?>">Ubah</a>
-                        <a class="btn btn-danger" onclick="return confirm('Yakin menghapus data?');" href="<?= base_url('/admin/artikel/delete/' . $row['id']); ?>">Hapus</a>
+                        <a class="btn btn
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        -danger" onclick="return confirm('Yakin menghapus data?');" href="<?= base_url('/admin/artikel/delete/' . $row['id']); ?>">Hapus</a>
                     </td>
                 </tr>
             <?php endforeach; ?>
         <?php else: ?>
             <tr>
-                <td colspan="4">Belum ada data.</td>
+                <td colspan="4">Data artikel tidak ditemukan.</td>
             </tr>
         <?php endif; ?>
     </tbody>
 </table>
+
+<?php if (isset($pager)): ?>
+    <div class="pagination-wrap">
+        <?= $pager->only(['q'])->links(); ?>
+    </div>
+<?php endif; ?>
 <?= $this->endSection() ?>
