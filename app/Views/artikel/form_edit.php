@@ -17,8 +17,17 @@
         <label for="isi">Isi Artikel</label>
         <textarea id="isi" name="isi" cols="50" rows="10"><?= old('isi', $data['isi']) ?></textarea>
     </div>
-    <p>
-        <button type="submit" class="btn">Kirim</button>
-    </p>
+    <div class="form-group">
+        <label for="id_kategori">Kategori</label>
+        <select id="id_kategori" name="id_kategori" required>
+            <option value="">Pilih Kategori</option>
+            <?php foreach ($kategori as $k): ?>
+                <option value="<?= esc((string) $k['id_kategori']); ?>" <?= (string) old('id_kategori', $data['id_kategori'] ?? '') === (string) $k['id_kategori'] ? 'selected' : ''; ?>>
+                    <?= esc($k['nama_kategori']); ?>
+                </option>
+            <?php endforeach; ?>
+        </select>
+    </div>
+    <p><button type="submit" class="btn btn-primary">Kirim</button></p>
 </form>
 <?= $this->endSection() ?>

@@ -530,7 +530,7 @@ footer {
 
 
 
-/* ===== Materi Kuliah Reader ===== */
+/* ===== Materi Reader + Modul 6 ===== */
 .materi-highlight {
     background: #f5f9ff;
     border: 1px solid #d7e6f7;
@@ -672,4 +672,207 @@ footer {
 
 .materi-reader-note {
     background: #f9fbff;
+}
+
+/* ===== Modul 6: Relasi Tabel dan Query Builder ===== */
+.section-subtitle {
+    color: #163b63;
+    margin-bottom: 8px;
+}
+
+.section-note {
+    color: #5b6b7f;
+    line-height: 1.7;
+    margin-bottom: 14px;
+}
+
+.kategori-filter-section {
+    margin-bottom: 18px;
+}
+
+.kategori-filter-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 16px;
+}
+
+.kategori-filter-chip {
+    display: inline-block;
+    padding: 8px 14px;
+    border-radius: 999px;
+    background: #edf4fb;
+    color: #1a66b2;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: bold;
+    transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+}
+
+.kategori-filter-chip:hover {
+    background: #dcecff;
+    color: #124d87;
+    transform: translateY(-1px);
+}
+
+.kategori-filter-chip.active {
+    background: #1a66b2;
+    color: #fff;
+}
+
+.article-card {
+    background: #fff;
+    border: 1px solid #d7e2f0;
+    border-radius: 14px;
+    padding: 16px;
+    box-shadow: 0 8px 18px rgba(15, 23, 42, 0.05);
+}
+
+.article-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 8px;
+}
+
+.article-card-header h2 {
+    margin-bottom: 0;
+}
+
+.article-category-badge {
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 999px;
+    background: #edf4fb;
+    color: #1a66b2;
+    font-size: 12px;
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+.article-category-badge.detail {
+    margin-bottom: 10px;
+}
+
+.artikel-kategori-text {
+    color: #4b5a6c;
+    margin: 8px 0 12px;
+}
+
+.article-detail-card {
+    background: #fff;
+    border: 1px solid #d7e2f0;
+    border-radius: 14px;
+    padding: 18px;
+    box-shadow: 0 8px 18px rgba(15, 23, 42, 0.05);
+}
+
+.form-search-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+}
+
+.form-search-grid input[type="text"],
+.form-search-grid select,
+.form-group select {
+    flex: 1 1 220px;
+    min-width: 220px;
+    padding: 10px 12px;
+    border: 1px solid #cfd7e3;
+    border-radius: 4px;
+    outline: none;
+    background: #fff;
+}
+
+.form-group {
+    margin-bottom: 14px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 6px;
+    color: #555;
+    font-weight: bold;
+}
+
+.form-group input[type="text"],
+.form-group textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #cfd7e3;
+    border-radius: 4px;
+    outline: none;
+}
+
+.form-group textarea {
+    resize: vertical;
+}
+
+@media (max-width: 768px) {
+    .article-card-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
+
+
+
+/* ===== Contact Email Card Fix ===== */
+.contact-email-card {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    margin-top: 22px;
+    padding: 20px;
+    max-width: 620px;
+    background: #ffffff;
+    border: 1px solid #d7e2f0;
+    border-radius: 16px;
+    box-shadow: 0 8px 18px rgba(15, 23, 42, 0.05);
+}
+
+.contact-gmail-icon {
+    width: 96px;
+    height: 96px;
+    flex: 0 0 96px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.contact-gmail-icon svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+.contact-email-content h2 {
+    margin: 0 0 8px;
+    color: #163b63;
+}
+
+.contact-email-content p {
+    margin: 0 0 10px;
+    line-height: 1.7;
+    color: #475569;
+}
+
+.contact-email-content a {
+    color: #1a66b2;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.contact-email-content a:hover {
+    text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+    .contact-email-card {
+        flex-direction: column;
+        align-items: flex-start;
+    }
 }

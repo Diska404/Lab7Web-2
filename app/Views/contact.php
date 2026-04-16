@@ -1,39 +1,26 @@
 <?= $this->extend('layout/main') ?>
 
 <?= $this->section('content') ?>
-<div class="contact-hero">
-    <span class="contact-badge">Kontak</span>
-    <h1><?= esc($title); ?></h1>
-    <hr>
-    <p class="contact-lead"><?= esc($content); ?></p>
-</div>
+<small>Kontak</small>
+<h1>Halaman Contact</h1>
+<hr>
+<p>Silakan hubungi kami melalui email atau media lain yang tersedia untuk pertanyaan dan masukan.</p>
 
-<div class="contact-grid">
-    <div class="contact-card contact-card-primary">
-        <div class="contact-icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24" role="img" aria-hidden="true">
-                <path fill="#EA4335" d="M3.75 6.75A2.25 2.25 0 0 1 6 4.5h12a2.25 2.25 0 0 1 2.25 2.25v.39L12 13.11 3.75 7.14v-.39Z"/>
-                <path fill="#34A853" d="M20.25 7.14v10.11A2.25 2.25 0 0 1 18 19.5h-1.09V9.7l3.34-2.56Z"/>
-                <path fill="#4285F4" d="M7.09 9.7v9.8H6a2.25 2.25 0 0 1-2.25-2.25V7.14L7.09 9.7Z"/>
-                <path fill="#FBBC05" d="M16.91 9.7v9.8H7.09V9.7L12 13.33l4.91-3.63Z"/>
-            </svg>
-        </div>
-        <div class="contact-card-body">
-            <h2>Email Utama</h2>
-            <p>Hubungi saya melalui email untuk pertanyaan, masukan, atau diskusi terkait tugas praktikum ini.</p>
-            <a class="contact-email-link" href="mailto:diskakurniaputra@gmail.com">diskakurniaputra@gmail.com</a>
-            <div class="contact-actions">
-                <a class="btn contact-btn" href="mailto:diskakurniaputra@gmail.com">Kirim Email</a>
-                <a class="btn btn-secondary contact-btn" href="https://mail.google.com/mail/?view=cm&amp;fs=1&amp;to=diskakurniaputra@gmail.com" target="_blank" rel="noopener noreferrer">Buka Gmail</a>
-            </div>
-        </div>
+<div class="contact-email-card">
+    <div class="contact-gmail-icon" aria-hidden="true">
+        <svg viewBox="0 0 64 64" role="img" aria-label="Gmail Icon">
+            <path fill="#EA4335" d="M54 16H10c-2.2 0-4 1.8-4 4v24c0 2.2 1.8 4 4 4h44c2.2 0 4-1.8 4-4V20c0-2.2-1.8-4-4-4z"/>
+            <path fill="#FFFFFF" d="M54 20v4L32 39 10 24v-4l22 15 22-15z"/>
+            <path fill="#FBBC05" d="M10 24v20h12V32z"/>
+            <path fill="#34A853" d="M54 24v20H42V32z"/>
+            <path fill="#4285F4" d="M10 20l22 15L54 20v-4l-22 15L10 16z"/>
+        </svg>
     </div>
 
-    <div class="contact-card contact-card-soft">
-        <h3>Info Kontak</h3>
-        <ul class="contact-list">
-            <li>Alamat email Masih Aktif.</li>
-        </ul>
+    <div class="contact-email-content">
+        <h2>Email Kontak</h2>
+        <p>Untuk pertanyaan seputar website praktikum, saran, atau masukan, silakan hubungi melalui email berikut:</p>
+        <a href="mailto:diskakurniaputra@gmail.com">diskakurniaputra@gmail.com</a>
     </div>
 </div>
 <?= $this->endSection() ?>

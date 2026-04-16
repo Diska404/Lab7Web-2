@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Models\ArtikelModel;
+use App\Models\KategoriModel;
 use CodeIgniter\Exceptions\PageNotFoundException;
 
 class Artikel extends BaseController
@@ -10,27 +11,38 @@ class Artikel extends BaseController
     public function index(): string
     {
         $title = 'Daftar Artikel';
+        $kategoriSlug = trim((string) ($this->request->getVar('kategori') ?? ''));
+
         $model = new ArtikelModel();
-        $artikel = $model->findAll();
+        $kategoriModel = new KategoriModel();
+
+        $artikel = $model->getArtikelDenganKategori($kategoriSlug);
+        $kategoriList = $kategoriModel->orderBy('nama_kategori', 'ASC')->findAll();
 
         return view('artikel/index', [
-            'title'   => $title,
-            'artikel' => $artikel,
-            'materi'  => $this->getMateriList(),
+            'title'         => $title,
+            'artikel'       => $artikel,
+            'materi'        => $this->getMateriList(),
+            'kategoriList'  => $kategoriList,
+            'kategoriAktif' => $kategoriSlug,
         ]);
     }
 
     public function view($slug): string
     {
         $model = new ArtikelModel();
-        $artikel = $model->where(['slug' => $slug])->first();
+        $artikel = $model->getArtikelBySlugDenganKategori($slug);
 
         if (! $artikel) {
             throw PageNotFoundException::forPageNotFound();
         }
 
         $title = $artikel['judul'];
-        return view('artikel/detail', compact('artikel', 'title'));
+
+        return view('artikel/detail', [
+            'title'   => $title,
+            'artikel' => $artikel,
+        ]);
     }
 
     public function materi($slug): string
@@ -68,57 +80,78 @@ class Artikel extends BaseController
     {
         $title = 'Daftar Artikel';
         $q = trim((string) ($this->request->getVar('q') ?? ''));
+        $kategori_id = trim((string) ($this->request->getVar('kategori_id') ?? ''));
 
         $model = new ArtikelModel();
+        $kategoriModel = new KategoriModel();
+
+        $model->select('artikel.*, kategori.nama_kategori, kategori.slug_kategori')
+            ->join('kategori', 'kategori.id_kategori = artikel.id_kategori', 'left');
 
         if ($q !== '') {
-            $model = $model->like('judul', $q);
+            $model->like('artikel.judul', $q);
         }
 
-        $data = [
-            'title'   => $title,
-            'q'       => $q,
-            'artikel' => $model->orderBy('id', 'DESC')->paginate(10),
-            'pager'   => $model->pager,
-        ];
+        if ($kategori_id !== '') {
+            $model->where('artikel.id_kategori', (int) $kategori_id);
+        }
 
-        return view('artikel/admin_index', $data);
+        $artikel = $model->orderBy('artikel.id', 'DESC')->paginate(10);
+
+        return view('artikel/admin_index', [
+            'title'       => $title,
+            'q'           => $q,
+            'kategori_id' => $kategori_id,
+            'kategori'    => $kategoriModel->orderBy('nama_kategori', 'ASC')->findAll(),
+            'artikel'     => $artikel,
+            'pager'       => $model->pager,
+        ]);
     }
 
     public function add()
     {
         helper(['form']);
 
+        $kategoriModel = new KategoriModel();
+        $kategori = $kategoriModel->orderBy('nama_kategori', 'ASC')->findAll();
+
         if ($this->request->getMethod() === 'POST') {
             $rules = [
-                'judul' => 'required|min_length[3]',
-                'isi'   => 'required|min_length[10]',
+                'judul'       => 'required|min_length[3]',
+                'isi'         => 'required|min_length[10]',
+                'id_kategori' => 'required|integer',
             ];
 
             $data = [
-                'judul' => $this->request->getPost('judul'),
-                'isi'   => $this->request->getPost('isi'),
+                'judul'       => $this->request->getPost('judul'),
+                'isi'         => $this->request->getPost('isi'),
+                'id_kategori' => $this->request->getPost('id_kategori'),
             ];
 
             if (! $this->validateData($data, $rules)) {
                 return view('artikel/form_add', [
                     'title'      => 'Tambah Artikel',
                     'validation' => $this->validator,
+                    'kategori'   => $kategori,
                 ]);
             }
 
             $artikel = new ArtikelModel();
             $artikel->insert([
-                'judul' => $data['judul'],
-                'isi'   => $data['isi'],
-                'slug'  => url_title($data['judul'], '-', true),
+                'judul'       => $data['judul'],
+                'isi'         => $data['isi'],
+                'slug'        => url_title($data['judul'], '-', true),
+                'id_kategori' => (int) $data['id_kategori'],
             ]);
 
             session()->setFlashdata('success', 'Artikel berhasil ditambahkan.');
             return redirect()->to('/admin/artikel');
         }
 
-        return view('artikel/form_add', ['title' => 'Tambah Artikel']);
+        return view('artikel/form_add', [
+            'title'    => 'Tambah Artikel',
+            'kategori' => $kategori,
+        ]);
     }
 
     public function edit($id)
@@ -126,35 +159,42 @@ class Artikel extends BaseController
         helper(['form']);
 
         $artikelModel = new ArtikelModel();
-        $data = $artikelModel->where('id', $id)->first();
+        $data = $artikelModel->find($id);
 
         if (! $data) {
             throw PageNotFoundException::forPageNotFound();
         }
 
+        $kategoriModel = new KategoriModel();
+        $kategori = $kategoriModel->orderBy('nama_kategori', 'ASC')->findAll();
+
         if ($this->request->getMethod() === 'POST') {
             $rules = [
-                'judul' => 'required|min_length[3]',
-                'isi'   => 'required|min_length[10]',
+                'judul'       => 'required|min_length[3]',
+                'isi'         => 'required|min_length[10]',
+                'id_kategori' => 'required|integer',
             ];
 
             $payload = [
-                'judul' => $this->request->getPost('judul'),
-                'isi'   => $this->request->getPost('isi'),
+                'judul'       => $this->request->getPost('judul'),
+                'isi'         => $this->request->getPost('isi'),
+                'id_kategori' => $this->request->getPost('id_kategori'),
             ];
 
             if (! $this->validateData($payload, $rules)) {
                 return view('artikel/form_edit', [
                     'title'      => 'Edit Artikel',
                     'data'       => $data,
+                    'kategori'   => $kategori,
                     'validation' => $this->validator,
                 ]);
             }
 
             $artikelModel->update($id, [
-                'judul' => $payload['judul'],
-                'isi'   => $payload['isi'],
-                'slug'  => url_title($payload['judul'], '-', true),
+                'judul'       => $payload['judul'],
+                'isi'         => $payload['isi'],
+                'slug'        => url_title($payload['judul'], '-', true),
+                'id_kategori' => (int) $payload['id_kategori'],
             ]);
 
             session()->setFlashdata('success', 'Artikel berhasil diperbarui.');
@@ -162,8 +202,9 @@ class Artikel extends BaseController
         }
 
         return view('artikel/form_edit', [
-            'title' => 'Edit Artikel',
-            'data'  => $data,
+            'title'    => 'Edit Artikel',
+            'data'     => $data,
+            'kategori' => $kategori,
         ]);
     }
 
@@ -221,12 +262,6 @@ class Artikel extends BaseController
                             'View menampilkan output ke browser.',
                         ],
                     ],
-                    [
-                        'heading' => 'Manfaat untuk Praktikum',
-                        'paragraphs' => [
-                            'Dengan fondasi ini, mahasiswa dapat melanjutkan ke materi routing, CRUD, layout, login, hingga fitur pencarian dan pagination dengan struktur aplikasi yang tetap konsisten.',
-                        ],
-                    ],
                 ],
             ],
             [
@@ -245,23 +280,6 @@ class Artikel extends BaseController
                         'points' => [
                             'Web statis: konten tetap dan sederhana.',
                             'Web dinamis: konten dapat berubah berdasarkan database atau interaksi user.',
-                        ],
-                    ],
-                    [
-                        'heading' => 'Arsitektur Client-Server',
-                        'paragraphs' => [
-                            'Browser berperan sebagai client yang mengirim request, kemudian server memproses request tersebut dan mengembalikan response berupa halaman web.',
-                        ],
-                        'points' => [
-                            'Client mengakses URL.',
-                            'Server menjalankan logika aplikasi.',
-                            'Database menyimpan data yang dibutuhkan.',
-                        ],
-                    ],
-                    [
-                        'heading' => 'Contoh Implementasi',
-                        'paragraphs' => [
-                            'Sistem login, artikel, pencarian, dan CRUD adalah contoh implementasi web dinamis karena isi halaman bergantung pada data dan proses yang terjadi di server.',
                         ],
                     ],
                 ],
@@ -285,23 +303,6 @@ class Artikel extends BaseController
                             'Membantu membatasi akses berdasarkan grup route.',
                         ],
                     ],
-                    [
-                        'heading' => 'Jenis Route',
-                        'paragraphs' => [
-                            'Route dapat dibuat secara statis untuk URL tetap maupun dinamis dengan parameter seperti slug atau id.',
-                        ],
-                        'points' => [
-                            'Static route: URL tetap seperti /about.',
-                            'Dynamic route: URL dengan parameter seperti /artikel/slug.',
-                            'Route group: kumpulan route dengan prefix atau filter tertentu.',
-                        ],
-                    ],
-                    [
-                        'heading' => 'Praktik pada Project',
-                        'paragraphs' => [
-                            'Pada project praktikum, routing dipakai untuk halaman home, artikel, about, contact, login, admin artikel, dan halaman materi kuliah.',
-                        ],
-                    ],
                 ],
             ],
             [
@@ -323,18 +324,6 @@ class Artikel extends BaseController
                             'Membuat halaman dinamis.',
                         ],
                     ],
-                    [
-                        'heading' => 'Konsep Dasar',
-                        'paragraphs' => [
-                            'Materi dasar PHP meliputi variabel, operator, percabangan, perulangan, function, array, dan penanganan data dari request GET/POST.',
-                        ],
-                    ],
-                    [
-                        'heading' => 'Hubungan dengan Framework',
-                        'paragraphs' => [
-                            'CodeIgniter 4 dibangun di atas PHP. Karena itu, pemahaman dasar PHP sangat penting sebelum menggunakan controller, model, dan view secara efektif.',
-                        ],
-                    ],
                 ],
             ],
             [
@@ -351,24 +340,6 @@ class Artikel extends BaseController
                             'Controller menerima request dari route, memanggil model jika diperlukan, lalu mengirim hasil ke view.',
                         ],
                     ],
-                    [
-                        'heading' => 'Alur Kerja',
-                        'paragraphs' => [
-                            'Sebuah request masuk ke route, kemudian route memanggil method pada controller, controller memproses logika, dan hasilnya dikembalikan sebagai response.',
-                        ],
-                        'points' => [
-                            'Route menerima URL.',
-                            'Controller menentukan proses.',
-                            'Model menangani data.',
-                            'View menampilkan hasil.',
-                        ],
-                    ],
-                    [
-                        'heading' => 'Contoh di Project',
-                        'paragraphs' => [
-                            'Controller Artikel mengelola daftar artikel, detail artikel, halaman admin, pencarian, pagination, dan fitur materi kuliah berbasis HTML reader.',
-                        ],
-                    ],
                 ],
             ],
             [
@@ -380,26 +351,9 @@ class Artikel extends BaseController
                 'ringkasan' => 'Materi ini berfokus pada penggunaan PHP dalam konteks web, terutama pemrosesan data form dan output HTML yang dinamis.',
                 'sections' => [
                     [
-                        'heading' => 'Sintaks dan Struktur',
-                        'paragraphs' => [
-                            'PHP ditulis di dalam tag khusus dan dapat disisipkan ke dalam HTML untuk menampilkan output dinamis.',
-                        ],
-                    ],
-                    [
                         'heading' => 'Pengolahan Form',
                         'paragraphs' => [
                             'Form HTML dapat mengirim data ke server menggunakan metode GET atau POST, lalu PHP membaca dan memproses datanya.',
-                        ],
-                        'points' => [
-                            'Input text untuk nama, email, dan data lainnya.',
-                            'Textarea untuk isi pesan atau konten.',
-                            'Validasi data sebelum disimpan ke database.',
-                        ],
-                    ],
-                    [
-                        'heading' => 'Implementasi pada Tugas',
-                        'paragraphs' => [
-                            'Fitur login, tambah artikel, edit artikel, dan pencarian di project praktikum memanfaatkan dasar pemrosesan data menggunakan PHP.',
                         ],
                     ],
                 ],
@@ -418,18 +372,6 @@ class Artikel extends BaseController
                             'Layout digunakan untuk menampung bagian umum seperti header, navigasi, sidebar, dan footer agar tidak perlu ditulis ulang di setiap halaman.',
                         ],
                     ],
-                    [
-                        'heading' => 'View Cell',
-                        'paragraphs' => [
-                            'View Cell dipakai untuk komponen modular seperti daftar artikel terbaru atau widget informasi tambahan di sidebar.',
-                        ],
-                    ],
-                    [
-                        'heading' => 'Manfaat Modularitas',
-                        'paragraphs' => [
-                            'Dengan pendekatan ini, struktur tampilan menjadi lebih rapi, mudah dirawat, dan mudah dikembangkan saat fitur bertambah.',
-                        ],
-                    ],
                 ],
             ],
             [
@@ -441,25 +383,9 @@ class Artikel extends BaseController
                 'ringkasan' => 'Materi ini menyoroti bagaimana session, auth filter, dan validasi data digunakan untuk membatasi akses ke halaman tertentu.',
                 'sections' => [
                     [
-                        'heading' => 'Konsep Keamanan Dasar',
-                        'paragraphs' => [
-                            'Sistem login memerlukan validasi input, penyimpanan password secara aman, dan pembatasan akses pada halaman yang sensitif.',
-                        ],
-                    ],
-                    [
                         'heading' => 'Session dan Auth Filter',
                         'paragraphs' => [
                             'Session menyimpan status login pengguna, sedangkan auth filter memeriksa status tersebut sebelum halaman admin diakses.',
-                        ],
-                        'points' => [
-                            'User yang belum login diarahkan ke halaman login.',
-                            'Logout menghapus session agar akses admin ditutup kembali.',
-                        ],
-                    ],
-                    [
-                        'heading' => 'Penerapan di Project',
-                        'paragraphs' => [
-                            'Pada project ini, halaman admin artikel dilindungi oleh auth filter dan hanya bisa diakses setelah proses login berhasil.',
                         ],
                     ],
                 ],
@@ -476,28 +402,6 @@ class Artikel extends BaseController
                         'heading' => 'Pagination',
                         'paragraphs' => [
                             'Pagination membatasi jumlah data yang tampil di setiap halaman sehingga tabel admin tetap nyaman dibaca meskipun datanya banyak.',
-                        ],
-                        'points' => [
-                            'Data dibatasi 10 record per halaman.',
-                            'Pager digunakan untuk berpindah halaman.',
-                            'Tampilan admin menjadi lebih rapi dan ringan.',
-                        ],
-                    ],
-                    [
-                        'heading' => 'Pencarian',
-                        'paragraphs' => [
-                            'Fitur pencarian digunakan untuk memfilter data artikel berdasarkan kata kunci tertentu, misalnya judul artikel.',
-                        ],
-                        'points' => [
-                            'Menggunakan form GET.',
-                            'Query like diterapkan pada kolom judul.',
-                            'Pager tetap membawa parameter pencarian.',
-                        ],
-                    ],
-                    [
-                        'heading' => 'Implementasi',
-                        'paragraphs' => [
-                            'Pada project ini, halaman admin artikel sudah dilengkapi pagination dan pencarian yang bisa diuji langsung melalui menu admin.',
                         ],
                     ],
                 ],
