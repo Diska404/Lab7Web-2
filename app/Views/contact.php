@@ -4,23 +4,33 @@
 <small>Kontak</small>
 <h1>Halaman Contact</h1>
 <hr>
-<p>Silakan hubungi kami melalui email atau media lain yang tersedia untuk pertanyaan dan masukan.</p>
+<p>Silakan hubungi kami melalui email untuk pertanyaan, saran, atau masukan terkait website praktikum ini.</p>
 
-<div class="contact-email-card">
+<div class="contact-email-card reveal-item">
     <div class="contact-gmail-icon" aria-hidden="true">
-        <svg viewBox="0 0 64 64" role="img" aria-label="Gmail Icon">
-            <path fill="#EA4335" d="M54 16H10c-2.2 0-4 1.8-4 4v24c0 2.2 1.8 4 4 4h44c2.2 0 4-1.8 4-4V20c0-2.2-1.8-4-4-4z"/>
-            <path fill="#FFFFFF" d="M54 20v4L32 39 10 24v-4l22 15 22-15z"/>
-            <path fill="#FBBC05" d="M10 24v20h12V32z"/>
-            <path fill="#34A853" d="M54 24v20H42V32z"/>
-            <path fill="#4285F4" d="M10 20l22 15L54 20v-4l-22 15L10 16z"/>
+        <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+            <path fill="#EA4335" d="M54 18H10a4 4 0 0 0-4 4v20a4 4 0 0 0 4 4h44a4 4 0 0 0 4-4V22a4 4 0 0 0-4-4z"/>
+            <path fill="#FFFFFF" d="M54 22v1.65L32 39 10 23.65V22l22 15 22-15z"/>
+            <path fill="#4285F4" d="M10 22v20h8V28.2z"/>
+            <path fill="#34A853" d="M54 22v20h-8V28.2z"/>
+            <path fill="#FBBC04" d="M18 42h28V27.8L32 37.2 18 27.8z"/>
+            <path fill="#C5221F" d="M54 18 32 34 10 18z"/>
         </svg>
     </div>
 
     <div class="contact-email-content">
-        <h2>Email Kontak</h2>
-        <p>Untuk pertanyaan seputar website praktikum, saran, atau masukan, silakan hubungi melalui email berikut:</p>
-        <a href="mailto:diskakurniaputra@gmail.com">diskakurniaputra@gmail.com</a>
+        <span class="contact-mini-badge">Gmail Contact</span>
+        <h2>Hubungi lewat Email</h2>
+        <p>Email ini dapat digunakan untuk mengirim pertanyaan, saran, atau kebutuhan komunikasi terkait tugas dan website praktikum.</p>
+
+        <div class="contact-email-row">
+            <a class="contact-email-link" href="mailto:diskakurniaputra@gmail.com">
+                diskakurniaputra@gmail.com
+            </a>
+            <a class="contact-email-btn" href="mailto:diskakurniaputra@gmail.com">
+                Kirim Email
+            </a>
+        </div>
     </div>
 </div>
 <?= $this->endSection() ?>

@@ -23,7 +23,7 @@ $navActive = static function (string $page) use ($segment1, $segment2, $currentP
     <title><?= esc($title ?? 'My Website') ?></title>
     <link rel="stylesheet" href="<?= base_url('/style.css'); ?>">
 </head>
-<body>
+<body class="page-preload">
     <div id="container">
         <header>
             <h1>Layout Sederhana</h1>
@@ -37,11 +37,11 @@ $navActive = static function (string $page) use ($segment1, $segment2, $currentP
             </div>
         </header>
 
-        <nav>
-            <a href="<?= base_url('/'); ?>" class="<?= $navActive('home') ?>">Home</a>
-            <a href="<?= base_url('/artikel'); ?>" class="<?= $navActive('artikel') ?>">Artikel</a>
-            <a href="<?= base_url('/about'); ?>" class="<?= $navActive('about') ?>">About</a>
-            <a href="<?= base_url('/contact'); ?>" class="<?= $navActive('contact') ?>">Kontak</a>
+        <nav class="main-nav">
+            <a href="<?= base_url('/'); ?>" class="nav-link <?= $navActive('home') ?>">Home</a>
+            <a href="<?= base_url('/artikel'); ?>" class="nav-link <?= $navActive('artikel') ?>">Artikel</a>
+            <a href="<?= base_url('/about'); ?>" class="nav-link <?= $navActive('about') ?>">About</a>
+            <a href="<?= base_url('/contact'); ?>" class="nav-link <?= $navActive('contact') ?>">Kontak</a>
         </nav>
 
         <section id="wrapper">
@@ -49,16 +49,16 @@ $navActive = static function (string $page) use ($segment1, $segment2, $currentP
                 <?= $this->renderSection('content') ?>
             </section>
             <aside id="sidebar">
-                <?= view_cell('App\\Cells\\ArtikelTerkini::render') ?>
+                <?= view_cell('App\Cells\ArtikelTerkini::render') ?>
 
-                <div class="widget-box">
+                <div class="widget-box reveal-item">
                     <h3 class="title">Widget Header</h3>
                     <ul>
                         <li><a href="<?= base_url('/user/login'); ?>">Login Admin</a></li>
                         <li><a href="<?= base_url('/user/register'); ?>">Daftar Akun</a></li>
                     </ul>
                 </div>
-                <div class="widget-box">
+                <div class="widget-box reveal-item">
                     <h3 class="title">Widget Text</h3>
                     <p>Masih Kosong :v</p>
                 </div>
@@ -69,5 +69,39 @@ $navActive = static function (string $page) use ($segment1, $segment2, $currentP
             <p>&copy; 2026 Diska Kurnia Azzahra Putra</p>
         </footer>
     </div>
+
+    <script>
+    (function () {
+        const body = document.body;
+        const navLinks = document.querySelectorAll('.main-nav .nav-link');
+
+        window.addEventListener('load', function () {
+            window.requestAnimationFrame(function () {
+                body.classList.remove('page-preload');
+                body.classList.add('page-ready');
+            });
+        });
+
+        navLinks.forEach(function (link) {
+            link.addEventListener('click', function (event) {
+                const href = link.getAttribute('href');
+
+                if (!href) return;
+                if (event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+                if (link.target === '_blank') return;
+                if (href.startsWith('#')) return;
+                if (href === window.location.href) return;
+
+                event.preventDefault();
+                body.classList.remove('page-ready');
+                body.classList.add('page-leave');
+
+                setTimeout(function () {
+                    window.location.href = href;
+                }, 260);
+            });
+        });
+    })();
+    </script>
 </body>
 </html>

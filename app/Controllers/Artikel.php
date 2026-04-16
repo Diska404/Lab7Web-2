@@ -12,6 +12,7 @@ class Artikel extends BaseController
     {
         $title = 'Daftar Artikel';
         $kategoriSlug = trim((string) ($this->request->getVar('kategori') ?? ''));
+        $materiKategori = trim((string) ($this->request->getVar('materi_kategori') ?? ''));
 
         $model = new ArtikelModel();
         $kategoriModel = new KategoriModel();
@@ -19,12 +20,28 @@ class Artikel extends BaseController
         $artikel = $model->getArtikelDenganKategori($kategoriSlug);
         $kategoriList = $kategoriModel->orderBy('nama_kategori', 'ASC')->findAll();
 
+        $materi = $this->getMateriList();
+        $materiKategoriList = [];
+
+        foreach ($materi as $item) {
+            $labelSlug = url_title($item['label'], '-', true);
+            $materiKategoriList[$labelSlug] = $item['label'];
+        }
+
+        if ($materiKategori !== '') {
+            $materi = array_values(array_filter($materi, static function ($item) use ($materiKategori) {
+                return url_title($item['label'], '-', true) === $materiKategori;
+            }));
+        }
+
         return view('artikel/index', [
-            'title'         => $title,
-            'artikel'       => $artikel,
-            'materi'        => $this->getMateriList(),
-            'kategoriList'  => $kategoriList,
-            'kategoriAktif' => $kategoriSlug,
+            'title'               => $title,
+            'artikel'             => $artikel,
+            'materi'              => $materi,
+            'kategoriList'        => $kategoriList,
+            'kategoriAktif'       => $kategoriSlug,
+            'materiKategoriList'  => $materiKategoriList,
+            'materiKategoriAktif' => $materiKategori,
         ]);
     }
 
@@ -394,7 +411,7 @@ class Artikel extends BaseController
                 'slug' => 'pagination-dan-pencarian',
                 'filename' => 'Modul Praktikum 5.pdf',
                 'judul' => 'Pagination dan Pencarian',
-                'label' => 'Modul Praktikum',
+                'label' => 'Pertemuan 6',
                 'deskripsi' => 'Panduan praktikum pagination dan pencarian pada halaman admin artikel.',
                 'ringkasan' => 'Materi ini membahas pembagian data ke beberapa halaman dan pencarian judul artikel agar pengelolaan data menjadi lebih efisien.',
                 'sections' => [

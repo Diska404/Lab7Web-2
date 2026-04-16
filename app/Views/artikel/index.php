@@ -5,11 +5,22 @@
 <hr>
 
 <?php if (! empty($materi)): ?>
-    <section class="materi-highlight">
+    <section class="materi-highlight" id="materi-kuliah-web">
         <span class="materi-badge">Materi Kuliah PDF</span>
         <h2>Belajar materi Pemrograman Web langsung dari halaman artikel</h2>
         <p>Halaman ini menampilkan kumpulan materi kuliah dalam bentuk <strong>versi web</strong> agar lebih nyaman dibaca langsung dari browser. Jika ingin menyimpan file aslinya, gunakan tombol <strong>Download PDF</strong> yang tersedia pada setiap materi.</p>
     </section>
+
+    <?php if (! empty($materiKategoriList)): ?>
+        <div class="kategori-filter-list">
+            <a href="<?= base_url('/artikel'); ?>#materi-kuliah-web" class="kategori-filter-chip <?= empty($materiKategoriAktif) ? 'active' : ''; ?>">Semua Pertemuan</a>
+            <?php foreach ($materiKategoriList as $slug => $label): ?>
+                <a href="<?= base_url('/artikel?materi_kategori=' . $slug); ?>#materi-kuliah-web" class="kategori-filter-chip <?= ($materiKategoriAktif === $slug) ? 'active' : ''; ?>">
+                    <?= esc($label); ?>
+                </a>
+            <?php endforeach; ?>
+        </div>
+    <?php endif; ?>
 
     <div class="materi-grid">
         <?php foreach ($materi as $item): ?>
