@@ -7,11 +7,12 @@ $segment2 = $parts[1] ?? '';
 
 $navActive = static function (string $page) use ($segment1, $segment2, $currentPath): string {
     return match ($page) {
-        'home'    => ($currentPath === '' || $currentPath === 'index.php') ? 'active' : '',
-        'artikel' => ($segment1 === 'artikel' || ($segment1 === 'admin' && $segment2 === 'artikel')) ? 'active' : '',
-        'about'   => $segment1 === 'about' ? 'active' : '',
-        'contact' => $segment1 === 'contact' ? 'active' : '',
-        default   => '',
+        'home'      => ($currentPath === '' || $currentPath === 'index.php') ? 'active' : '',
+        'artikel'   => ($segment1 === 'artikel' || ($segment1 === 'admin' && $segment2 === 'artikel')) ? 'active' : '',
+        'dashboard' => in_array($segment1, ['dashboard', 'ajax'], true) ? 'active' : '',
+        'about'     => $segment1 === 'about' ? 'active' : '',
+        'contact'   => $segment1 === 'contact' ? 'active' : '',
+        default     => '',
     };
 };
 ?>
@@ -20,16 +21,24 @@ $navActive = static function (string $page) use ($segment1, $segment2, $currentP
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= esc($title ?? 'My Website') ?></title>
+    <title><?= esc($title ?? 'Web Learning Hub') ?></title>
     <link rel="stylesheet" href="<?= base_url('/style.css'); ?>">
 </head>
 <body class="page-preload">
     <div id="container">
-        <header>
-            <h1>Layout Sederhana</h1>
+        <header class="site-header">
+            <a href="<?= base_url('/'); ?>" class="brand-block" aria-label="Kembali ke beranda">
+                <span class="brand-logo">WL</span>
+                <span>
+                    <strong>Web Learning Hub</strong>
+                    <small>Materi, artikel, dan dashboard pembelajaran</small>
+                </span>
+            </a>
+
             <div class="header-actions">
                 <?php if (session()->get('logged_in')): ?>
                     <a href="<?= base_url('/admin/artikel'); ?>" class="header-admin-btn">Admin Panel</a>
+                    <a href="<?= base_url('/dashboard'); ?>" class="header-admin-btn secondary">Dashboard</a>
                     <a href="<?= base_url('/user/logout'); ?>" class="header-admin-btn secondary">Logout</a>
                 <?php else: ?>
                     <a href="<?= base_url('/user/login'); ?>" class="header-admin-btn">Login Admin</a>
@@ -37,36 +46,52 @@ $navActive = static function (string $page) use ($segment1, $segment2, $currentP
             </div>
         </header>
 
-        <nav class="main-nav">
+        <nav class="main-nav" aria-label="Navigasi utama">
             <a href="<?= base_url('/'); ?>" class="nav-link <?= $navActive('home') ?>">Home</a>
             <a href="<?= base_url('/artikel'); ?>" class="nav-link <?= $navActive('artikel') ?>">Artikel</a>
             <a href="<?= base_url('/about'); ?>" class="nav-link <?= $navActive('about') ?>">About</a>
             <a href="<?= base_url('/contact'); ?>" class="nav-link <?= $navActive('contact') ?>">Kontak</a>
+            <?php if (session()->get('logged_in')): ?>
+                <a href="<?= base_url('/dashboard'); ?>" class="nav-link <?= $navActive('dashboard') ?>">Dashboard</a>
+            <?php endif; ?>
         </nav>
 
-        <section id="wrapper">
-            <section id="main">
+        <section id="wrapper" class="app-shell">
+            <main id="main">
                 <?= $this->renderSection('content') ?>
-            </section>
-            <aside id="sidebar">
-                <?= view_cell('App\Cells\ArtikelTerkini::render') ?>
+            </main>
+            <aside id="sidebar" class="site-sidebar">
+                <div class="widget-box widget-card sidebar-latest reveal-item">
+                    <?= view_cell('App\\Cells\\ArtikelTerkini::render') ?>
+                </div>
 
-                <div class="widget-box reveal-item">
-                    <h3 class="title">Widget Header</h3>
-                    <ul>
-                        <li><a href="<?= base_url('/user/login'); ?>">Login Admin</a></li>
-                        <li><a href="<?= base_url('/user/register'); ?>">Daftar Akun</a></li>
+                <div class="widget-box widget-card reveal-item">
+                    <h3 class="title">Navigasi Cepat</h3>
+                    <ul class="sidebar-link-list">
+                        <li><a href="<?= base_url('/artikel#materi-kuliah-web'); ?>">Materi Kuliah</a></li>
+                        <li><a href="<?= base_url('/artikel#daftar-artikel-web'); ?>">Daftar Artikel</a></li>
+                        <?php if (session()->get('logged_in')): ?>
+                            <li><a href="<?= base_url('/dashboard'); ?>">Dashboard Konten</a></li>
+                            <li><a href="<?= base_url('/admin/artikel/add'); ?>">Tambah Artikel</a></li>
+                        <?php else: ?>
+                            <li><a href="<?= base_url('/user/login'); ?>">Login Admin</a></li>
+                            <li><a href="<?= base_url('/user/register'); ?>">Daftar Akun</a></li>
+                        <?php endif; ?>
                     </ul>
                 </div>
-                <div class="widget-box reveal-item">
-                    <h3 class="title">Widget Text</h3>
-                    <p>Masih Kosong :v</p>
+
+                <div class="widget-box widget-card reveal-item">
+                    <h3 class="title">Tentang Website</h3>
+                    <div class="widget-box-body">
+                        <p>Portal ini merangkum materi praktikum, artikel pembelajaran, dan pengelolaan konten berbasis CodeIgniter 4.</p>
+                    </div>
                 </div>
             </aside>
         </section>
 
-        <footer>
+        <footer class="site-footer">
             <p>&copy; 2026 Diska Kurnia Azzahra Putra</p>
+            <span>Built with CodeIgniter 4</span>
         </footer>
     </div>
 
@@ -98,7 +123,7 @@ $navActive = static function (string $page) use ($segment1, $segment2, $currentP
 
                 setTimeout(function () {
                     window.location.href = href;
-                }, 260);
+                }, 220);
             });
         });
     })();

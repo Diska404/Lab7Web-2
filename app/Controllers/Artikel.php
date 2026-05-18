@@ -5,14 +5,24 @@ namespace App\Controllers;
 use App\Models\ArtikelModel;
 use App\Models\KategoriModel;
 use CodeIgniter\Exceptions\PageNotFoundException;
+use CodeIgniter\HTTP\Files\UploadedFile;
+use RuntimeException;
 
 class Artikel extends BaseController
 {
+    private const MATERI_DIR = 'file';
+    private const IMAGE_DIR = 'gambar';
+
     public function index(): string
     {
         $title = 'Daftar Artikel';
         $kategoriSlug = trim((string) ($this->request->getVar('kategori') ?? ''));
         $materiKategori = trim((string) ($this->request->getVar('materi_kategori') ?? ''));
+        $materiTipe = trim((string) ($this->request->getVar('materi_tipe') ?? ''));
+
+        if (! in_array($materiTipe, ['pertemuan', 'praktikum'], true)) {
+            $materiTipe = '';
+        }
 
         $model = new ArtikelModel();
         $kategoriModel = new KategoriModel();
@@ -21,12 +31,14 @@ class Artikel extends BaseController
         $kategoriList = $kategoriModel->orderBy('nama_kategori', 'ASC')->findAll();
 
         $materi = $this->getMateriList();
-        $materiKategoriList = [];
 
-        foreach ($materi as $item) {
-            $labelSlug = url_title($item['label'], '-', true);
-            $materiKategoriList[$labelSlug] = $item['label'];
+        if ($materiTipe !== '') {
+            $materi = array_values(array_filter($materi, function ($item) use ($materiTipe) {
+                return $this->getMateriType($item['label'] ?? '') === $materiTipe;
+            }));
         }
+
+        $materiKategoriList = $this->buildMateriKategoriList($materi);
 
         if ($materiKategori !== '') {
             $materi = array_values(array_filter($materi, static function ($item) use ($materiKategori) {
@@ -42,6 +54,7 @@ class Artikel extends BaseController
             'kategoriAktif'       => $kategoriSlug,
             'materiKategoriList'  => $materiKategoriList,
             'materiKategoriAktif' => $materiKategori,
+            'materiTipeAktif'     => $materiTipe,
         ]);
     }
 
@@ -54,10 +67,8 @@ class Artikel extends BaseController
             throw PageNotFoundException::forPageNotFound();
         }
 
-        $title = $artikel['judul'];
-
         return view('artikel/detail', [
-            'title'   => $title,
+            'title'   => $artikel['judul'],
             'artikel' => $artikel,
         ]);
     }
@@ -84,10 +95,11 @@ class Artikel extends BaseController
             throw PageNotFoundException::forPageNotFound();
         }
 
-        $path = ROOTPATH . 'file/' . $materi['filename'];
+        $path = $this->materiPath($materi['filename']);
 
         if (! is_file($path)) {
-            throw PageNotFoundException::forPageNotFound();
+            session()->setFlashdata('error', 'File PDF belum tersedia. Pindahkan file "' . $materi['filename'] . '" ke folder /file terlebih dahulu.');
+            return redirect()->to('/artikel/materi/' . $slug);
         }
 
         return $this->response->download($path, null);
@@ -127,12 +139,10 @@ class Artikel extends BaseController
 
     public function add()
     {
-        helper(['form']);
-
         $kategoriModel = new KategoriModel();
         $kategori = $kategoriModel->orderBy('nama_kategori', 'ASC')->findAll();
 
-        if ($this->request->getMethod() === 'POST') {
+        if (strtolower($this->request->getMethod()) === 'post') {
             $rules = [
                 'judul'       => 'required|min_length[3]',
                 'isi'         => 'required|min_length[10]',
@@ -153,13 +163,29 @@ class Artikel extends BaseController
                 ]);
             }
 
-            $artikel = new ArtikelModel();
-            $artikel->insert([
+            try {
+                $gambar = $this->uploadGambar($this->request->getFile('gambar'));
+            } catch (RuntimeException $e) {
+                return view('artikel/form_add', [
+                    'title'       => 'Tambah Artikel',
+                    'uploadError' => $e->getMessage(),
+                    'kategori'    => $kategori,
+                ]);
+            }
+
+            $payload = [
                 'judul'       => $data['judul'],
                 'isi'         => $data['isi'],
                 'slug'        => url_title($data['judul'], '-', true),
                 'id_kategori' => (int) $data['id_kategori'],
-            ]);
+            ];
+
+            if ($gambar !== null) {
+                $payload['gambar'] = $gambar;
+            }
+
+            $artikel = new ArtikelModel();
+            $artikel->insert($payload);
 
             session()->setFlashdata('success', 'Artikel berhasil ditambahkan.');
             return redirect()->to('/admin/artikel');
@@ -173,8 +199,6 @@ class Artikel extends BaseController
 
     public function edit($id)
     {
-        helper(['form']);
-
         $artikelModel = new ArtikelModel();
         $data = $artikelModel->find($id);
 
@@ -185,7 +209,7 @@ class Artikel extends BaseController
         $kategoriModel = new KategoriModel();
         $kategori = $kategoriModel->orderBy('nama_kategori', 'ASC')->findAll();
 
-        if ($this->request->getMethod() === 'POST') {
+        if (strtolower($this->request->getMethod()) === 'post') {
             $rules = [
                 'judul'       => 'required|min_length[3]',
                 'isi'         => 'required|min_length[10]',
@@ -207,12 +231,30 @@ class Artikel extends BaseController
                 ]);
             }
 
-            $artikelModel->update($id, [
+            try {
+                $gambar = $this->uploadGambar($this->request->getFile('gambar'));
+            } catch (RuntimeException $e) {
+                return view('artikel/form_edit', [
+                    'title'       => 'Edit Artikel',
+                    'data'        => $data,
+                    'kategori'    => $kategori,
+                    'uploadError' => $e->getMessage(),
+                ]);
+            }
+
+            $update = [
                 'judul'       => $payload['judul'],
                 'isi'         => $payload['isi'],
                 'slug'        => url_title($payload['judul'], '-', true),
                 'id_kategori' => (int) $payload['id_kategori'],
-            ]);
+            ];
+
+            if ($gambar !== null) {
+                $update['gambar'] = $gambar;
+                $this->hapusGambarLama($data['gambar'] ?? null);
+            }
+
+            $artikelModel->update($id, $update);
 
             session()->setFlashdata('success', 'Artikel berhasil diperbarui.');
             return redirect()->to('/admin/artikel');
@@ -228,9 +270,57 @@ class Artikel extends BaseController
     public function delete($id)
     {
         $artikel = new ArtikelModel();
-        $artikel->delete($id);
-        session()->setFlashdata('success', 'Artikel berhasil dihapus.');
+        $data = $artikel->find($id);
+
+        if ($data) {
+            $this->hapusGambarLama($data['gambar'] ?? null);
+            $artikel->delete($id);
+            session()->setFlashdata('success', 'Artikel berhasil dihapus.');
+        }
+
         return redirect()->to('/admin/artikel');
+    }
+
+    private function uploadGambar(?UploadedFile $file): ?string
+    {
+        if (! $file || $file->getError() === UPLOAD_ERR_NO_FILE) {
+            return null;
+        }
+
+        if (! $file->isValid()) {
+            throw new RuntimeException($file->getErrorString());
+        }
+
+        $allowedMime = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+        if (! in_array($file->getMimeType(), $allowedMime, true)) {
+            throw new RuntimeException('File gambar harus berformat JPG, JPEG, PNG, GIF, atau WEBP.');
+        }
+
+        if ($file->getSizeByUnit('kb') > 2048) {
+            throw new RuntimeException('Ukuran gambar maksimal 2 MB.');
+        }
+
+        $targetDir = FCPATH . self::IMAGE_DIR;
+        if (! is_dir($targetDir)) {
+            mkdir($targetDir, 0775, true);
+        }
+
+        $newName = $file->getRandomName();
+        $file->move($targetDir, $newName);
+
+        return $newName;
+    }
+
+    private function hapusGambarLama(?string $filename): void
+    {
+        if (! $filename) {
+            return;
+        }
+
+        $path = FCPATH . self::IMAGE_DIR . DIRECTORY_SEPARATOR . $filename;
+        if (is_file($path)) {
+            @unlink($path);
+        }
     }
 
     private function findMateri(string $slug): ?array
@@ -244,40 +334,26 @@ class Artikel extends BaseController
         return null;
     }
 
+    private function materiPath(string $filename): string
+    {
+        return ROOTPATH . self::MATERI_DIR . DIRECTORY_SEPARATOR . $filename;
+    }
+
     private function getMateriList(): array
     {
-        return [
+        $items = [
             [
                 'slug' => 'fondasi-codeigniter-4',
                 'filename' => '01 CodeIgniter_4_Foundation.pdf',
                 'judul' => 'Fondasi CodeIgniter 4',
                 'label' => 'Pertemuan 1',
-                'deskripsi' => 'Pengantar fondasi CodeIgniter 4, arsitektur server-side, framework, dan persiapan environment.',
-                'ringkasan' => 'Materi ini membahas gambaran umum CodeIgniter 4 sebagai framework PHP modern yang ringan dan terstruktur untuk pengembangan aplikasi web.',
+                'deskripsi' => 'Arsitektur server-side, framework, instalasi environment, dan gambaran semester Pemrograman Web 2.',
+                'ringkasan' => 'Materi ini mengenalkan CodeIgniter 4 sebagai framework PHP untuk membangun aplikasi web terstruktur berbasis MVC.',
                 'sections' => [
                     [
-                        'heading' => 'Gambaran Umum',
-                        'paragraphs' => [
-                            'CodeIgniter 4 adalah framework PHP yang menerapkan pola pengembangan terstruktur sehingga pembuatan aplikasi web menjadi lebih cepat dan rapi.',
-                            'Framework ini mendukung konsep MVC, routing, controller, view, filter, validasi, dan berbagai library bawaan yang mempermudah proses pengembangan.',
-                        ],
-                        'points' => [
-                            'Ringan dan cepat dijalankan pada lingkungan lokal seperti XAMPP.',
-                            'Mendukung CLI melalui perintah spark.',
-                            'Cocok digunakan untuk pembelajaran konsep framework PHP.',
-                        ],
-                    ],
-                    [
-                        'heading' => 'Komponen Dasar',
-                        'paragraphs' => [
-                            'Dalam CodeIgniter 4, request dari user akan diproses melalui route, diteruskan ke controller, lalu data dapat diambil dari model dan ditampilkan melalui view.',
-                        ],
-                        'points' => [
-                            'Route menentukan alamat URL.',
-                            'Controller menangani logika aplikasi.',
-                            'Model berhubungan dengan database.',
-                            'View menampilkan output ke browser.',
-                        ],
+                        'heading' => 'Pokok Bahasan',
+                        'paragraphs' => ['Request dari browser diproses oleh route, controller, model, dan view hingga menghasilkan respon HTML.'],
+                        'points' => ['Server-side programming', 'MVC', 'instalasi environment', 'struktur project CodeIgniter 4'],
                     ],
                 ],
             ],
@@ -286,143 +362,286 @@ class Artikel extends BaseController
                 'filename' => '01 Konsep Dasar Web Dinamis.pdf',
                 'judul' => 'Konsep Dasar Web Dinamis',
                 'label' => 'Pertemuan 1',
-                'deskripsi' => 'Materi dasar tentang web dinamis, arsitektur client-server, database, serta alur kerja aplikasi web.',
-                'ringkasan' => 'Web dinamis adalah website yang menampilkan data secara fleksibel berdasarkan proses di server dan data yang tersimpan pada database.',
-                'sections' => [
-                    [
-                        'heading' => 'Perbedaan Web Statis dan Web Dinamis',
-                        'paragraphs' => [
-                            'Web statis menampilkan isi yang cenderung tetap, sedangkan web dinamis dapat berubah mengikuti data, input pengguna, atau proses tertentu di server.',
-                        ],
-                        'points' => [
-                            'Web statis: konten tetap dan sederhana.',
-                            'Web dinamis: konten dapat berubah berdasarkan database atau interaksi user.',
-                        ],
-                    ],
-                ],
+                'deskripsi' => 'Konsep web dinamis, client-side, server-side, database, web server, dan API.',
+                'ringkasan' => 'Web dinamis dapat berubah berdasarkan interaksi pengguna dan data yang diproses di server.',
+                'sections' => [[
+                    'heading' => 'Pokok Bahasan',
+                    'paragraphs' => ['Web dinamis memanfaatkan backend dan database untuk menghasilkan konten yang berubah sesuai kebutuhan pengguna.'],
+                    'points' => ['HTML, CSS, JavaScript', 'PHP dan server-side scripting', 'database', 'web server'],
+                ]],
             ],
             [
                 'slug' => 'routing-essentials-codeigniter-4',
                 'filename' => '02 CI4_Routing_Essentials.pdf',
                 'judul' => 'Routing Essentials di CodeIgniter 4',
                 'label' => 'Pertemuan 2',
-                'deskripsi' => 'Membahas konsep routing, endpoint, segment URI, static route, dynamic route, dan route grouping.',
-                'ringkasan' => 'Routing digunakan untuk menghubungkan URL dengan controller atau method tertentu agar request diproses sesuai tujuan.',
-                'sections' => [
-                    [
-                        'heading' => 'Fungsi Routing',
-                        'paragraphs' => [
-                            'Routing membantu developer mengatur jalur URL aplikasi secara lebih jelas dan terstruktur.',
-                        ],
-                        'points' => [
-                            'Menentukan endpoint aplikasi.',
-                            'Menghubungkan URL ke controller.',
-                            'Membantu membatasi akses berdasarkan grup route.',
-                        ],
-                    ],
-                ],
+                'deskripsi' => 'Konsep routing, endpoint, URL segment, static route, dynamic route, dan route grouping.',
+                'ringkasan' => 'Routing menerjemahkan permintaan URL menjadi perintah menuju controller dan method yang sesuai.',
+                'sections' => [[
+                    'heading' => 'Pokok Bahasan',
+                    'paragraphs' => ['Setiap URL diarahkan melalui file route agar request masuk ke controller yang tepat.'],
+                    'points' => ['Routes.php', 'endpoint', 'dynamic route', 'route group'],
+                ]],
             ],
             [
                 'slug' => 'dasar-php-untuk-pemrograman-web',
                 'filename' => '02 PHP Dasar.pdf',
                 'judul' => 'Dasar PHP untuk Pemrograman Web',
                 'label' => 'Pertemuan 2',
-                'deskripsi' => 'Ringkasan materi PHP dasar yang digunakan untuk membangun aplikasi web dinamis berbasis server-side.',
-                'ringkasan' => 'PHP adalah bahasa server-side yang umum digunakan untuk memproses form, menampilkan data dinamis, dan berkomunikasi dengan database.',
-                'sections' => [
-                    [
-                        'heading' => 'Peran PHP',
-                        'paragraphs' => [
-                            'PHP bekerja di sisi server untuk mengolah logika aplikasi sebelum hasil akhirnya dikirim ke browser pengguna.',
-                        ],
-                        'points' => [
-                            'Mengolah input dari form.',
-                            'Berinteraksi dengan database.',
-                            'Membuat halaman dinamis.',
-                        ],
-                    ],
-                ],
+                'deskripsi' => 'Dasar PHP sebagai bahasa server-side untuk memproses data dan menghasilkan halaman dinamis.',
+                'ringkasan' => 'PHP digunakan untuk membaca input, memproses logika aplikasi, dan berkomunikasi dengan database.',
+                'sections' => [[
+                    'heading' => 'Pokok Bahasan',
+                    'paragraphs' => ['PHP berjalan pada server dan hasilnya dikirim ke browser dalam bentuk HTML.'],
+                    'points' => ['Sintaks PHP', 'variabel', 'form', 'server-side scripting'],
+                ]],
             ],
             [
-                'slug' => 'controller-logic-flow-pada-ci4',
-                'filename' => '03 CI4_Controller_Logic_Flow.pdf',
-                'judul' => 'Controller Logic Flow pada CI4',
+                'slug' => 'controller-logic-pada-ci4',
+                'filename' => '03 CI4_Controller_Logic.pdf',
+                'judul' => 'Controller Logic pada CodeIgniter 4',
                 'label' => 'Pertemuan 3',
-                'deskripsi' => 'Menjelaskan controller, alur request, method, dan pengelolaan logika aplikasi pada CodeIgniter 4.',
-                'ringkasan' => 'Controller adalah pusat pengendali request yang menentukan data apa yang diproses dan view apa yang ditampilkan.',
-                'sections' => [
-                    [
-                        'heading' => 'Peran Controller',
-                        'paragraphs' => [
-                            'Controller menerima request dari route, memanggil model jika diperlukan, lalu mengirim hasil ke view.',
-                        ],
-                    ],
-                ],
-            ],
-            [
-                'slug' => 'dasar-pemrograman-web-php',
-                'filename' => '03 Pemrograman Web PHP Dasar.pdf',
-                'judul' => 'Dasar Pemrograman Web PHP',
-                'label' => 'Pertemuan 3',
-                'deskripsi' => 'Materi dasar pemrograman web berbasis PHP meliputi sintaks, variabel, form, dan proses data.',
-                'ringkasan' => 'Materi ini berfokus pada penggunaan PHP dalam konteks web, terutama pemrosesan data form dan output HTML yang dinamis.',
-                'sections' => [
-                    [
-                        'heading' => 'Pengolahan Form',
-                        'paragraphs' => [
-                            'Form HTML dapat mengirim data ke server menggunakan metode GET atau POST, lalu PHP membaca dan memproses datanya.',
-                        ],
-                    ],
-                ],
+                'deskripsi' => 'Peran controller dalam menerima request, memproses logika, memanggil model, dan mengembalikan response.',
+                'ringkasan' => 'Controller menjadi pengatur utama alur request di dalam pola MVC.',
+                'sections' => [[
+                    'heading' => 'Pokok Bahasan',
+                    'paragraphs' => ['Controller menghubungkan route, model, dan view agar aplikasi dapat merespons aksi pengguna.'],
+                    'points' => ['Request lifecycle', 'BaseController', 'input/output', 'response'],
+                ]],
             ],
             [
                 'slug' => 'view-layout-dan-view-cell',
-                'filename' => 'Web 2 - Modul Praktikum 3.pdf',
-                'judul' => 'View Layout dan View Cell',
+                'filename' => 'Web 2 - CodeIgniter_4_View_Architecture.pdf',
+                'judul' => 'Arsitektur View: Layout dan View Cell',
                 'label' => 'Pertemuan 4',
-                'deskripsi' => 'Materi mengenai View Layout, View Cell, dan penyusunan tampilan modular di CodeIgniter 4.',
-                'ringkasan' => 'View Layout membantu konsistensi tampilan, sedangkan View Cell memudahkan pembuatan komponen kecil yang dapat dipakai ulang.',
-                'sections' => [
-                    [
-                        'heading' => 'View Layout',
-                        'paragraphs' => [
-                            'Layout digunakan untuk menampung bagian umum seperti header, navigasi, sidebar, dan footer agar tidak perlu ditulis ulang di setiap halaman.',
-                        ],
-                    ],
-                ],
+                'deskripsi' => 'Membangun UI modular dengan View Layout, View Partial, dan View Cell.',
+                'ringkasan' => 'View Layout menghindari penulisan HTML berulang, sedangkan View Cell membantu membuat komponen reusable.',
+                'sections' => [[
+                    'heading' => 'Pokok Bahasan',
+                    'paragraphs' => ['Tampilan aplikasi dipisahkan ke layout utama dan komponen kecil agar lebih mudah dirawat.'],
+                    'points' => ['layout/main.php', 'renderSection', 'View Cell', 'komponen artikel terkini'],
+                ]],
+            ],
+            [
+                'slug' => 'praktikum-1-php-framework-codeigniter',
+                'filename' => 'Modul Praktikum 1.pdf',
+                'judul' => 'Modul Praktikum 1: PHP Framework CodeIgniter',
+                'label' => 'Praktikum 1',
+                'deskripsi' => 'Instalasi CodeIgniter 4, menjalankan CLI, debugging, routing, controller, dan view awal.',
+                'ringkasan' => 'Praktikum pertama membangun pondasi project CodeIgniter 4 dari instalasi sampai tampilan dasar.',
+                'sections' => [[
+                    'heading' => 'Target Praktikum',
+                    'paragraphs' => ['Mahasiswa menyiapkan project CodeIgniter 4 dan memahami struktur awal MVC.'],
+                    'points' => ['Aktifkan extension PHP', 'jalankan php spark', 'buat route dan controller', 'buat view awal'],
+                ]],
+            ],
+            [
+                'slug' => 'praktikum-2-crud-artikel',
+                'filename' => 'Web 2 - Modul Praktikum 2.pdf',
+                'judul' => 'Modul Praktikum 2: CRUD Artikel',
+                'label' => 'Praktikum 2',
+                'deskripsi' => 'Membuat database artikel, model, controller, view, detail, tambah, ubah, dan hapus data.',
+                'ringkasan' => 'Praktikum ini mengubah project menjadi aplikasi dinamis berbasis database artikel.',
+                'sections' => [[
+                    'heading' => 'Target Praktikum',
+                    'paragraphs' => ['Data artikel dikelola melalui Model dan halaman admin CRUD.'],
+                    'points' => ['Database lab_ci4', 'tabel artikel', 'ArtikelModel', 'CRUD admin'],
+                ]],
+            ],
+            [
+                'slug' => 'praktikum-3-view-layout-view-cell',
+                'filename' => 'Web 2 - Modul Praktikum 3.pdf',
+                'judul' => 'Modul Praktikum 3: View Layout dan View Cell',
+                'label' => 'Praktikum 3',
+                'deskripsi' => 'Mengubah tampilan agar memakai layout utama dan komponen View Cell.',
+                'ringkasan' => 'Praktikum ini membuat tampilan lebih modular dan konsisten di banyak halaman.',
+                'sections' => [[
+                    'heading' => 'Target Praktikum',
+                    'paragraphs' => ['Setiap halaman memakai layout utama dan sidebar menampilkan komponen artikel terbaru.'],
+                    'points' => ['extend layout', 'section content', 'View Cell', 'komponen sidebar'],
+                ]],
+            ],
+            [
+                'slug' => 'praktikum-4-login-dan-auth-filter',
+                'filename' => 'Web 2 - Modul Praktikum 4.pdf',
+                'judul' => 'Modul Praktikum 4: Login dan Auth Filter',
+                'label' => 'Praktikum 4',
+                'deskripsi' => 'Membangun login admin, session, seeder user, dan filter proteksi halaman admin.',
+                'ringkasan' => 'Halaman admin dibatasi agar hanya bisa diakses oleh pengguna yang sudah login.',
+                'sections' => [[
+                    'heading' => 'Target Praktikum',
+                    'paragraphs' => ['Login menggunakan tabel user, session, dan filter auth untuk mengamankan halaman admin.'],
+                    'points' => ['UserModel', 'User controller', 'session logged_in', 'Auth filter'],
+                ]],
             ],
             [
                 'slug' => 'security-blueprint-login-dan-filter',
                 'filename' => '05 CI4_Security_Blueprint.pdf',
                 'judul' => 'Security Blueprint: Login dan Filter',
                 'label' => 'Pertemuan 5',
-                'deskripsi' => 'Membahas konsep login, filter keamanan, session, dan arsitektur autentikasi pada CodeIgniter 4.',
-                'ringkasan' => 'Materi ini menyoroti bagaimana session, auth filter, dan validasi data digunakan untuk membatasi akses ke halaman tertentu.',
-                'sections' => [
-                    [
-                        'heading' => 'Session dan Auth Filter',
-                        'paragraphs' => [
-                            'Session menyimpan status login pengguna, sedangkan auth filter memeriksa status tersebut sebelum halaman admin diakses.',
-                        ],
-                    ],
-                ],
+                'deskripsi' => 'Arsitektur autentikasi, session, model user, controller user, dan filter keamanan.',
+                'ringkasan' => 'Materi ini memperjelas peran setiap komponen MVC dan filter dalam sistem login.',
+                'sections' => [[
+                    'heading' => 'Pokok Bahasan',
+                    'paragraphs' => ['Sistem login menggunakan view, controller, model, database, session, dan auth filter.'],
+                    'points' => ['Login view', 'UserController', 'UserModel', 'Auth filter'],
+                ]],
             ],
             [
-                'slug' => 'pagination-dan-pencarian',
+                'slug' => 'praktikum-5-pagination-dan-pencarian',
                 'filename' => 'Modul Praktikum 5.pdf',
-                'judul' => 'Pagination dan Pencarian',
-                'label' => 'Pertemuan 6',
-                'deskripsi' => 'Panduan praktikum pagination dan pencarian pada halaman admin artikel.',
-                'ringkasan' => 'Materi ini membahas pembagian data ke beberapa halaman dan pencarian judul artikel agar pengelolaan data menjadi lebih efisien.',
-                'sections' => [
-                    [
-                        'heading' => 'Pagination',
-                        'paragraphs' => [
-                            'Pagination membatasi jumlah data yang tampil di setiap halaman sehingga tabel admin tetap nyaman dibaca meskipun datanya banyak.',
-                        ],
-                    ],
-                ],
+                'judul' => 'Modul Praktikum 5: Pagination dan Pencarian',
+                'label' => 'Praktikum 5',
+                'deskripsi' => 'Membatasi daftar artikel per halaman dan menambahkan pencarian judul artikel.',
+                'ringkasan' => 'Pagination dan pencarian membuat halaman admin tetap rapi walaupun data artikel bertambah banyak.',
+                'sections' => [[
+                    'heading' => 'Target Praktikum',
+                    'paragraphs' => ['Data artikel dikelola dengan paginate, pager, dan filter query q.'],
+                    'points' => ['paginate(10)', 'pager links', 'form pencarian', 'query q'],
+                ]],
+            ],
+            [
+                'slug' => 'praktikum-6-relasi-tabel-query-builder',
+                'filename' => 'Modul Praktikum 6.pdf',
+                'judul' => 'Modul Praktikum 6: Relasi Tabel dan Query Builder',
+                'label' => 'Praktikum 6',
+                'deskripsi' => 'Relasi One-to-Many antara kategori dan artikel, foreign key, join, dan filter kategori.',
+                'ringkasan' => 'Praktikum ini menambahkan tabel kategori dan menghubungkannya dengan artikel melalui id_kategori.',
+                'sections' => [[
+                    'heading' => 'Target Praktikum',
+                    'paragraphs' => ['Artikel ditampilkan bersama nama kategori menggunakan Query Builder join.'],
+                    'points' => ['Tabel kategori', 'id_kategori pada artikel', 'KategoriModel', 'getArtikelDenganKategori', 'filter kategori'],
+                ]],
+            ],
+            [
+                'slug' => 'blueprint-relasi-query-builder',
+                'filename' => '07 Blueprint_Relasi_CI4.pdf',
+                'judul' => 'Blueprint Relasi CI4: Query Builder dan Relasi Tabel',
+                'label' => 'Pertemuan 7',
+                'deskripsi' => 'Panduan visual relasi tabel kategori-artikel, query builder, validasi, dan integrasi antarmuka.',
+                'ringkasan' => 'Materi ini memperkuat konsep relasi data dan Query Builder dari database sampai tampilan web.',
+                'sections' => [[
+                    'heading' => 'Pokok Bahasan',
+                    'paragraphs' => ['Relasi One-to-Many membuat satu kategori dapat memiliki banyak artikel, lalu data relasi ditampilkan melalui join.'],
+                    'points' => ['Foreign key id_kategori', 'Query Builder join', 'validasi id_kategori', 'dropdown kategori dinamis'],
+                ]],
+            ],
+            [
+                'slug' => 'praktikum-7-upload-file-gambar',
+                'filename' => 'Modul Praktikum 7.pdf',
+                'judul' => 'Modul Praktikum 7: Upload File Gambar',
+                'label' => 'Praktikum 7',
+                'deskripsi' => 'Menambahkan upload gambar pada form tambah dan ubah artikel.',
+                'ringkasan' => 'Praktikum ini menambahkan input file, enctype multipart/form-data, penyimpanan gambar ke public/gambar, dan tampilan gambar artikel.',
+                'sections' => [[
+                    'heading' => 'Target Praktikum',
+                    'paragraphs' => ['Admin dapat mengunggah gambar artikel saat menambah atau mengubah data.'],
+                    'points' => ['input type file', 'multipart/form-data', 'validasi file gambar', 'folder public/gambar'],
+                ]],
+            ],
+            [
+                'slug' => 'mastering-ci4-ajax',
+                'filename' => 'Mastering_CI4_AJAX.pdf',
+                'judul' => 'Mastering CI4 AJAX',
+                'label' => 'Pertemuan 8',
+                'deskripsi' => 'Konsep AJAX, arsitektur CI4 + AJAX, JSON response, loading state, dan delete asinkron.',
+                'ringkasan' => 'AJAX memungkinkan browser mengambil atau memperbarui data dari server tanpa reload halaman penuh.',
+                'sections' => [[
+                    'heading' => 'Pokok Bahasan',
+                    'paragraphs' => ['jQuery mengirim request ke controller, controller mengembalikan JSON, lalu JavaScript memperbarui DOM.'],
+                    'points' => ['GET ajax/getData', 'JSON response', 'loading state', 'delete asinkron'],
+                ]],
+            ],
+            [
+                'slug' => 'praktikum-8-ajax',
+                'filename' => 'Modul Praktikum 8.pdf',
+                'judul' => 'Modul Praktikum 8: AJAX',
+                'label' => 'Praktikum 8',
+                'deskripsi' => 'Implementasi AJAX pada CodeIgniter 4 untuk menampilkan, menambah, mengubah, dan menghapus artikel tanpa reload penuh.',
+                'ringkasan' => 'Praktikum ini memakai jQuery AJAX, AjaxController, respon JSON, dan tabel data dinamis.',
+                'sections' => [[
+                    'heading' => 'Target Praktikum',
+                    'paragraphs' => ['Aplikasi memiliki halaman AJAX untuk CRUD artikel secara asinkron.'],
+                    'points' => ['AjaxController', 'getData JSON', 'AJAX create', 'AJAX update', 'AJAX delete', 'reload table tanpa reload halaman'],
+                ]],
             ],
         ];
+
+        foreach ($items as &$item) {
+            $item['available'] = is_file($this->materiPath($item['filename']));
+        }
+        unset($item);
+
+        return $this->sortMateriList($items);
+    }
+
+    private function buildMateriKategoriList(array $materi): array
+    {
+        $labels = [];
+
+        foreach ($materi as $item) {
+            $label = (string) ($item['label'] ?? '');
+            if ($label === '') {
+                continue;
+            }
+
+            $labels[url_title($label, '-', true)] = $label;
+        }
+
+        return $labels;
+    }
+
+    private function sortMateriList(array $items): array
+    {
+        usort($items, function ($first, $second) {
+            $firstType = $this->getMateriType($first['label'] ?? '');
+            $secondType = $this->getMateriType($second['label'] ?? '');
+
+            $typeOrder = [
+                'pertemuan' => 1,
+                'praktikum' => 2,
+                'lainnya'   => 3,
+            ];
+
+            $firstRank = $typeOrder[$firstType] ?? 3;
+            $secondRank = $typeOrder[$secondType] ?? 3;
+
+            if ($firstRank !== $secondRank) {
+                return $firstRank <=> $secondRank;
+            }
+
+            $numberCompare = $this->getMateriNumber($first['label'] ?? '') <=> $this->getMateriNumber($second['label'] ?? '');
+            if ($numberCompare !== 0) {
+                return $numberCompare;
+            }
+
+            return strcasecmp((string) ($first['judul'] ?? ''), (string) ($second['judul'] ?? ''));
+        });
+
+        return $items;
+    }
+
+    private function getMateriType(string $label): string
+    {
+        $label = strtolower($label);
+
+        if (str_contains($label, 'pertemuan')) {
+            return 'pertemuan';
+        }
+
+        if (str_contains($label, 'praktikum')) {
+            return 'praktikum';
+        }
+
+        return 'lainnya';
+    }
+
+    private function getMateriNumber(string $label): int
+    {
+        if (preg_match('/(\d+)/', $label, $matches)) {
+            return (int) $matches[1];
+        }
+
+        return 999;
     }
 }

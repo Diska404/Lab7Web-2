@@ -4,7 +4,10 @@
 <h1><?= esc($title); ?></h1>
 <hr>
 <p>Selamat datang, <strong><?= esc((string) session()->get('user_name')); ?></strong> | <a href="<?= base_url('/user/logout'); ?>">Logout</a></p>
-<p><a class="btn btn-primary" href="<?= base_url('/admin/artikel/add'); ?>">Tambah Artikel</a></p>
+<p>
+    <a class="btn btn-primary" href="<?= base_url('/admin/artikel/add'); ?>">Tambah Artikel</a>
+    <a class="btn btn-secondary" href="<?= base_url('/ajax'); ?>">Kelola Artikel via AJAX</a>
+</p>
 
 <?php if (session()->getFlashdata('success')): ?>
     <div class="alert alert-success"><?= esc(session()->getFlashdata('success')) ?></div>
@@ -30,6 +33,7 @@
     <thead>
         <tr>
             <th>ID</th>
+            <th>Gambar</th>
             <th>Judul</th>
             <th>Kategori</th>
             <th>Status</th>
@@ -42,20 +46,32 @@
                 <tr>
                     <td><?= esc((string) $row['id']); ?></td>
                     <td>
+                        <?php if (! empty($row['gambar'])): ?>
+                            <img class="table-thumb" src="<?= base_url('/gambar/' . $row['gambar']); ?>" alt="<?= esc($row['judul']); ?>">
+                        <?php else: ?>
+                            <span class="muted-text">Tidak ada</span>
+                        <?php endif; ?>
+                    </td>
+                    <td>
                         <b><?= esc($row['judul']); ?></b>
                         <p><small><?= esc(substr($row['isi'], 0, 80)); ?></small></p>
                     </td>
                     <td><?= esc($row['nama_kategori'] ?: 'Tanpa Kategori'); ?></td>
-                    <td><?= esc((string) ($row['status'] ?? 0)); ?></td>
+                    <td><?= ((int) ($row['status'] ?? 0) === 1) ? 'Aktif' : 'Draft'; ?></td>
                     <td>
-                        <a class="btn btn-secondary" href="<?= base_url('/admin/artikel/edit/' . $row['id']); ?>">Ubah</a>
-                        <a class="btn btn-danger" onclick="return confirm('Yakin menghapus data?');" href="<?= base_url('/admin/artikel/delete/' . $row['id']); ?>">Hapus</a>
+                        <div class="action-inline">
+                            <a class="btn btn-secondary" href="<?= base_url('/admin/artikel/edit/' . $row['id']); ?>">Ubah</a>
+                            <form action="<?= base_url('/admin/artikel/delete/' . $row['id']); ?>" method="post" onsubmit="return confirm('Yakin menghapus data?');">
+                                <?= csrf_field() ?>
+                                <button type="submit" class="btn btn-danger">Hapus</button>
+                            </form>
+                        </div>
                     </td>
                 </tr>
             <?php endforeach; ?>
         <?php else: ?>
             <tr>
-                <td colspan="5">Data artikel tidak ditemukan.</td>
+                <td colspan="6">Data artikel tidak ditemukan.</td>
             </tr>
         <?php endif; ?>
     </tbody>

@@ -11,14 +11,18 @@ class UserSeeder extends Seeder
         $model = model('UserModel');
         $existing = $model->where('useremail', 'admin@email.com')->first();
 
+        $data = [
+            'username'     => 'admin',
+            'useremail'    => 'admin@email.com',
+            // Password pendek untuk kebutuhan praktikum lokal: 1
+            'userpassword' => password_hash('1', PASSWORD_DEFAULT),
+        ];
+
         if ($existing) {
+            $model->update($existing['id'], $data);
             return;
         }
 
-        $model->insert([
-            'username'     => 'admin',
-            'useremail'    => 'admin@email.com',
-            'userpassword' => password_hash('admin123', PASSWORD_DEFAULT),
-        ]);
+        $model->insert($data);
     }
 }

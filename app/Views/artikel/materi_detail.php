@@ -9,7 +9,11 @@
 
 <div class="materi-reader-actions">
     <a href="<?= base_url('/artikel'); ?>" class="btn btn-secondary">Kembali ke Daftar Materi</a>
-    <a href="<?= base_url('/artikel/download/' . $materi['slug']); ?>" class="btn">Download PDF</a>
+    <?php if (! empty($materi['available'])): ?>
+        <a href="<?= base_url('/artikel/download/' . $materi['slug']); ?>" class="btn">Download PDF</a>
+    <?php else: ?>
+        <span class="btn btn-disabled">PDF belum tersedia di folder /file</span>
+    <?php endif; ?>
 </div>
 
 <section class="materi-reader-card">
@@ -39,8 +43,12 @@
     <?php endforeach; ?>
 <?php endif; ?>
 
+<?php if (session()->getFlashdata('error')): ?>
+    <div class="alert alert-danger"><?= esc(session()->getFlashdata('error')) ?></div>
+<?php endif; ?>
+
 <section class="materi-reader-card materi-reader-note">
     <h2>Catatan</h2>
-    <p>Versi ini disediakan agar materi dapat dibaca langsung melalui web tanpa harus membuka PDF. Jika kamu ingin melihat dokumen aslinya, gunakan tombol <strong>Download PDF</strong> di atas.</p>
+    <p>Versi ini disediakan agar materi dapat dibaca langsung melalui web tanpa harus membuka PDF. Jika ingin memakai dokumen aslinya, pindahkan file <strong><?= esc($materi['filename']); ?></strong> ke folder <code>file</code> pada root project.</p>
 </section>
 <?= $this->endSection() ?>

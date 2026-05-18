@@ -22,9 +22,24 @@ $routes->match(['GET', 'POST'], '/user/forgot-password', 'User::forgotPassword')
 $routes->get('/user', 'User::index');
 $routes->get('/user/logout', 'User::logout');
 
+$routes->group('dashboard', ['filter' => 'auth'], static function ($routes) {
+    $routes->get('/', 'AjaxController::index');
+    $routes->get('getData', 'AjaxController::getData');
+    $routes->post('create', 'AjaxController::create');
+    $routes->post('update/(:num)', 'AjaxController::update/$1');
+    $routes->post('delete/(:num)', 'AjaxController::delete/$1');
+});
+
+// Alias lama tetap dipertahankan agar link /ajax dari praktikum sebelumnya tidak rusak.
+$routes->get('/ajax', 'AjaxController::index', ['filter' => 'auth']);
+$routes->get('/ajax/getData', 'AjaxController::getData', ['filter' => 'auth']);
+$routes->post('/ajax/create', 'AjaxController::create', ['filter' => 'auth']);
+$routes->post('/ajax/update/(:num)', 'AjaxController::update/$1', ['filter' => 'auth']);
+$routes->post('/ajax/delete/(:num)', 'AjaxController::delete/$1', ['filter' => 'auth']);
+
 $routes->group('admin', ['filter' => 'auth'], static function ($routes) {
     $routes->get('artikel', 'Artikel::admin_index');
     $routes->match(['GET', 'POST'], 'artikel/add', 'Artikel::add');
-    $routes->match(['GET', 'POST'], 'artikel/edit/(:any)', 'Artikel::edit/$1');
-    $routes->get('artikel/delete/(:any)', 'Artikel::delete/$1');
+    $routes->match(['GET', 'POST'], 'artikel/edit/(:num)', 'Artikel::edit/$1');
+    $routes->match(['GET', 'POST'], 'artikel/delete/(:num)', 'Artikel::delete/$1');
 });

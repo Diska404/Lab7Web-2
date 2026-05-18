@@ -8,8 +8,8 @@
 </head>
 <body class="auth-page">
     <div class="auth-card">
-        <h1>Login</h1>
-        <p>Masuk ke akun Anda untuk mengakses panel admin artikel.</p>
+        <h1>Login Admin</h1>
+        <p>Masuk menggunakan ID, username, atau email. Untuk akun bawaan, bisa pakai ID <strong>1</strong> dengan password <strong>1</strong>.</p>
 
         <?php if (session()->getFlashdata('success')): ?>
             <div class="alert alert-success"><?= esc(session()->getFlashdata('success')) ?></div>
@@ -26,12 +26,12 @@
         <form action="" method="post">
             <?= csrf_field() ?>
             <div class="form-group">
-                <label for="email">Email</label>
-                <input id="email" type="email" name="email" value="<?= old('email') ?>" placeholder="contoh@email.com">
+                <label for="login">ID / Username / Email</label>
+                <input id="login" type="text" name="login" value="<?= old('login') ?>" placeholder="Contoh: 1, admin, atau admin@email.com">
             </div>
             <div class="form-group">
                 <label for="password">Password</label>
-                <input id="password" type="password" name="password" placeholder="Masukkan password">
+                <input id="password" type="password" name="password" placeholder="Contoh: 1">
             </div>
             <button type="submit" class="btn">Masuk</button>
         </form>

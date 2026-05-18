@@ -21,27 +21,26 @@ class User extends BaseController
 
         if ($this->request->getMethod() === 'POST') {
             $rules = [
-                'email'    => 'required|valid_email',
-                'password' => 'required|min_length[6]',
+                'login'    => 'required',
+                'password' => 'required',
             ];
 
             $data = [
-                'email'    => trim((string) $this->request->getPost('email')),
+                'login'    => trim((string) $this->request->getPost('login')),
                 'password' => (string) $this->request->getPost('password'),
             ];
 
             if (! $this->validateData($data, $rules)) {
                 return view('user/login', [
-                    'title'      => 'Login',
+                    'title'      => 'Login Admin',
                     'validation' => $this->validator,
                 ]);
             }
 
-            $model = new UserModel();
-            $login = $model->where('useremail', $data['email'])->first();
+            $login = $this->findUserByLogin($data['login']);
 
             if (! $login || ! password_verify($data['password'], $login['userpassword'])) {
-                session()->setFlashdata('error', 'Email atau password yang Anda masukkan salah. Silakan coba lagi.');
+                session()->setFlashdata('error', 'ID, username, email, atau password salah. Silakan coba lagi.');
                 return redirect()->to('/user/login')->withInput();
             }
 
@@ -56,7 +55,7 @@ class User extends BaseController
             return redirect()->to('/admin/artikel');
         }
 
-        return view('user/login', ['title' => 'Login']);
+        return view('user/login', ['title' => 'Login Admin']);
     }
 
     public function register()
@@ -69,9 +68,9 @@ class User extends BaseController
 
         if ($this->request->getMethod() === 'POST') {
             $rules = [
-                'username'         => 'required|min_length[3]|max_length[50]',
+                'username'         => 'required|max_length[50]',
                 'email'            => 'required|valid_email|is_unique[user.useremail]',
-                'password'         => 'required|min_length[6]',
+                'password'         => 'required',
                 'confirm_password' => 'required|matches[password]',
             ];
 
@@ -96,7 +95,7 @@ class User extends BaseController
                 'userpassword' => password_hash($data['password'], PASSWORD_DEFAULT),
             ]);
 
-            session()->setFlashdata('success', 'Akun berhasil dibuat. Silakan login dengan akun baru Anda.');
+            session()->setFlashdata('success', 'Akun berhasil dibuat. Silakan login menggunakan ID, username, atau email.');
             return redirect()->to('/user/login');
         }
 
@@ -109,29 +108,29 @@ class User extends BaseController
 
         if ($this->request->getMethod() === 'POST') {
             $rules = [
-                'email'            => 'required|valid_email',
-                'new_password'     => 'required|min_length[6]',
+                'login'            => 'required',
+                'new_password'     => 'required',
                 'confirm_password' => 'required|matches[new_password]',
             ];
 
             $data = [
-                'email'            => trim((string) $this->request->getPost('email')),
+                'login'            => trim((string) $this->request->getPost('login')),
                 'new_password'     => (string) $this->request->getPost('new_password'),
                 'confirm_password' => (string) $this->request->getPost('confirm_password'),
             ];
 
             if (! $this->validateData($data, $rules)) {
                 return view('user/forgot_password', [
-                    'title'      => 'Lupa Password',
+                    'title'      => 'Ubah Password',
                     'validation' => $this->validator,
                 ]);
             }
 
             $model = new UserModel();
-            $user = $model->where('useremail', $data['email'])->first();
+            $user = $this->findUserByLogin($data['login']);
 
             if (! $user) {
-                session()->setFlashdata('error', 'Email belum terdaftar. Silakan periksa lagi atau buat akun baru.');
+                session()->setFlashdata('error', 'Akun tidak ditemukan. Masukkan ID, username, atau email yang benar.');
                 return redirect()->to('/user/forgot-password')->withInput();
             }
 
@@ -143,12 +142,35 @@ class User extends BaseController
             return redirect()->to('/user/login');
         }
 
-        return view('user/forgot_password', ['title' => 'Lupa Password']);
+        return view('user/forgot_password', ['title' => 'Ubah Password']);
     }
 
     public function logout()
     {
         session()->destroy();
         return redirect()->to('/user/login');
+    }
+
+    private function findUserByLogin(string $login): ?array
+    {
+        $model = new UserModel();
+        $login = trim($login);
+
+        if ($login === '') {
+            return null;
+        }
+
+        if (ctype_digit($login)) {
+            $user = $model->find((int) $login);
+            if ($user) {
+                return $user;
+            }
+        }
+
+        if (str_contains($login, '@')) {
+            return $model->where('useremail', $login)->first();
+        }
+
+        return $model->where('username', $login)->first();
     }
 }

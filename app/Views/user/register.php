@@ -9,7 +9,7 @@
 <body class="auth-page">
     <div class="auth-card">
         <h1>Buat Akun</h1>
-        <p>Silakan isi data berikut untuk membuat akun baru.</p>
+        <p>Silakan isi data berikut untuk membuat akun baru. Password boleh pendek untuk kebutuhan pembelajaran lokal.</p>
 
         <?php if (session()->getFlashdata('error')): ?>
             <div class="alert alert-danger"><?= esc(session()->getFlashdata('error')) ?></div>
@@ -31,7 +31,7 @@
             </div>
             <div class="form-group">
                 <label for="password">Password</label>
-                <input id="password" type="password" name="password" placeholder="Minimal 6 karakter">
+                <input id="password" type="password" name="password" placeholder="Boleh 1 huruf/angka, contoh: 1">
             </div>
             <div class="form-group">
                 <label for="confirm_password">Konfirmasi Password</label>

@@ -8,8 +8,8 @@
 </head>
 <body class="auth-page">
     <div class="auth-card">
-        <h1>Lupa Password</h1>
-        <p>Masukkan email yang terdaftar lalu buat password baru.</p>
+        <h1>Ubah Password</h1>
+        <p>Masukkan ID, username, atau email yang terdaftar lalu buat password baru. Password boleh pendek untuk pembelajaran lokal.</p>
 
         <?php if (session()->getFlashdata('success')): ?>
             <div class="alert alert-success"><?= esc(session()->getFlashdata('success')) ?></div>
@@ -26,12 +26,12 @@
         <form action="" method="post">
             <?= csrf_field() ?>
             <div class="form-group">
-                <label for="email">Email Terdaftar</label>
-                <input id="email" type="email" name="email" value="<?= old('email') ?>" placeholder="contoh@email.com">
+                <label for="login">ID / Username / Email</label>
+                <input id="login" type="text" name="login" value="<?= old('login') ?>" placeholder="Contoh: 1, admin, atau admin@email.com">
             </div>
             <div class="form-group">
                 <label for="new_password">Password Baru</label>
-                <input id="new_password" type="password" name="new_password" placeholder="Minimal 6 karakter">
+                <input id="new_password" type="password" name="new_password" placeholder="Boleh 1 huruf/angka, contoh: 1">
             </div>
             <div class="form-group">
                 <label for="confirm_password">Konfirmasi Password Baru</label>

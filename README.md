@@ -1,7 +1,7 @@
 # Lab7Web
 
 Repository ini untuk mencatat progress dari praktikum **Pemrograman Web 2** menggunakan **CodeIgniter 4**.  
-Proses ini dilakukan secara bertahap dari **Praktikum 1** Hingga **Praktikum 4**, dimulai dari instalasi framework, pembuatan routing dan tampilan dasar, pengembangan fitur **CRUD artikel**, penerapan **View Layout** dan **View Cell**, hingga pembuatan **modul login** untuk membatasi akses halaman admin, serta penerapan **pagination** dan **pencarian** pada halaman admin artikel.
+Proses ini dilakukan secara bertahap dari **Praktikum 1** hingga **Praktikum 8**, dimulai dari instalasi framework, pembuatan routing dan tampilan dasar, pengembangan fitur **CRUD artikel**, penerapan **View Layout** dan **View Cell**, hingga pembuatan **modul login** untuk membatasi akses halaman admin, serta penerapan **pagination** dan **pencarian** pada halaman admin artikel.
 
 ## Teknologi yang Digunakan
 - PHP 8
@@ -17,6 +17,9 @@ Proses ini dilakukan secara bertahap dari **Praktikum 1** Hingga **Praktikum 4**
 3. Praktikum 3: View Layout dan View Cell
 4. Praktikum 4: Framework Lanjutan (Modul Login)
 5. Praktikum 5: Pagination dan Pencarian
+6. Praktikum 6: Relasi Tabel dan Query Builder
+7. Praktikum 7: Upload File Gambar
+8. Praktikum 8: AJAX
 
 ---
 
@@ -437,5 +440,118 @@ Progress pada praktikum ini adalah:
 
 ---
 
+
+---
+
+# Praktikum 6: Relasi Tabel dan Query Builder
+
+## Tujuan
+Praktikum ini menambahkan relasi **One-to-Many** antara tabel `kategori` dan tabel `artikel`. Satu kategori dapat memiliki banyak artikel, sedangkan setiap artikel menyimpan foreign key `id_kategori`.
+
+## Perubahan yang Diterapkan
+- Menambahkan `KategoriModel.php`.
+- Menambahkan field `id_kategori` pada `ArtikelModel.php`.
+- Menggunakan `join()` untuk menampilkan `nama_kategori` pada halaman artikel dan admin.
+- Menambahkan filter kategori pada halaman admin dan halaman depan.
+- Menampilkan kategori pada halaman detail artikel.
+- Menambahkan migration `2026-05-15-000001_UpdateArtikelKategoriGambar.php`.
+
+## Cara Menjalankan Update Database
+Gunakan salah satu cara berikut:
+
+```bash
+php spark migrate
+```
+
+atau import file:
+
+```text
+database_update_praktikum_6_7_8.sql
+```
+
+---
+
+# Praktikum 7: Upload File Gambar
+
+## Tujuan
+Praktikum ini menambahkan fitur upload gambar pada artikel.
+
+## Perubahan yang Diterapkan
+- Form tambah artikel memakai `enctype="multipart/form-data"`.
+- Form edit artikel dapat mengganti gambar lama.
+- Gambar disimpan di folder `public/gambar`.
+- Controller melakukan validasi tipe file gambar dan ukuran maksimal 2 MB.
+- Halaman admin, halaman daftar artikel, dan detail artikel menampilkan gambar jika tersedia.
+
+---
+
+# Praktikum 8: AJAX
+
+## Tujuan
+Praktikum ini menambahkan halaman pengelolaan artikel berbasis AJAX agar data dapat dimuat, ditambah, diubah, dan dihapus tanpa reload halaman penuh.
+
+## Perubahan yang Diterapkan
+- Menambahkan `AjaxController.php`.
+- Menambahkan view `app/Views/ajax/index.php`.
+- Menambahkan jQuery lokal di `public/assets/js/jquery-3.7.1.min.js`.
+- Menambahkan route `/ajax`, `/ajax/getData`, `/ajax/create`, `/ajax/update/{id}`, dan `/ajax/delete/{id}`.
+- Halaman AJAX dilindungi filter `auth`, sehingga harus login terlebih dahulu.
+
+## Cara Membuka
+Login sebagai admin, lalu buka:
+
+```text
+http://localhost:8080/ajax
+```
+
+atau klik tombol **Dashboard** pada header setelah login.
+
+---
+
+# Catatan Folder Materi PDF
+
+Agar ukuran ZIP tetap kecil, folder `file` di root project dibuat dalam keadaan kosong. Pindahkan PDF materi ke:
+
+```text
+Lab7Web-2/file/
+```
+
+Nama file PDF harus sama dengan daftar yang ada pada method `getMateriList()` di `app/Controllers/Artikel.php`, misalnya:
+
+```text
+Modul Praktikum 7.pdf
+Modul Praktikum 8.pdf
+Mastering_CI4_AJAX.pdf
+07 Blueprint_Relasi_CI4.pdf
+```
+
+Jika file belum dipindahkan, tombol download pada halaman materi akan menampilkan status **PDF belum dipindahkan**.
+
 # END
 
+
+## Update Tambahan: Dashboard dan Login Praktikum
+
+Perubahan tambahan untuk memudahkan penggunaan aplikasi:
+
+1. Menu **AJAX** pada navigasi diganti menjadi **Dashboard** agar tampil seperti halaman pengelolaan milik website, bukan sekadar halaman praktikum.
+2. Judul halaman **Praktikum 8: AJAX Artikel** diganti menjadi **Dashboard Pengelolaan Artikel**.
+3. Isi halaman dashboard dibuat lebih natural sebagai halaman admin untuk mengelola artikel.
+4. Login admin sekarang bisa menggunakan salah satu dari:
+   - ID user, contoh: `1`
+   - username, contoh: `admin`
+   - email, contoh: `admin@email.com`
+5. Password untuk kebutuhan pembelajaran lokal boleh pendek, termasuk 1 karakter.
+6. Akun bawaan:
+   - ID: `1`
+   - Username: `admin`
+   - Email: `admin@email.com`
+   - Password: `1`
+
+Jika data lama masih digunakan, jalankan:
+
+```bash
+php spark migrate
+```
+
+atau jalankan `database_update_praktikum_6_7_8.sql` melalui phpMyAdmin.
