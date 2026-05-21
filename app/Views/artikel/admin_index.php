@@ -29,7 +29,8 @@
     <?php endif; ?>
 </form>
 
-<table class="table">
+<div class="table-responsive admin-table-wrap">
+<table class="table admin-article-table">
     <thead>
         <tr>
             <th>ID</th>
@@ -45,16 +46,16 @@
             <?php foreach ($artikel as $row): ?>
                 <tr>
                     <td><?= esc((string) $row['id']); ?></td>
-                    <td>
+                    <td class="image-cell">
                         <?php if (! empty($row['gambar'])): ?>
                             <img class="table-thumb" src="<?= base_url('/gambar/' . $row['gambar']); ?>" alt="<?= esc($row['judul']); ?>">
                         <?php else: ?>
                             <span class="muted-text">Tidak ada</span>
                         <?php endif; ?>
                     </td>
-                    <td>
+                    <td class="title-cell">
                         <b><?= esc($row['judul']); ?></b>
-                        <p><small><?= esc(substr($row['isi'], 0, 80)); ?></small></p>
+                        <p><small><?= esc(strlen((string) $row['isi']) > 90 ? substr((string) $row['isi'], 0, 90) . '...' : (string) $row['isi']); ?></small></p>
                     </td>
                     <td><?= esc($row['nama_kategori'] ?: 'Tanpa Kategori'); ?></td>
                     <td><?= ((int) ($row['status'] ?? 0) === 1) ? 'Aktif' : 'Draft'; ?></td>
@@ -76,6 +77,7 @@
         <?php endif; ?>
     </tbody>
 </table>
+</div>
 
 <?php if (isset($pager)): ?>
     <div class="pagination-wrap">

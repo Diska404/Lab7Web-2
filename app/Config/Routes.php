@@ -37,9 +37,13 @@ $routes->post('/ajax/create', 'AjaxController::create', ['filter' => 'auth']);
 $routes->post('/ajax/update/(:num)', 'AjaxController::update/$1', ['filter' => 'auth']);
 $routes->post('/ajax/delete/(:num)', 'AjaxController::delete/$1', ['filter' => 'auth']);
 
+
+// REST API Praktikum 10: menghasilkan endpoint GET, POST, PUT/PATCH, dan DELETE untuk data artikel.
+$routes->resource('post');
+
 $routes->group('admin', ['filter' => 'auth'], static function ($routes) {
     $routes->get('artikel', 'Artikel::admin_index');
     $routes->match(['GET', 'POST'], 'artikel/add', 'Artikel::add');
     $routes->match(['GET', 'POST'], 'artikel/edit/(:num)', 'Artikel::edit/$1');
-    $routes->match(['GET', 'POST'], 'artikel/delete/(:num)', 'Artikel::delete/$1');
+    $routes->post('artikel/delete/(:num)', 'Artikel::delete/$1');
 });

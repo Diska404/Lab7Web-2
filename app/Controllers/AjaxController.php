@@ -154,8 +154,26 @@ class AjaxController extends BaseController
 
     private function readPayload(): array
     {
-        $json = $this->request->getJSON(true);
-        $input = is_array($json) ? $json : $this->request->getPost();
+        // Form Dashboard mengirim multipart/form-data karena mendukung upload gambar.
+        // Jangan langsung memanggil getJSON() untuk multipart, karena CI4 akan mencoba
+        // parse body non-JSON dan memunculkan error: "Failed to parse JSON string".
+        $contentType = strtolower((string) $this->request->getHeaderLine('Content-Type'));
+        $input = [];
+
+        if (str_contains($contentType, 'application/json')) {
+            try {
+                $json = $this->request->getJSON(true);
+                if (is_array($json)) {
+                    $input = $json;
+                }
+            } catch (\Throwable $e) {
+                $input = [];
+            }
+        }
+
+        if ($input === []) {
+            $input = $this->request->getPost();
+        }
 
         return [
             'judul'       => trim((string) ($input['judul'] ?? '')),

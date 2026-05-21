@@ -2,9 +2,6 @@
 
 <?= $this->section('content') ?>
 <?php
-$jumlahMateri = is_countable($materi ?? []) ? count($materi) : 0;
-$jumlahArtikel = is_countable($artikel ?? []) ? count($artikel) : 0;
-$jumlahKategori = is_countable($kategoriList ?? []) ? count($kategoriList) : 0;
 $materiTipeAktif = $materiTipeAktif ?? '';
 $materiKategoriAktif = $materiKategoriAktif ?? '';
 
@@ -16,79 +13,57 @@ $materiFilterUrl = static function (array $params = []): string {
 };
 
 $judulMateriSection = 'Materi belajar versi web';
-$deskripsiMateriSection = 'Daftar materi ini sudah diurutkan rapi. Gunakan shortcut Pertemuan atau Praktikum agar materi lebih mudah ditemukan.';
+$deskripsiMateriSection = 'Kumpulan materi kuliah dan praktikum yang dapat dibaca langsung melalui halaman web.';
 
 if ($materiTipeAktif === 'pertemuan') {
     $judulMateriSection = 'Materi pertemuan kuliah';
-    $deskripsiMateriSection = 'Kumpulan materi pertemuan diurutkan dari pertemuan awal sampai materi terbaru.';
+    $deskripsiMateriSection = 'Daftar materi pertemuan diurutkan dari pertemuan awal sampai materi terbaru.';
 } elseif ($materiTipeAktif === 'praktikum') {
     $judulMateriSection = 'Materi praktikum';
-    $deskripsiMateriSection = 'Kumpulan modul praktikum diurutkan dari praktikum awal sampai praktikum terbaru.';
+    $deskripsiMateriSection = 'Daftar modul praktikum diurutkan dari praktikum awal sampai praktikum terbaru.';
 }
 ?>
 
-<section class="content-hero article-landing-hero">
-    <div class="hero-copy">
-        <span class="hero-eyebrow">Portal Pembelajaran</span>
-        <h1>Pusat Artikel & Materi Pemrograman Web</h1>
-        <p>Jelajahi materi kuliah, modul praktikum, dan artikel pembelajaran dalam satu halaman yang lebih rapi, mudah dicari, dan nyaman dibaca.</p>
-        <div class="hero-actions">
-            <a href="#materi-kuliah-web" class="btn btn-primary">Lihat Materi</a>
-            <a href="#daftar-artikel-web" class="btn btn-secondary">Lihat Artikel</a>
-        </div>
-    </div>
-    <div class="hero-stats" aria-label="Ringkasan konten">
-        <div class="stat-card">
-            <strong><?= esc((string) $jumlahMateri); ?></strong>
-            <span>Materi</span>
-        </div>
-        <div class="stat-card">
-            <strong><?= esc((string) $jumlahArtikel); ?></strong>
-            <span>Artikel</span>
-        </div>
-        <div class="stat-card">
-            <strong><?= esc((string) $jumlahKategori); ?></strong>
-            <span>Kategori</span>
-        </div>
-    </div>
+<h1>Daftar Artikel</h1>
+<hr class="divider">
+
+<section class="intro-box reveal-item">
+    <h2>Materi dan artikel pembelajaran</h2>
+    <p>Halaman ini menggunakan tampilan dasar seperti template praktikum, namun tetap dilengkapi pencarian cepat, filter materi, transisi halaman, dan daftar artikel yang lebih mudah dibaca.</p>
+    <p>
+        <a href="#materi-kuliah-web" class="btn btn-primary">Lihat Materi</a>
+        <a href="#daftar-artikel-web" class="btn btn-secondary">Lihat Artikel</a>
+    </p>
 </section>
 
-<section class="content-toolbar" aria-label="Pencarian konten">
-    <div>
-        <span class="toolbar-label">Cari cepat</span>
-        <h2>Temukan materi atau artikel</h2>
-    </div>
-    <div class="search-control">
+<section class="search-box reveal-item" aria-label="Pencarian cepat">
+    <label for="contentSearch"><strong>Cari cepat</strong></label>
+    <div class="search-row">
         <input type="search" id="contentSearch" placeholder="Cari judul, kategori, atau topik..." autocomplete="off">
         <button type="button" id="clearContentSearch" class="btn btn-secondary">Reset</button>
     </div>
 </section>
 
 <?php if (! empty($materi)): ?>
-    <section class="content-section" id="materi-kuliah-web">
-        <div class="section-heading-row">
-            <div>
-                <span class="section-kicker">Materi Kuliah PDF</span>
-                <h2><?= esc($judulMateriSection); ?></h2>
-                <p><?= esc($deskripsiMateriSection); ?> Jika file PDF sudah dipindahkan ke folder <code>file</code>, tombol unduh akan aktif.</p>
-            </div>
-        </div>
+    <section class="content-section reveal-item" id="materi-kuliah-web">
+        <h2><?= esc($judulMateriSection); ?></h2>
+        <p><?= esc($deskripsiMateriSection); ?> Jika file PDF sudah dipindahkan ke folder <code>file</code>, tombol unduh akan aktif.</p>
 
-        <div class="materi-filter-panel" aria-label="Filter jenis materi">
+        <div class="filter-box" aria-label="Filter jenis materi">
             <div class="filter-row filter-row-primary">
-                <a href="<?= $materiFilterUrl(); ?>" class="kategori-filter-chip filter-chip-main <?= empty($materiTipeAktif) && empty($materiKategoriAktif) ? 'active' : ''; ?>">Semua Materi</a>
-                <a href="<?= $materiFilterUrl(['materi_tipe' => 'pertemuan']); ?>" class="kategori-filter-chip filter-chip-main <?= $materiTipeAktif === 'pertemuan' ? 'active' : ''; ?>">Materi Pertemuan</a>
-                <a href="<?= $materiFilterUrl(['materi_tipe' => 'praktikum']); ?>" class="kategori-filter-chip filter-chip-main <?= $materiTipeAktif === 'praktikum' ? 'active' : ''; ?>">Materi Praktikum</a>
+                <a href="<?= $materiFilterUrl(); ?>" class="filter-chip <?= empty($materiTipeAktif) && empty($materiKategoriAktif) ? 'active' : ''; ?>">Semua Materi</a>
+                <a href="<?= $materiFilterUrl(['materi_tipe' => 'pertemuan']); ?>" class="filter-chip <?= $materiTipeAktif === 'pertemuan' ? 'active' : ''; ?>">Materi Pertemuan</a>
+                <a href="<?= $materiFilterUrl(['materi_tipe' => 'praktikum']); ?>" class="filter-chip <?= $materiTipeAktif === 'praktikum' ? 'active' : ''; ?>">Materi Praktikum</a>
             </div>
 
             <?php if (! empty($materiKategoriList)): ?>
                 <div class="filter-row filter-row-secondary">
-                    <span class="filter-row-caption">Shortcut:</span>
-                    <a href="<?= $materiFilterUrl(['materi_tipe' => $materiTipeAktif]); ?>" class="kategori-filter-chip filter-chip-sub <?= empty($materiKategoriAktif) ? 'active' : ''; ?>">
+                    <span class="filter-caption">Shortcut:</span>
+                    <a href="<?= $materiFilterUrl(['materi_tipe' => $materiTipeAktif]); ?>" class="filter-chip small <?= empty($materiKategoriAktif) ? 'active' : ''; ?>">
                         <?= $materiTipeAktif === 'pertemuan' ? 'Semua Pertemuan' : ($materiTipeAktif === 'praktikum' ? 'Semua Praktikum' : 'Semua Label'); ?>
                     </a>
                     <?php foreach ($materiKategoriList as $slug => $label): ?>
-                        <a href="<?= $materiFilterUrl(['materi_tipe' => $materiTipeAktif, 'materi_kategori' => $slug]); ?>" class="kategori-filter-chip filter-chip-sub <?= ($materiKategoriAktif === $slug) ? 'active' : ''; ?>">
+                        <a href="<?= $materiFilterUrl(['materi_tipe' => $materiTipeAktif, 'materi_kategori' => $slug]); ?>" class="filter-chip small <?= ($materiKategoriAktif === $slug) ? 'active' : ''; ?>">
                             <?= esc($label); ?>
                         </a>
                     <?php endforeach; ?>
@@ -96,54 +71,42 @@ if ($materiTipeAktif === 'pertemuan') {
             <?php endif; ?>
         </div>
 
-        <div class="materi-grid modern-card-grid" data-search-group="content">
+        <div class="materi-grid" data-search-group="content">
             <?php foreach ($materi as $item): ?>
                 <?php
                 $searchText = strtolower(($item['label'] ?? '') . ' ' . ($item['judul'] ?? '') . ' ' . ($item['deskripsi'] ?? '') . ' ' . ($item['filename'] ?? ''));
                 ?>
-                <article class="materi-card modern-materi-card searchable-card" data-search-text="<?= esc($searchText); ?>">
-                    <div class="card-topline">
+                <article class="materi-card searchable-card" data-search-text="<?= esc($searchText); ?>">
+                    <div class="materi-card-head">
                         <span class="materi-chip"><?= esc($item['label']); ?></span>
                         <?= ! empty($item['available']) ? '<span class="file-status ok">PDF tersedia</span>' : '<span class="file-status missing">PDF belum ada</span>'; ?>
                     </div>
-
-                    <h3 class="materi-title">
-                        <a href="<?= base_url('/artikel/materi/' . $item['slug']); ?>" class="materi-title-link">
-                            <?= esc($item['judul']); ?>
-                        </a>
-                    </h3>
-
-                    <p class="materi-desc clamp-3"><?= esc($item['deskripsi']); ?></p>
-                    <p class="materi-file">File: <span><?= esc($item['filename']); ?></span></p>
-
-                    <div class="materi-actions">
+                    <h3><a href="<?= base_url('/artikel/materi/' . $item['slug']); ?>"><?= esc($item['judul']); ?></a></h3>
+                    <p class="materi-desc"><?= esc($item['deskripsi']); ?></p>
+                    <p class="materi-file">File: <strong><?= esc($item['filename']); ?></strong></p>
+                    <p class="materi-actions">
                         <a href="<?= base_url('/artikel/materi/' . $item['slug']); ?>" class="btn btn-primary">Buka Materi</a>
                         <?php if (! empty($item['available'])): ?>
                             <a href="<?= base_url('/artikel/download/' . $item['slug']); ?>" class="btn btn-secondary">Unduh PDF</a>
                         <?php else: ?>
-                            <span class="btn btn-disabled">PDF belum dipindahkan</span>
+                            <span class="btn btn-disabled">PDF belum ada</span>
                         <?php endif; ?>
-                    </div>
+                    </p>
                 </article>
             <?php endforeach; ?>
         </div>
     </section>
 <?php endif; ?>
 
-<section class="content-section" id="daftar-artikel-web">
-    <div class="section-heading-row">
-        <div>
-            <span class="section-kicker">Artikel Web</span>
-            <h2>Daftar artikel pembelajaran</h2>
-            <p>Artikel dari database ditampilkan bersama kategori yang berelasi. Gunakan filter kategori atau pencarian untuk menemukan konten tertentu.</p>
-        </div>
-    </div>
+<section class="content-section reveal-item" id="daftar-artikel-web">
+    <h2>Daftar Artikel</h2>
+    <p>Bagian ini menampilkan artikel dari database beserta kategori yang berelasi.</p>
 
     <?php if (! empty($kategoriList)): ?>
-        <div class="kategori-filter-list modern-filter">
-            <a href="<?= base_url('/artikel'); ?>#daftar-artikel-web" class="kategori-filter-chip <?= empty($kategoriAktif) ? 'active' : ''; ?>">Semua Artikel</a>
+        <div class="kategori-filter-list">
+            <a href="<?= base_url('/artikel'); ?>#daftar-artikel-web" class="filter-chip <?= empty($kategoriAktif) ? 'active' : ''; ?>">Semua Artikel</a>
             <?php foreach ($kategoriList as $kategori): ?>
-                <a href="<?= base_url('/artikel?kategori=' . $kategori['slug_kategori']); ?>#daftar-artikel-web" class="kategori-filter-chip <?= ($kategoriAktif === $kategori['slug_kategori']) ? 'active' : ''; ?>">
+                <a href="<?= base_url('/artikel?kategori=' . $kategori['slug_kategori']); ?>#daftar-artikel-web" class="filter-chip <?= ($kategoriAktif === $kategori['slug_kategori']) ? 'active' : ''; ?>">
                     <?= esc($kategori['nama_kategori']); ?>
                 </a>
             <?php endforeach; ?>
@@ -151,47 +114,32 @@ if ($materiTipeAktif === 'pertemuan') {
     <?php endif; ?>
 
     <?php if ($artikel): ?>
-        <div class="article-list-modern" data-search-group="content">
+        <div class="article-list" data-search-group="content">
             <?php foreach ($artikel as $row): ?>
                 <?php
                 $kategoriArtikel = $row['nama_kategori'] ?: 'Tanpa Kategori';
                 $searchText = strtolower(($row['judul'] ?? '') . ' ' . ($row['isi'] ?? '') . ' ' . $kategoriArtikel);
                 $ringkasan = trim(strip_tags((string) ($row['isi'] ?? '')));
-                if (strlen($ringkasan) > 170) {
-                    $ringkasan = substr($ringkasan, 0, 170) . '...';
+                if (strlen($ringkasan) > 190) {
+                    $ringkasan = substr($ringkasan, 0, 190) . '...';
                 }
                 ?>
-                <article class="article-card article-card-modern searchable-card" data-search-text="<?= esc($searchText); ?>">
-                    <a href="<?= base_url('/artikel/' . $row['slug']); ?>" class="article-thumb" aria-label="Buka artikel <?= esc($row['judul']); ?>">
-                        <?php if (! empty($row['gambar'])): ?>
-                            <img src="<?= base_url('/gambar/' . $row['gambar']); ?>" alt="<?= esc($row['judul']); ?>">
-                        <?php else: ?>
-                            <span><?= esc(strtoupper(substr((string) $row['judul'], 0, 1))); ?></span>
-                        <?php endif; ?>
-                    </a>
-
-                    <div class="article-card-body">
-                        <div class="article-meta-row">
-                            <span class="article-category-badge"><?= esc($kategoriArtikel); ?></span>
-                            <span class="article-meta-text">Artikel Pembelajaran</span>
-                        </div>
-
-                        <h3>
-                            <a href="<?= base_url('/artikel/' . $row['slug']); ?>"><?= esc($row['judul']); ?></a>
-                        </h3>
-                        <p class="article-excerpt"><?= esc($ringkasan !== '' ? $ringkasan : 'Belum ada ringkasan artikel.'); ?></p>
-
-                        <div class="article-card-footer">
-                            <a href="<?= base_url('/artikel/' . $row['slug']); ?>" class="read-more-link">Baca Selengkapnya</a>
-                        </div>
-                    </div>
+                <article class="entry searchable-card" data-search-text="<?= esc($searchText); ?>">
+                    <?php if (! empty($row['gambar'])): ?>
+                        <img class="entry-thumb" src="<?= base_url('/gambar/' . $row['gambar']); ?>" alt="<?= esc($row['judul']); ?>">
+                    <?php endif; ?>
+                    <h2><a href="<?= base_url('/artikel/' . $row['slug']); ?>"><?= esc($row['judul']); ?></a></h2>
+                    <p class="article-meta">Kategori: <strong><?= esc($kategoriArtikel); ?></strong></p>
+                    <p><?= esc($ringkasan !== '' ? $ringkasan : 'Belum ada ringkasan artikel.'); ?></p>
+                    <p><a href="<?= base_url('/artikel/' . $row['slug']); ?>" class="read-more-link">Baca Selengkapnya</a></p>
                 </article>
+                <hr class="divider" />
             <?php endforeach; ?>
         </div>
     <?php else: ?>
-        <article class="empty-state-card">
-            <h3>Belum ada data artikel pada kategori ini.</h3>
-            <p>Silakan tambahkan artikel melalui dashboard atau pilih kategori lain.</p>
+        <article class="entry empty-state-card">
+            <h2>Belum ada data.</h2>
+            <p>Silakan tambahkan artikel melalui halaman admin.</p>
         </article>
     <?php endif; ?>
 </section>

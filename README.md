@@ -1,7 +1,7 @@
 # Lab7Web
 
 Repository ini untuk mencatat progress dari praktikum **Pemrograman Web 2** menggunakan **CodeIgniter 4**.  
-Proses ini dilakukan secara bertahap dari **Praktikum 1** hingga **Praktikum 8**, dimulai dari instalasi framework, pembuatan routing dan tampilan dasar, pengembangan fitur **CRUD artikel**, penerapan **View Layout** dan **View Cell**, hingga pembuatan **modul login** untuk membatasi akses halaman admin, serta penerapan **pagination** dan **pencarian** pada halaman admin artikel.
+Proses ini dilakukan secara bertahap dari **Praktikum 1** hingga **Praktikum 10**, dimulai dari instalasi framework, pembuatan routing dan tampilan dasar, pengembangan fitur **CRUD artikel**, penerapan **View Layout** dan **View Cell**, hingga pembuatan **modul login** untuk membatasi akses halaman admin, penerapan **pagination** dan **pencarian**, AJAX dashboard, serta REST API artikel untuk kebutuhan integrasi data.
 
 ## Teknologi yang Digunakan
 - PHP 8
@@ -20,6 +20,7 @@ Proses ini dilakukan secara bertahap dari **Praktikum 1** hingga **Praktikum 8**
 6. Praktikum 6: Relasi Tabel dan Query Builder
 7. Praktikum 7: Upload File Gambar
 8. Praktikum 8: AJAX
+9. Praktikum 10: API / REST API
 
 ---
 
@@ -469,12 +470,34 @@ atau import file:
 database_update_praktikum_6_7_8.sql
 ```
 
+## Dokumentasi Screenshot
+
+### 1. Halaman Artikel Publik
+Halaman artikel publik menampilkan daftar materi dan artikel yang sudah terhubung dengan kategori.
+
+> ![Halaman Artikel Publik](Screenshot/praktikum6_01_halaman_artikel_publik.png)
+
+### 2. Dashboard/Form Artikel dengan Kategori
+Form pengelolaan artikel sudah memiliki pilihan kategori sehingga artikel dapat disimpan berdasarkan kategori tertentu.
+
+> ![Dashboard Form Artikel Kategori](Screenshot/praktikum6_02_dashboard_form_artikel_kategori.png)
+
+### 3. Tabel Artikel dengan id_kategori
+Tabel `artikel` sudah memiliki kolom `id_kategori` sebagai penghubung ke tabel kategori.
+
+> ![Tabel Artikel id_kategori](Screenshot/praktikum6_03_tabel_artikel_id_kategori.png)
+
+### 4. Tabel Kategori
+Tabel `kategori` digunakan sebagai data master kategori artikel.
+
+> ![Tabel Kategori](Screenshot/praktikum6_04_tabel_kategori.png)
+
 ---
 
 # Praktikum 7: Upload File Gambar
 
 ## Tujuan
-Praktikum ini menambahkan fitur upload gambar pada artikel.
+Praktikum ini menambahkan fitur upload gambar pada artikel. Gambar digunakan untuk melengkapi konten artikel agar tampilan artikel menjadi lebih informatif.
 
 ## Perubahan yang Diterapkan
 - Form tambah artikel memakai `enctype="multipart/form-data"`.
@@ -482,6 +505,18 @@ Praktikum ini menambahkan fitur upload gambar pada artikel.
 - Gambar disimpan di folder `public/gambar`.
 - Controller melakukan validasi tipe file gambar dan ukuran maksimal 2 MB.
 - Halaman admin, halaman daftar artikel, dan detail artikel menampilkan gambar jika tersedia.
+
+## Dokumentasi Screenshot
+
+### 1. Form Upload Gambar
+Form tambah artikel sudah memiliki input file untuk memilih gambar artikel.
+
+> ![Form Upload Gambar](Screenshot/praktikum7_01_form_upload_gambar.png)
+
+### 2. Gambar Tampil pada Daftar Artikel Admin
+Setelah artikel ditambahkan, gambar tampil dalam bentuk thumbnail pada daftar artikel admin.
+
+> ![Gambar Tampil di Admin](Screenshot/praktikum7_03_gambar_tampil_di_admin.png)
 
 ---
 
@@ -496,6 +531,7 @@ Praktikum ini menambahkan halaman pengelolaan artikel berbasis AJAX agar data da
 - Menambahkan jQuery lokal di `public/assets/js/jquery-3.7.1.min.js`.
 - Menambahkan route `/ajax`, `/ajax/getData`, `/ajax/create`, `/ajax/update/{id}`, dan `/ajax/delete/{id}`.
 - Halaman AJAX dilindungi filter `auth`, sehingga harus login terlebih dahulu.
+- Form AJAX mendukung upload gambar menggunakan `FormData`.
 
 ## Cara Membuka
 Login sebagai admin, lalu buka:
@@ -505,6 +541,23 @@ http://localhost:8080/ajax
 ```
 
 atau klik tombol **Dashboard** pada header setelah login.
+
+## Dokumentasi Screenshot
+
+### 1. Dashboard AJAX
+Halaman dashboard digunakan untuk mengelola artikel melalui AJAX.
+
+> ![Dashboard AJAX](Screenshot/praktikum8_01_dashboard_ajax.png)
+
+### 2. Artikel Berhasil Ditambahkan Melalui AJAX
+Setelah tombol simpan ditekan, sistem menampilkan pesan berhasil dan data artikel tersimpan.
+
+> ![Artikel Berhasil Ditambahkan AJAX](Screenshot/praktikum8_02_artikel_berhasil_ditambah_ajax.png)
+
+### 3. Data Artikel Tampil pada Tabel AJAX
+Artikel yang sudah ditambahkan muncul pada tabel tanpa perlu reload halaman penuh.
+
+> ![Data Artikel Tampil AJAX](Screenshot/praktikum8_03_data_artikel_tampil_ajax.png)
 
 ---
 
@@ -523,11 +576,84 @@ Modul Praktikum 7.pdf
 Modul Praktikum 8.pdf
 Mastering_CI4_AJAX.pdf
 07 Blueprint_Relasi_CI4.pdf
+Modul Praktikum 10.pdf
+CI4_REST_API_Development.pdf
 ```
 
 Jika file belum dipindahkan, tombol download pada halaman materi akan menampilkan status **PDF belum dipindahkan**.
 
-# END
+---
+
+# Praktikum 10: API / REST API
+
+## Tujuan
+Praktikum ini menambahkan **REST API** pada aplikasi artikel CodeIgniter 4 agar data artikel dapat diakses oleh aplikasi lain melalui format JSON. Materi ini mengikuti konsep REST Server dan REST Client, penggunaan HTTP method standar, serta pengujian endpoint menggunakan Postman.
+
+## Perubahan yang Diterapkan
+- Menambahkan controller baru `app/Controllers/Post.php`.
+- Controller `Post` menggunakan `ResourceController` dan `ResponseTrait` untuk menghasilkan response JSON.
+- Menambahkan route resource pada `app/Config/Routes.php`:
+
+```php
+$routes->resource('post');
+```
+
+- Menambahkan materi baru pada halaman materi web:
+  - `CI4_REST_API_Development.pdf` sebagai **Pertemuan 10**.
+  - `Modul Praktikum 10.pdf` sebagai **Praktikum 10**.
+
+## Endpoint API
+
+| Method | Endpoint | Fungsi |
+|---|---|---|
+| GET | `/post` | Menampilkan seluruh data artikel dalam format JSON |
+| GET | `/post/{id}` | Menampilkan detail artikel berdasarkan ID |
+| POST | `/post` | Menambahkan artikel baru |
+| PUT/PATCH | `/post/{id}` | Mengubah artikel berdasarkan ID |
+| DELETE | `/post/{id}` | Menghapus artikel berdasarkan ID |
+
+## Contoh Pengujian Postman
+
+Menampilkan semua artikel:
+
+```text
+GET http://localhost:8080/post
+```
+
+Menampilkan artikel tertentu:
+
+```text
+GET http://localhost:8080/post/1
+```
+
+Menambahkan artikel:
+
+```text
+POST http://localhost:8080/post
+Body x-www-form-urlencoded:
+judul = Artikel API Baru
+isi = Isi artikel API minimal sepuluh karakter.
+id_kategori = 1
+status = 1
+```
+
+Mengubah artikel:
+
+```text
+PUT http://localhost:8080/post/1
+Body x-www-form-urlencoded:
+judul = Artikel API Diubah
+isi = Isi artikel setelah diperbarui melalui REST API.
+```
+
+Menghapus artikel:
+
+```text
+DELETE http://localhost:8080/post/1
+```
+
+## Catatan
+Endpoint `/post` dibuat terbuka agar sesuai kebutuhan praktikum dan mudah diuji melalui Postman. Jika aplikasi nanti dipublikasikan secara online, endpoint tambah/ubah/hapus sebaiknya ditambahkan autentikasi atau token API.
 
 
 ## Update Tambahan: Dashboard dan Login Praktikum
@@ -555,3 +681,16 @@ php spark migrate
 ```
 
 atau jalankan `database_update_praktikum_6_7_8.sql` melalui phpMyAdmin.
+
+---
+
+## Update Optimasi Kode dan Dokumentasi
+
+Update ini tidak mengubah desain UI, tetapi berfokus pada perapihan logika dan dokumentasi:
+
+1. REST API `Post.php` diperbaiki agar aman menerima body `JSON`, `x-www-form-urlencoded`, maupun input dari Postman tanpa memunculkan error parsing JSON.
+2. Endpoint hapus artikel pada REST API ikut menghapus file gambar terkait agar tidak meninggalkan file gambar yang tidak terpakai.
+3. Route hapus artikel admin dibatasi menjadi request `POST`, karena tombol hapus di halaman admin sudah memakai form POST.
+4. README diperbarui dengan screenshot Praktikum 6, Praktikum 7, dan Praktikum 8 yang sudah tersedia di folder `Screenshot`.
+
+# END

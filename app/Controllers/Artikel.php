@@ -565,6 +565,40 @@ class Artikel extends BaseController
                     'points' => ['AjaxController', 'getData JSON', 'AJAX create', 'AJAX update', 'AJAX delete', 'reload table tanpa reload halaman'],
                 ]],
             ],
+            [
+                'slug' => 'rest-api-development-codeigniter-4',
+                'filename' => 'CI4_REST_API_Development.pdf',
+                'judul' => 'REST API Development di CodeIgniter 4',
+                'label' => 'Pertemuan 10',
+                'deskripsi' => 'Konsep REST API, arsitektur client-server, HTTP method, JSON response, dan pengujian endpoint menggunakan Postman.',
+                'ringkasan' => 'REST API membuat data artikel dapat diakses oleh aplikasi lain melalui endpoint berbasis JSON.',
+                'sections' => [[
+                    'heading' => 'Pokok Bahasan',
+                    'paragraphs' => ['REST API memisahkan client dan server. Client mengirim HTTP request ke endpoint, lalu server mengembalikan response dalam format JSON.'],
+                    'points' => ['REST client dan REST server', 'format JSON', 'GET /post', 'POST /post', 'PUT /post/{id}', 'DELETE /post/{id}', 'pengujian dengan Postman'],
+                ], [
+                    'heading' => 'Endpoint yang Tersedia',
+                    'paragraphs' => ['Pada update ini route resource post sudah ditambahkan sehingga endpoint API artikel bisa langsung diuji.'],
+                    'points' => ['GET /post untuk semua artikel', 'GET /post/{id} untuk artikel spesifik', 'POST /post untuk tambah artikel', 'PUT /post/{id} untuk ubah artikel', 'DELETE /post/{id} untuk hapus artikel'],
+                ]],
+            ],
+            [
+                'slug' => 'praktikum-10-api',
+                'filename' => 'Modul Praktikum 10.pdf',
+                'judul' => 'Modul Praktikum 10: API',
+                'label' => 'Praktikum 10',
+                'deskripsi' => 'Implementasi REST API pada CodeIgniter 4 menggunakan ResourceController, ResponseTrait, route resource, dan pengujian CRUD dengan Postman.',
+                'ringkasan' => 'Praktikum ini menambahkan controller API untuk menampilkan, menambah, mengubah, dan menghapus data artikel melalui HTTP request.',
+                'sections' => [[
+                    'heading' => 'Target Praktikum',
+                    'paragraphs' => ['Aplikasi memiliki REST Controller Post yang mengembalikan data artikel dalam format JSON dan dapat diuji melalui Postman.'],
+                    'points' => ['Membuat Post.php', 'menggunakan ResourceController', 'menggunakan ResponseTrait', 'menambahkan $routes->resource("post")', 'uji GET, POST, PUT, dan DELETE di Postman'],
+                ], [
+                    'heading' => 'Format Uji Coba',
+                    'paragraphs' => ['Gunakan x-www-form-urlencoded atau JSON body pada Postman untuk mengirim data artikel.'],
+                    'points' => ['judul: judul artikel', 'isi: isi artikel', 'id_kategori: opsional', 'status: 0 atau 1'],
+                ]],
+            ],
         ];
 
         foreach ($items as &$item) {
