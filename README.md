@@ -652,6 +652,55 @@ Menghapus artikel:
 DELETE http://localhost:8080/post/1
 ```
 
+
+## Dokumentasi Screenshot Praktikum 10
+
+### 1. Menampilkan Seluruh Data Artikel dengan Method GET
+
+Pengujian pertama dilakukan menggunakan method `GET` pada endpoint `/post`. Response yang dihasilkan berupa data artikel dalam format JSON dengan status `200 OK`, sehingga menunjukkan bahwa REST API berhasil membaca seluruh data artikel dari database.
+
+> ![GET Semua Artikel melalui REST API](Screenshot/praktikum10_01_get_semua_artikel.png.png)
+
+### 2. Menampilkan Detail Artikel Berdasarkan ID
+
+Pengujian selanjutnya menggunakan endpoint `/post/16` untuk mengambil satu data artikel secara spesifik. Response berhasil menampilkan artikel **Diagram Sistem** dalam format JSON dengan status `200 OK`.
+
+> ![GET Detail Artikel melalui REST API](Screenshot/praktikum10_02_get_detail_artikel.png.png)
+
+### 3. Menambahkan Artikel Menggunakan Method POST
+
+Artikel uji coba ditambahkan melalui endpoint `/post` menggunakan method `POST` dengan data `judul` dan `isi` melalui `x-www-form-urlencoded`. Response `201 Created` menunjukkan bahwa artikel berhasil dibuat dan memperoleh ID baru.
+
+> ![POST Tambah Artikel melalui REST API](Screenshot/praktikum10_03_post_tambah_artikel.png)
+
+### 4. Mengubah Artikel Menggunakan Method PUT
+
+Artikel uji coba kemudian diperbarui menggunakan method `PUT` pada endpoint `/post/17`. Judul artikel diubah menjadi **Artikel REST API Berhasil Diubah**, dan response `200 OK` menunjukkan proses perubahan berhasil dilakukan.
+
+> ![PUT Ubah Artikel melalui REST API](Screenshot/praktikum10_04_put_ubah_artikel.png)
+
+### 5. Validasi Hasil POST dan PUT pada Halaman Web
+
+Sebelum artikel dihapus, perubahan data diverifikasi melalui halaman web. Artikel hasil pengujian REST API berhasil muncul pada daftar artikel dengan judul terbaru, sehingga membuktikan bahwa proses `POST` dan `PUT` tidak hanya menghasilkan response JSON, tetapi juga tersimpan dan terbaca oleh tampilan aplikasi.
+
+> ![Validasi Artikel Tampil pada Daftar Web](Screenshot/praktikum10_06_validasi_artikel_tampil_di_daftar_web.png)
+
+Artikel juga dapat dibuka melalui tombol **Baca Selengkapnya**. Pada halaman detail, judul dan isi artikel telah sesuai dengan data terbaru yang dikirimkan melalui Postman.
+
+> ![Validasi Detail Artikel Hasil PUT](Screenshot/praktikum10_07_validasi_detail_artikel_hasil_put.png)
+
+### 6. Menghapus Artikel Menggunakan Method DELETE
+
+Setelah proses validasi tampilan selesai, artikel uji coba dihapus menggunakan method `DELETE` pada endpoint `/post/17`. Response `200 OK` dengan pesan **Data artikel berhasil dihapus** menunjukkan bahwa penghapusan melalui REST API telah berhasil.
+
+> ![DELETE Artikel melalui REST API](Screenshot/praktikum10_05_delete_artikel.png)
+
+### 7. Validasi Artikel Terhapus dari Halaman Web
+
+Setelah artikel dihapus melalui Postman, URL detail artikel yang sama diakses kembali melalui browser. Halaman menampilkan **404 Page Not Found** karena data artikel yang sebelumnya tersedia sudah berhasil dihapus dari aplikasi.
+
+> ![Validasi Artikel Terhapus dari Web](Screenshot/praktikum10_08_validasi_artikel_terhapus_dari_web.png)
+
 ## Catatan
 Endpoint `/post` dibuat terbuka agar sesuai kebutuhan praktikum dan mudah diuji melalui Postman. Jika aplikasi nanti dipublikasikan secara online, endpoint tambah/ubah/hapus sebaiknya ditambahkan autentikasi atau token API.
 

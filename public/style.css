@@ -784,3 +784,130 @@ input[type="submit"]:hover {
     padding: 7px 10px;
     font-size: 13px;
 }
+
+/* Patch: perbaikan ukuran gambar halaman Home dan Contact
+   Tujuan: menjaga template praktikum tetap sama, tetapi mencegah gambar/SVG terlalu besar
+   dan menimpa area sidebar. */
+.home-hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(220px, 360px);
+    gap: 24px;
+    align-items: center;
+    overflow: hidden;
+}
+
+.home-copy {
+    min-width: 0;
+}
+
+.home-logo-wrap {
+    width: 100%;
+    max-width: 360px;
+    margin-left: auto;
+    text-align: center;
+    overflow: hidden;
+}
+
+.home-logo {
+    display: block;
+    width: 100%;
+    max-width: 320px;
+    max-height: 320px;
+    height: auto;
+    margin: 0 auto;
+    object-fit: contain;
+}
+
+.contact-email-card {
+    margin-top: 24px;
+    display: grid;
+    grid-template-columns: 160px minmax(0, 1fr);
+    gap: 22px;
+    align-items: center;
+    padding: 18px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: #fff;
+    overflow: hidden;
+}
+
+.contact-gmail-icon {
+    width: 140px;
+    max-width: 100%;
+    margin: 0 auto;
+}
+
+.contact-gmail-icon svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-height: 120px;
+}
+
+.contact-email-content {
+    min-width: 0;
+}
+
+.contact-mini-badge {
+    display: inline-block;
+    padding: 5px 10px;
+    margin-bottom: 8px;
+    border-radius: 999px;
+    background: #edf5ff;
+    color: var(--primary);
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.contact-email-content h2 {
+    margin-bottom: 8px;
+}
+
+.contact-email-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+    margin-top: 12px;
+}
+
+.contact-email-link {
+    color: var(--primary);
+    word-break: break-all;
+    font-weight: bold;
+}
+
+.contact-email-btn {
+    display: inline-block;
+    padding: 8px 12px;
+    border-radius: 4px;
+    background: var(--primary);
+    color: #fff;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.contact-email-btn:hover {
+    background: var(--primary-dark);
+}
+
+@media (max-width: 900px) {
+    .home-hero,
+    .contact-email-card {
+        grid-template-columns: 1fr;
+    }
+
+    .home-logo-wrap {
+        max-width: 260px;
+        margin: 14px auto 0;
+    }
+
+    .home-logo {
+        max-width: 240px;
+        max-height: 240px;
+    }
+
+    .contact-gmail-icon {
+        width: 110px;
+    }
+}
