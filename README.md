@@ -1,3 +1,4 @@
+|---|---|
 | Nama | Diska Kurnia Azzahra Putra |
 | NIM | 312210369 |
 | Kelas | I241E |
