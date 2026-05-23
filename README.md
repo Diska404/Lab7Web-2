@@ -1,10 +1,10 @@
-| Identitas | Keterangan |
-|---|---|
-| Nama | Diska Kurnia Azzahra Putra |
-| NIM | 312210369 |
-| Kelas | I241E |
-| Mata Kuliah | Pemograman Web 2 |
-| Dosen Pengajar | Agung Nugroho, S.Kom., M.Kom., S.Kom., M. Kom |
+<table>
+  <tr><td><strong>Nama</strong></td><td>Diska Kurnia Azzahra Putra</td></tr>
+  <tr><td><strong>NIM</strong></td><td>312210369</td></tr>
+  <tr><td><strong>Kelas</strong></td><td>I241E</td></tr>
+  <tr><td><strong>Mata Kuliah</strong></td><td>Pemograman Web 2</td></tr>
+  <tr><td><strong>Dosen Pengajar</strong></td><td>Agung Nugroho, S.Kom., M.Kom., S.Kom., M. Kom</td></tr>
+</table>
 
 # Lab7Web
 
