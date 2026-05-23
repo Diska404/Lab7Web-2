@@ -1,3 +1,11 @@
+| Identitas | Keterangan |
+|---|---|
+| Nama | Diska Kurnia Azzahra Putra |
+| NIM | 312210369 |
+| Kelas | I241E |
+| Mata Kuliah | Pemograman Web 2 |
+| Dosen Pengajar | Agung Nugroho, S.Kom., M.Kom., S.Kom., M. Kom |
+
 # Lab7Web
 
 Repository ini untuk mencatat progress dari praktikum **Pemrograman Web 2** menggunakan **CodeIgniter 4**.  
