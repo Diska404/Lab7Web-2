@@ -22,6 +22,9 @@ $routes->match(['GET', 'POST'], '/user/forgot-password', 'User::forgotPassword')
 $routes->get('/user', 'User::index');
 $routes->get('/user/logout', 'User::logout');
 
+$routes->options('api/login', 'Api\Auth::options');
+$routes->post('api/login', 'Api\Auth::login');
+
 $routes->group('dashboard', ['filter' => 'auth'], static function ($routes) {
     $routes->get('/', 'AjaxController::index');
     $routes->get('getData', 'AjaxController::getData');
@@ -38,8 +41,16 @@ $routes->post('/ajax/update/(:num)', 'AjaxController::update/$1', ['filter' => '
 $routes->post('/ajax/delete/(:num)', 'AjaxController::delete/$1', ['filter' => 'auth']);
 
 
-// REST API Praktikum 10: menghasilkan endpoint GET, POST, PUT/PATCH, dan DELETE untuk data artikel.
-$routes->resource('post');
+// REST API Praktikum 10 sampai 14.
+// GET tetap terbuka untuk membaca data, sedangkan POST/PUT/PATCH/DELETE dilindungi token API.
+$routes->options('post', 'Post::options');
+$routes->options('post/(:num)', 'Post::options/$1');
+$routes->get('post', 'Post::index');
+$routes->get('post/(:num)', 'Post::show/$1');
+$routes->post('post', 'Post::create', ['filter' => 'apiauth']);
+$routes->put('post/(:num)', 'Post::update/$1', ['filter' => 'apiauth']);
+$routes->patch('post/(:num)', 'Post::update/$1', ['filter' => 'apiauth']);
+$routes->delete('post/(:num)', 'Post::delete/$1', ['filter' => 'apiauth']);
 
 $routes->group('admin', ['filter' => 'auth'], static function ($routes) {
     $routes->get('artikel', 'Artikel::admin_index');

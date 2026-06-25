@@ -4,6 +4,7 @@
 <?php
 $materiTipeAktif = $materiTipeAktif ?? '';
 $materiKategoriAktif = $materiKategoriAktif ?? '';
+$materiKategoriLabelAktif = $materiKategoriLabelAktif ?? '';
 
 $materiFilterUrl = static function (array $params = []): string {
     $params = array_filter($params, static fn ($value) => $value !== '' && $value !== null);
@@ -44,9 +45,8 @@ if ($materiTipeAktif === 'pertemuan') {
     </div>
 </section>
 
-<?php if (! empty($materi)): ?>
-    <section class="content-section reveal-item" id="materi-kuliah-web">
-        <h2><?= esc($judulMateriSection); ?></h2>
+<section class="content-section reveal-item" id="materi-kuliah-web">
+        <h2><?= esc($judulMateriSection); ?><?= $materiKategoriLabelAktif !== '' ? ' - ' . esc($materiKategoriLabelAktif) : ''; ?></h2>
         <p><?= esc($deskripsiMateriSection); ?> Jika file PDF sudah dipindahkan ke folder <code>file</code>, tombol unduh akan aktif.</p>
 
         <div class="filter-box" aria-label="Filter jenis materi">
@@ -72,6 +72,7 @@ if ($materiTipeAktif === 'pertemuan') {
         </div>
 
         <div class="materi-grid" data-search-group="content">
+            <?php if (! empty($materi)): ?>
             <?php foreach ($materi as $item): ?>
                 <?php
                 $searchText = strtolower(($item['label'] ?? '') . ' ' . ($item['judul'] ?? '') . ' ' . ($item['deskripsi'] ?? '') . ' ' . ($item['filename'] ?? ''));
@@ -94,9 +95,18 @@ if ($materiTipeAktif === 'pertemuan') {
                     </p>
                 </article>
             <?php endforeach; ?>
+            <?php else: ?>
+                <article class="materi-card empty-state-card">
+                    <div class="materi-card-head">
+                        <span class="materi-chip"><?= esc($materiKategoriLabelAktif !== '' ? $materiKategoriLabelAktif : 'Materi'); ?></span>
+                        <span class="file-status missing">Kosong</span>
+                    </div>
+                    <h3>Belum ada materi pada bagian ini</h3>
+                    <p class="materi-desc">Shortcut ini tetap ditampilkan agar urutan pertemuan tidak loncat. Jika nanti file materi tersedia, data dapat ditambahkan ke daftar materi pada controller.</p>
+                </article>
+            <?php endif; ?>
         </div>
-    </section>
-<?php endif; ?>
+</section>
 
 <section class="content-section reveal-item" id="daftar-artikel-web">
     <h2>Daftar Artikel</h2>

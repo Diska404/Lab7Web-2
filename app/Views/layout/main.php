@@ -15,6 +15,8 @@ $navActive = static function (string $page) use ($segment1, $segment2, $currentP
         default     => '',
     };
 };
+
+$spaVueUrl = 'http://localhost/lab11_ci/Lab7Web-2/lab8_vuejs/#/';
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -36,6 +38,7 @@ $navActive = static function (string $page) use ($segment1, $segment2, $currentP
                 <?php if (session()->get('logged_in')): ?>
                     <a href="<?= base_url('/admin/artikel'); ?>" class="header-admin-btn">Admin Panel</a>
                     <a href="<?= base_url('/dashboard'); ?>" class="header-admin-btn secondary">Dashboard</a>
+                    <a href="<?= esc($spaVueUrl); ?>" class="header-admin-btn secondary" title="Buka frontend VueJS SPA">SPA VueJS</a>
                     <a href="<?= base_url('/user/logout'); ?>" class="header-admin-btn secondary">Logout</a>
                 <?php else: ?>
                     <a href="<?= base_url('/user/login'); ?>" class="header-admin-btn">Login Admin</a>
@@ -50,6 +53,7 @@ $navActive = static function (string $page) use ($segment1, $segment2, $currentP
             <a href="<?= base_url('/contact'); ?>" class="nav-link <?= $navActive('contact') ?>">Kontak</a>
             <?php if (session()->get('logged_in')): ?>
                 <a href="<?= base_url('/dashboard'); ?>" class="nav-link <?= $navActive('dashboard') ?>">Dashboard</a>
+                <a href="<?= esc($spaVueUrl); ?>" class="nav-link">SPA VueJS</a>
             <?php endif; ?>
         </nav>
 
@@ -70,6 +74,7 @@ $navActive = static function (string $page) use ($segment1, $segment2, $currentP
                             <li><a href="<?= base_url('/admin/artikel'); ?>">Admin Artikel</a></li>
                             <li><a href="<?= base_url('/admin/artikel/add'); ?>">Tambah Artikel</a></li>
                             <li><a href="<?= base_url('/dashboard'); ?>">Dashboard</a></li>
+                            <li><a href="<?= esc($spaVueUrl); ?>">SPA VueJS</a></li>
                         <?php else: ?>
                             <li><a href="<?= base_url('/user/login'); ?>">Login Admin</a></li>
                             <li><a href="<?= base_url('/user/register'); ?>">Daftar Akun</a></li>

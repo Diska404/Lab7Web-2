@@ -32,19 +32,32 @@ class Artikel extends BaseController
 
         $materi = $this->getMateriList();
 
-        if ($materiTipe !== '') {
-            $materi = array_values(array_filter($materi, function ($item) use ($materiTipe) {
-                return $this->getMateriType($item['label'] ?? '') === $materiTipe;
+        if ($materiTipe === 'praktikum') {
+            $materi = array_values(array_filter($materi, function ($item) {
+                return $this->getMateriType($item['label'] ?? '') === 'praktikum';
             }));
         }
 
-        $materiKategoriList = $this->buildMateriKategoriList($materi);
+        // Strategi filter:
+        // - Shortcut Pertemuan menampilkan seluruh materi pada pertemuan yang sama,
+        //   termasuk materi teori dan modul praktikum.
+        // - Shortcut Praktikum tetap hanya menampilkan modul praktikum.
+        // - Nomor pertemuan yang belum punya file tetap ditampilkan agar urutan tidak loncat.
+        $materiKategoriList = $this->buildMateriKategoriList($materi, $materiTipe);
 
         if ($materiKategori !== '') {
-            $materi = array_values(array_filter($materi, static function ($item) use ($materiKategori) {
-                return url_title($item['label'], '-', true) === $materiKategori;
+            $materi = array_values(array_filter($materi, function ($item) use ($materiKategori, $materiTipe) {
+                if ($materiTipe === 'praktikum') {
+                    return url_title($item['label'], '-', true) === $materiKategori;
+                }
+
+                return $this->getMateriPertemuanSlug($item) === $materiKategori;
             }));
         }
+
+        $materiKategoriLabelAktif = $materiKategori !== ''
+            ? ($materiKategoriList[$materiKategori] ?? ucwords(str_replace('-', ' ', $materiKategori)))
+            : '';
 
         return view('artikel/index', [
             'title'               => $title,
@@ -55,6 +68,7 @@ class Artikel extends BaseController
             'materiKategoriList'  => $materiKategoriList,
             'materiKategoriAktif' => $materiKategori,
             'materiTipeAktif'     => $materiTipe,
+            'materiKategoriLabelAktif' => $materiKategoriLabelAktif,
         ]);
     }
 
@@ -599,6 +613,98 @@ class Artikel extends BaseController
                     'points' => ['judul: judul artikel', 'isi: isi artikel', 'id_kategori: opsional', 'status: 0 atau 1'],
                 ]],
             ],
+            [
+                'slug' => 'interactive-vuejs-3-frontends',
+                'filename' => 'Interactive_VueJS_3_Frontends.pdf',
+                'judul' => 'Interactive VueJS 3 Frontends',
+                'label' => 'Pertemuan 11',
+                'pertemuan' => 11,
+                'deskripsi' => 'Konsep frontend interaktif menggunakan VueJS 3, Axios, reactive data binding, dan integrasi REST API CodeIgniter.',
+                'ringkasan' => 'Materi ini membahas bagaimana VueJS 3 digunakan sebagai frontend yang mengambil dan mengelola data dari REST API.',
+                'sections' => [[
+                    'heading' => 'Pokok Bahasan',
+                    'paragraphs' => ['VueJS 3 digunakan untuk membuat tampilan yang reaktif, sedangkan Axios digunakan untuk mengambil dan mengirim data ke endpoint REST API.'],
+                    'points' => ['VueJS 3 via CDN', 'Axios', 'Reactive data binding', 'v-for', 'v-model', 'modal form', 'CRUD artikel dari frontend'],
+                ], [
+                    'heading' => 'Alur Integrasi',
+                    'paragraphs' => ['Frontend VueJS mengirim request ke REST API CodeIgniter melalui endpoint /post, lalu data JSON yang diterima dirender kembali pada halaman.'],
+                    'points' => ['GET /post untuk membaca data', 'POST /post untuk menambah data', 'PUT /post/{id} untuk mengubah data', 'DELETE /post/{id} untuk menghapus data'],
+                ]],
+            ],
+            [
+                'slug' => 'praktikum-11-vuejs-frontend-api',
+                'filename' => 'Modul Praktikum 11.pdf',
+                'judul' => 'Modul Praktikum 11: VueJS Frontend API',
+                'label' => 'Praktikum 11',
+                'pertemuan' => 11,
+                'deskripsi' => 'Membangun frontend API menggunakan VueJS 3 dan Axios untuk mengelola data artikel dari REST API CodeIgniter.',
+                'ringkasan' => 'Praktikum ini membuat project frontend VueJS yang dapat menampilkan, menambah, mengubah, dan menghapus artikel melalui API.',
+                'sections' => [[
+                    'heading' => 'Target Praktikum',
+                    'paragraphs' => ['Mahasiswa membuat folder frontend VueJS, menghubungkan frontend ke REST API, dan mengelola data artikel secara reaktif.'],
+                    'points' => ['Membuat folder lab8_vuejs', 'Menambahkan VueJS dan Axios via CDN', 'Membuat index.html', 'Membuat assets/js/app.js', 'Membuat assets/css/style.css', 'Mengelola artikel dengan API /post'],
+                ]],
+            ],
+            [
+                'slug' => 'arsitektur-spa-vuejs',
+                'filename' => 'Arsitektur_SPA_VueJS.pdf',
+                'judul' => 'Arsitektur SPA VueJS',
+                'label' => 'Pertemuan 12',
+                'pertemuan' => 12,
+                'deskripsi' => 'Konsep Single Page Application, Vue Components, Vue Router, client-side routing, router-link, dan router-view.',
+                'ringkasan' => 'Materi ini menjelaskan bagaimana Vue Router membuat navigasi antarhalaman berjalan tanpa hard reload.',
+                'sections' => [[
+                    'heading' => 'Pokok Bahasan',
+                    'paragraphs' => ['SPA memindahkan proses navigasi ke sisi client sehingga halaman dapat berpindah tanpa memuat ulang seluruh browser.'],
+                    'points' => ['Single Page Application', 'Vue Components', 'Vue Router', 'Client-side routing', 'router-link', 'router-view', 'route aktif'],
+                ], [
+                    'heading' => 'Struktur Modular',
+                    'paragraphs' => ['Kode frontend dipisahkan menjadi komponen seperti Home.js, Artikel.js, dan About.js agar lebih rapi dan mudah dikembangkan.'],
+                    'points' => ['Home.js untuk beranda', 'Artikel.js untuk manajemen artikel', 'About.js untuk profil mahasiswa', 'app.js sebagai router utama'],
+                ]],
+            ],
+            [
+                'slug' => 'praktikum-12-vuejs-komponen-routing-spa',
+                'filename' => 'Modul Praktikum 12.pdf',
+                'judul' => 'Modul Praktikum 12: VueJS Komponen dan Routing SPA',
+                'label' => 'Praktikum 12',
+                'pertemuan' => 12,
+                'deskripsi' => 'Mengembangkan frontend VueJS menjadi Single Page Application menggunakan komponen modular dan Vue Router.',
+                'ringkasan' => 'Praktikum ini menambahkan route Beranda, Kelola Artikel, dan About tanpa reload halaman penuh.',
+                'sections' => [[
+                    'heading' => 'Target Praktikum',
+                    'paragraphs' => ['Mahasiswa memecah frontend ke beberapa komponen dan menambahkan Vue Router untuk membangun SPA.'],
+                    'points' => ['Menambahkan Vue Router via CDN', 'Membuat Home.js', 'Memindahkan fitur artikel ke Artikel.js', 'Membuat About.js', 'Menambahkan route /about', 'Menggunakan router-link dan router-view'],
+                ]],
+            ],
+            [
+                'slug' => 'praktikum-13-vuejs-autentikasi-navigation-guards',
+                'filename' => 'Modul Praktikum 13.pdf',
+                'judul' => 'Modul Praktikum 13: VueJS Autentikasi dan Navigation Guards',
+                'label' => 'Praktikum 13',
+                'pertemuan' => 13,
+                'deskripsi' => 'Mengamankan halaman SPA menggunakan login API, localStorage, Vue Router Navigation Guards, dan proteksi route artikel serta about.',
+                'ringkasan' => 'Praktikum ini menambahkan endpoint login pada CodeIgniter dan halaman login pada VueJS agar halaman tertentu hanya bisa diakses setelah autentikasi.',
+                'sections' => [[
+                    'heading' => 'Target Praktikum',
+                    'paragraphs' => ['Frontend VueJS memiliki halaman login, menyimpan status autentikasi, dan menolak akses ke route yang membutuhkan login.'],
+                    'points' => ['API login CodeIgniter', 'Login.js', 'localStorage userToken', 'router.beforeEach', 'meta requiresAuth', 'proteksi /artikel dan /about'],
+                ]],
+            ],
+            [
+                'slug' => 'praktikum-14-keamanan-api-token-axios-interceptors',
+                'filename' => 'Modul Praktikum 14.pdf',
+                'judul' => 'Modul Praktikum 14: Keamanan API, Token, dan Axios Interceptors',
+                'label' => 'Praktikum 14',
+                'pertemuan' => 14,
+                'deskripsi' => 'Mengamankan REST API menggunakan filter token di CodeIgniter dan Axios Interceptors pada frontend VueJS.',
+                'ringkasan' => 'Praktikum ini menambahkan perlindungan server-side untuk endpoint POST, PUT, PATCH, dan DELETE serta pengiriman token otomatis dari frontend.',
+                'sections' => [[
+                    'heading' => 'Target Praktikum',
+                    'paragraphs' => ['Endpoint manipulasi data artikel tidak dapat diakses tanpa Authorization Bearer Token. Token dikirim otomatis oleh Axios Interceptors setelah pengguna login.'],
+                    'points' => ['ApiAuthFilter', 'alias apiauth', 'proteksi route POST/PUT/PATCH/DELETE', 'Authorization Bearer Token', 'Axios request interceptor', 'Axios response interceptor 401'],
+                ]],
+            ],
         ];
 
         foreach ($items as &$item) {
@@ -609,27 +715,82 @@ class Artikel extends BaseController
         return $this->sortMateriList($items);
     }
 
-    private function buildMateriKategoriList(array $materi): array
+    private function buildMateriKategoriList(array $materi, string $materiTipe = ''): array
     {
-        $labels = [];
+        if ($materiTipe === 'praktikum') {
+            $labels = [];
 
-        foreach ($materi as $item) {
-            $label = (string) ($item['label'] ?? '');
-            if ($label === '') {
-                continue;
+            foreach ($materi as $item) {
+                $label = (string) ($item['label'] ?? '');
+                if ($label === '') {
+                    continue;
+                }
+
+                $labels[url_title($label, '-', true)] = $label;
             }
 
+            uasort($labels, function ($first, $second) {
+                return $this->getMateriNumber($first) <=> $this->getMateriNumber($second);
+            });
+
+            return $labels;
+        }
+
+        $numbers = [];
+
+        foreach ($materi as $item) {
+            $number = $this->getMateriPertemuanNumber($item);
+            if ($number > 0) {
+                $numbers[] = $number;
+            }
+        }
+
+        $maxNumber = max(12, ! empty($numbers) ? max($numbers) : 12);
+        $labels = [];
+
+        for ($number = 1; $number <= $maxNumber; $number++) {
+            $label = 'Pertemuan ' . $number;
             $labels[url_title($label, '-', true)] = $label;
         }
 
         return $labels;
     }
 
+    private function getMateriPertemuanNumber(array $item): int
+    {
+        if (isset($item['pertemuan']) && (int) $item['pertemuan'] > 0) {
+            return (int) $item['pertemuan'];
+        }
+
+        $label = (string) ($item['label'] ?? '');
+        if (preg_match('/(Pertemuan|Praktikum)\s*(\d+)/i', $label, $matches)) {
+            return (int) $matches[2];
+        }
+
+        return 0;
+    }
+
+    private function getMateriPertemuanLabel(array $item): string
+    {
+        $number = $this->getMateriPertemuanNumber($item);
+
+        return $number > 0 ? 'Pertemuan ' . $number : '';
+    }
+
+    private function getMateriPertemuanSlug(array $item): string
+    {
+        $label = $this->getMateriPertemuanLabel($item);
+
+        return $label !== '' ? url_title($label, '-', true) : '';
+    }
+
     private function sortMateriList(array $items): array
     {
         usort($items, function ($first, $second) {
-            $firstType = $this->getMateriType($first['label'] ?? '');
-            $secondType = $this->getMateriType($second['label'] ?? '');
+            $numberCompare = $this->getMateriPertemuanNumber($first) <=> $this->getMateriPertemuanNumber($second);
+            if ($numberCompare !== 0) {
+                return $numberCompare;
+            }
 
             $typeOrder = [
                 'pertemuan' => 1,
@@ -637,16 +798,11 @@ class Artikel extends BaseController
                 'lainnya'   => 3,
             ];
 
-            $firstRank = $typeOrder[$firstType] ?? 3;
-            $secondRank = $typeOrder[$secondType] ?? 3;
-
-            if ($firstRank !== $secondRank) {
-                return $firstRank <=> $secondRank;
-            }
-
-            $numberCompare = $this->getMateriNumber($first['label'] ?? '') <=> $this->getMateriNumber($second['label'] ?? '');
-            if ($numberCompare !== 0) {
-                return $numberCompare;
+            $firstType = $this->getMateriType($first['label'] ?? '');
+            $secondType = $this->getMateriType($second['label'] ?? '');
+            $typeCompare = ($typeOrder[$firstType] ?? 3) <=> ($typeOrder[$secondType] ?? 3);
+            if ($typeCompare !== 0) {
+                return $typeCompare;
             }
 
             return strcasecmp((string) ($first['judul'] ?? ''), (string) ($second['judul'] ?? ''));

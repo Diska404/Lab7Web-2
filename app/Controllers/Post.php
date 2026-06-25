@@ -4,7 +4,10 @@ namespace App\Controllers;
 
 use App\Models\ArtikelModel;
 use CodeIgniter\API\ResponseTrait;
+use CodeIgniter\HTTP\RequestInterface;
+use CodeIgniter\HTTP\ResponseInterface;
 use CodeIgniter\RESTful\ResourceController;
+use Psr\Log\LoggerInterface;
 
 class Post extends ResourceController
 {
@@ -13,6 +16,32 @@ class Post extends ResourceController
     protected $format = 'json';
 
     private const IMAGE_DIR = 'gambar';
+
+    public function initController(RequestInterface $request, ResponseInterface $response, LoggerInterface $logger)
+    {
+        parent::initController($request, $response, $logger);
+        $this->setCorsHeaders();
+    }
+
+    /**
+     * OPTIONS /post dan /post/{id}
+     * Dibutuhkan ketika frontend VueJS berjalan dari origin/port berbeda.
+     */
+    public function options($id = null)
+    {
+        $this->setCorsHeaders();
+
+        return $this->response->setStatusCode(204);
+    }
+
+    private function setCorsHeaders(): void
+    {
+        $this->response
+            ->setHeader('Access-Control-Allow-Origin', '*')
+            ->setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS')
+            ->setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With')
+            ->setHeader('Access-Control-Max-Age', '86400');
+    }
 
     /**
      * GET /post
