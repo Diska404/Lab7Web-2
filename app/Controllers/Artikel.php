@@ -38,11 +38,11 @@ class Artikel extends BaseController
             }));
         }
 
-        // Strategi filter:
-        // - Shortcut Pertemuan menampilkan seluruh materi pada pertemuan yang sama,
-        //   termasuk materi teori dan modul praktikum.
-        // - Shortcut Praktikum tetap hanya menampilkan modul praktikum.
-        // - Nomor pertemuan yang belum punya file tetap ditampilkan agar urutan tidak loncat.
+         
+         
+         
+         
+         
         $materiKategoriList = $this->buildMateriKategoriList($materi, $materiTipe);
 
         if ($materiKategori !== '') {

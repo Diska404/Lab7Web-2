@@ -690,7 +690,7 @@ input[type="submit"]:hover {
 }
 
 
-/* Praktikum 7 - perbaikan tampilan gambar upload pada tabel admin */
+
 .table-responsive {
     width: 100%;
     overflow-x: auto;
@@ -785,9 +785,7 @@ input[type="submit"]:hover {
     font-size: 13px;
 }
 
-/* Patch: perbaikan ukuran gambar halaman Home dan Contact
-   Tujuan: menjaga template praktikum tetap sama, tetapi mencegah gambar/SVG terlalu besar
-   dan menimpa area sidebar. */
+
 .home-hero {
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(220px, 360px);

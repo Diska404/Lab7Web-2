@@ -14,7 +14,7 @@ class UserSeeder extends Seeder
         $data = [
             'username'     => 'admin',
             'useremail'    => 'admin@email.com',
-            // Password pendek untuk kebutuhan praktikum lokal: 1
+             
             'userpassword' => password_hash('1', PASSWORD_DEFAULT),
         ];
 

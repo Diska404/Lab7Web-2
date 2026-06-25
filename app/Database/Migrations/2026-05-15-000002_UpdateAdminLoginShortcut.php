@@ -32,6 +32,6 @@ class UpdateAdminLoginShortcut extends Migration
 
     public function down()
     {
-        // Tidak ada rollback otomatis karena password lama tidak diketahui.
+         
     }
 }

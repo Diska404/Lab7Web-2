@@ -11,7 +11,7 @@ use RuntimeException;
 class AjaxController extends BaseController
 {
     private const IMAGE_DIR = 'gambar';
-    private const MAX_IMAGE_SIZE = 2097152; // 2 MB
+    private const MAX_IMAGE_SIZE = 2097152;  
     private const ALLOWED_IMAGE_EXTENSIONS = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
 
     public function index(): string
@@ -154,9 +154,9 @@ class AjaxController extends BaseController
 
     private function readPayload(): array
     {
-        // Form Dashboard mengirim multipart/form-data karena mendukung upload gambar.
-        // Jangan langsung memanggil getJSON() untuk multipart, karena CI4 akan mencoba
-        // parse body non-JSON dan memunculkan error: "Failed to parse JSON string".
+         
+         
+         
         $contentType = strtolower((string) $this->request->getHeaderLine('Content-Type'));
         $input = [];
 

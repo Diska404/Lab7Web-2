@@ -310,9 +310,9 @@ GET http://localhost:8080/post
 
 Dokumentasi hasil:
 
-> ![GET Semua Artikel](Screenshot/praktikum10_01_get_semua_artikel.png.png)
+> ![GET Semua Artikel](Screenshot/praktikum10_01_get_semua_artikel.png)
 
-> ![GET Detail Artikel](Screenshot/praktikum10_02_get_detail_artikel.png.png)
+> ![GET Detail Artikel](Screenshot/praktikum10_02_get_detail_artikel.png)
 
 > ![POST Tambah Artikel](Screenshot/praktikum10_03_post_tambah_artikel.png)
 

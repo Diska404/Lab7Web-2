@@ -23,10 +23,10 @@ class Post extends ResourceController
         $this->setCorsHeaders();
     }
 
-    /**
-     * OPTIONS /post dan /post/{id}
-     * Dibutuhkan ketika frontend VueJS berjalan dari origin/port berbeda.
-     */
+    
+
+
+
     public function options($id = null)
     {
         $this->setCorsHeaders();
@@ -43,10 +43,10 @@ class Post extends ResourceController
             ->setHeader('Access-Control-Max-Age', '86400');
     }
 
-    /**
-     * GET /post
-     * Menampilkan seluruh data artikel dalam format JSON.
-     */
+    
+
+
+
     public function index()
     {
         $model = new ArtikelModel();
@@ -62,10 +62,10 @@ class Post extends ResourceController
         ]);
     }
 
-    /**
-     * GET /post/{id}
-     * Menampilkan satu data artikel berdasarkan ID.
-     */
+    
+
+
+
     public function show($id = null)
     {
         $id = $this->normalizeId($id);
@@ -86,10 +86,10 @@ class Post extends ResourceController
         return $this->respond($artikel);
     }
 
-    /**
-     * POST /post
-     * Menambahkan artikel baru melalui REST API.
-     */
+    
+
+
+
     public function create()
     {
         $input = $this->requestInput();
@@ -114,10 +114,10 @@ class Post extends ResourceController
         ]);
     }
 
-    /**
-     * PUT/PATCH /post/{id}
-     * Mengubah artikel berdasarkan ID.
-     */
+    
+
+
+
     public function update($id = null)
     {
         $input = $this->requestInput();
@@ -155,10 +155,10 @@ class Post extends ResourceController
         ]);
     }
 
-    /**
-     * DELETE /post/{id}
-     * Menghapus artikel berdasarkan ID.
-     */
+    
+
+
+
     public function delete($id = null)
     {
         $id = $this->normalizeId($id);
@@ -187,9 +187,9 @@ class Post extends ResourceController
 
     private function requestInput(): array
     {
-        // Postman pada modul praktikum biasanya mengirim x-www-form-urlencoded.
-        // Karena itu, body JSON hanya diparse jika Content-Type memang JSON agar
-        // tidak muncul error "Failed to parse JSON string" pada request form biasa.
+         
+         
+         
         $contentType = strtolower((string) $this->request->getHeaderLine('Content-Type'));
 
         if (str_contains($contentType, 'application/json')) {

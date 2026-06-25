@@ -116,7 +116,7 @@ class UpdateArtikelKategoriGambar extends Migration
         try {
             $this->db->query('ALTER TABLE artikel ADD CONSTRAINT fk_kategori_artikel FOREIGN KEY (id_kategori) REFERENCES kategori(id_kategori) ON DELETE SET NULL ON UPDATE CASCADE');
         } catch (\Throwable $e) {
-            // Abaikan jika foreign key sudah ada atau engine MySQL lokal tidak mengizinkan perubahan constraint.
+             
         }
     }
 
