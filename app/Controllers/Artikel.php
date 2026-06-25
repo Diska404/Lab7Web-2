@@ -15,7 +15,26 @@ class Artikel extends BaseController
 
     public function index(): string
     {
-        $title = 'Daftar Artikel';
+        return $this->renderArtikelPage((bool) session()->get('mode_beta'));
+    }
+
+    public function beta(): string
+    {
+        session()->set('mode_beta', true);
+
+        return $this->renderArtikelPage(true);
+    }
+
+    public function normal()
+    {
+        session()->remove('mode_beta');
+
+        return redirect()->to('/artikel');
+    }
+
+    private function renderArtikelPage(bool $modeBeta): string
+    {
+        $title = $modeBeta ? 'Mode Beta Materi' : 'Daftar Artikel';
         $kategoriSlug = trim((string) ($this->request->getVar('kategori') ?? ''));
         $materiKategori = trim((string) ($this->request->getVar('materi_kategori') ?? ''));
         $materiTipe = trim((string) ($this->request->getVar('materi_tipe') ?? ''));
@@ -30,34 +49,35 @@ class Artikel extends BaseController
         $artikel = $model->getArtikelDenganKategori($kategoriSlug);
         $kategoriList = $kategoriModel->orderBy('nama_kategori', 'ASC')->findAll();
 
-        $materi = $this->getMateriList();
+        $materi = [];
+        $materiKategoriList = [];
+        $materiKategoriLabelAktif = '';
 
-        if ($materiTipe === 'praktikum') {
-            $materi = array_values(array_filter($materi, function ($item) {
-                return $this->getMateriType($item['label'] ?? '') === 'praktikum';
-            }));
+        if ($modeBeta) {
+            $materi = $this->getMateriList();
+
+            if ($materiTipe === 'praktikum') {
+                $materi = array_values(array_filter($materi, function ($item) {
+                    return $this->getMateriType($item['label'] ?? '') === 'praktikum';
+                }));
+            }
+
+            $materiKategoriList = $this->buildMateriKategoriList($materi, $materiTipe);
+
+            if ($materiKategori !== '') {
+                $materi = array_values(array_filter($materi, function ($item) use ($materiKategori, $materiTipe) {
+                    if ($materiTipe === 'praktikum') {
+                        return url_title($item['label'], '-', true) === $materiKategori;
+                    }
+
+                    return $this->getMateriPertemuanSlug($item) === $materiKategori;
+                }));
+            }
+
+            $materiKategoriLabelAktif = $materiKategori !== ''
+                ? ($materiKategoriList[$materiKategori] ?? ucwords(str_replace('-', ' ', $materiKategori)))
+                : '';
         }
-
-         
-         
-         
-         
-         
-        $materiKategoriList = $this->buildMateriKategoriList($materi, $materiTipe);
-
-        if ($materiKategori !== '') {
-            $materi = array_values(array_filter($materi, function ($item) use ($materiKategori, $materiTipe) {
-                if ($materiTipe === 'praktikum') {
-                    return url_title($item['label'], '-', true) === $materiKategori;
-                }
-
-                return $this->getMateriPertemuanSlug($item) === $materiKategori;
-            }));
-        }
-
-        $materiKategoriLabelAktif = $materiKategori !== ''
-            ? ($materiKategoriList[$materiKategori] ?? ucwords(str_replace('-', ' ', $materiKategori)))
-            : '';
 
         return view('artikel/index', [
             'title'               => $title,
@@ -69,6 +89,7 @@ class Artikel extends BaseController
             'materiKategoriAktif' => $materiKategori,
             'materiTipeAktif'     => $materiTipe,
             'materiKategoriLabelAktif' => $materiKategoriLabelAktif,
+            'modeBeta'            => $modeBeta,
         ]);
     }
 
@@ -84,6 +105,7 @@ class Artikel extends BaseController
         return view('artikel/detail', [
             'title'   => $artikel['judul'],
             'artikel' => $artikel,
+            'modeBeta' => (bool) session()->get('mode_beta'),
         ]);
     }
 
@@ -98,6 +120,7 @@ class Artikel extends BaseController
         return view('artikel/materi_detail', [
             'title'  => $materi['judul'],
             'materi' => $materi,
+            'modeBeta' => (bool) session()->get('mode_beta'),
         ]);
     }
 

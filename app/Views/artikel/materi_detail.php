@@ -1,6 +1,11 @@
 <?= $this->extend('layout/main') ?>
 
 <?= $this->section('content') ?>
+<?php
+$modeBeta = (bool) ($modeBeta ?? false);
+$materiBackUrl = $modeBeta ? base_url('/artikel#materi-kuliah-web') : base_url('/artikel');
+$materiDownloadUrl = base_url('/artikel/download/' . $materi['slug']);
+?>
 <div class="materi-reader-header">
     <span class="materi-badge"><?= esc($materi['label']); ?></span>
     <h1><?= esc($materi['judul']); ?></h1>
@@ -8,9 +13,9 @@
 </div>
 
 <div class="materi-reader-actions">
-    <a href="<?= base_url('/artikel'); ?>" class="btn btn-secondary">Kembali ke Daftar Materi</a>
+    <a href="<?= esc($materiBackUrl); ?>" class="btn btn-secondary">Kembali ke Daftar Materi</a>
     <?php if (! empty($materi['available'])): ?>
-        <a href="<?= base_url('/artikel/download/' . $materi['slug']); ?>" class="btn">Download PDF</a>
+        <a href="<?= esc($materiDownloadUrl); ?>" class="btn">Download PDF</a>
     <?php else: ?>
         <span class="btn btn-disabled">PDF belum tersedia di folder /file</span>
     <?php endif; ?>

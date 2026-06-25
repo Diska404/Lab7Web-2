@@ -5,12 +5,15 @@
 $materiTipeAktif = $materiTipeAktif ?? '';
 $materiKategoriAktif = $materiKategoriAktif ?? '';
 $materiKategoriLabelAktif = $materiKategoriLabelAktif ?? '';
+$modeBeta = (bool) ($modeBeta ?? false);
+$artikelBasePath = '/artikel';
+$materiBasePath = '/artikel';
 
-$materiFilterUrl = static function (array $params = []): string {
+$materiFilterUrl = static function (array $params = []) use ($materiBasePath): string {
     $params = array_filter($params, static fn ($value) => $value !== '' && $value !== null);
     $query = http_build_query($params);
 
-    return base_url('/artikel' . ($query !== '' ? '?' . $query : '')) . '#materi-kuliah-web';
+    return base_url($materiBasePath . ($query !== '' ? '?' . $query : '')) . '#materi-kuliah-web';
 };
 
 $judulMateriSection = 'Materi belajar versi web';
@@ -25,16 +28,26 @@ if ($materiTipeAktif === 'pertemuan') {
 }
 ?>
 
-<h1>Daftar Artikel</h1>
+<h1><?= $modeBeta ? 'Mode Beta Materi' : 'Daftar Artikel'; ?></h1>
 <hr class="divider">
 
 <section class="intro-box reveal-item">
-    <h2>Materi dan artikel pembelajaran</h2>
-    <p>Halaman ini menggunakan tampilan dasar seperti template praktikum, namun tetap dilengkapi pencarian cepat, filter materi, transisi halaman, dan daftar artikel yang lebih mudah dibaca.</p>
-    <p>
-        <a href="#materi-kuliah-web" class="btn btn-primary">Lihat Materi</a>
-        <a href="#daftar-artikel-web" class="btn btn-secondary">Lihat Artikel</a>
-    </p>
+    <?php if ($modeBeta): ?>
+        <h2>Anda sedang berada di Mode Beta</h2>
+        <p>Mode Beta menampilkan katalog materi PDF, shortcut pertemuan, filter materi, dan daftar artikel seperti tampilan improvisasi. Mode ini akan tetap aktif saat berpindah halaman sampai Anda menekan tombol Mode Normal.</p>
+        <p>
+            <a href="<?= base_url('/mode-normal'); ?>" class="btn btn-secondary">Mode Normal</a>
+            <a href="#materi-kuliah-web" class="btn btn-primary">Lihat Materi</a>
+            <a href="#daftar-artikel-web" class="btn btn-secondary">Lihat Artikel</a>
+        </p>
+    <?php else: ?>
+        <h2>Artikel pembelajaran</h2>
+        <p>Halaman normal menampilkan daftar artikel dari database sesuai alur praktikum. Katalog materi PDF tambahan dipisahkan ke Mode Beta agar tidak mengganggu tampilan utama.</p>
+        <p>
+            <a href="#daftar-artikel-web" class="btn btn-primary">Lihat Artikel</a>
+            <a href="<?= base_url('/mode-beta'); ?>" class="btn btn-secondary beta-mode-btn">Mode Beta</a>
+        </p>
+    <?php endif; ?>
 </section>
 
 <section class="search-box reveal-item" aria-label="Pencarian cepat">
@@ -45,6 +58,7 @@ if ($materiTipeAktif === 'pertemuan') {
     </div>
 </section>
 
+<?php if ($modeBeta): ?>
 <section class="content-section reveal-item" id="materi-kuliah-web">
         <h2><?= esc($judulMateriSection); ?><?= $materiKategoriLabelAktif !== '' ? ' - ' . esc($materiKategoriLabelAktif) : ''; ?></h2>
         <p><?= esc($deskripsiMateriSection); ?> Jika file PDF sudah dipindahkan ke folder <code>file</code>, tombol unduh akan aktif.</p>
@@ -108,15 +122,17 @@ if ($materiTipeAktif === 'pertemuan') {
         </div>
 </section>
 
+<?php endif; ?>
+
 <section class="content-section reveal-item" id="daftar-artikel-web">
     <h2>Daftar Artikel</h2>
     <p>Bagian ini menampilkan artikel dari database beserta kategori yang berelasi.</p>
 
     <?php if (! empty($kategoriList)): ?>
         <div class="kategori-filter-list">
-            <a href="<?= base_url('/artikel'); ?>#daftar-artikel-web" class="filter-chip <?= empty($kategoriAktif) ? 'active' : ''; ?>">Semua Artikel</a>
+            <a href="<?= base_url($artikelBasePath); ?>#daftar-artikel-web" class="filter-chip <?= empty($kategoriAktif) ? 'active' : ''; ?>">Semua Artikel</a>
             <?php foreach ($kategoriList as $kategori): ?>
-                <a href="<?= base_url('/artikel?kategori=' . $kategori['slug_kategori']); ?>#daftar-artikel-web" class="filter-chip <?= ($kategoriAktif === $kategori['slug_kategori']) ? 'active' : ''; ?>">
+                <a href="<?= base_url($artikelBasePath . '?kategori=' . $kategori['slug_kategori']); ?>#daftar-artikel-web" class="filter-chip <?= ($kategoriAktif === $kategori['slug_kategori']) ? 'active' : ''; ?>">
                     <?= esc($kategori['nama_kategori']); ?>
                 </a>
             <?php endforeach; ?>

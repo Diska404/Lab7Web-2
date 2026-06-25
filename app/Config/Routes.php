@@ -11,6 +11,9 @@ $routes->get('/contact', 'Page::contact');
 $routes->get('/faqs', 'Page::faqs');
 $routes->get('/tos', 'Page::tos');
 
+$routes->get('/mode-beta', 'Artikel::beta');
+$routes->get('/mode-normal', 'Artikel::normal');
+
 $routes->get('/artikel', 'Artikel::index');
 $routes->get('/artikel/materi/(:segment)', 'Artikel::materi/$1');
 $routes->get('/artikel/download/(:segment)', 'Artikel::downloadMateri/$1');

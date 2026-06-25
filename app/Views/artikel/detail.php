@@ -105,6 +105,8 @@
 </style>
 
 <?php
+  $modeBeta = (bool) ($modeBeta ?? false);
+  $backUrl = $modeBeta ? base_url('/artikel#daftar-artikel-web') : base_url('artikel');
   $gambarUrl = null;
   if (!empty($artikel['gambar'])) {
       $gambarUrl = base_url('gambar/' . $artikel['gambar']);
@@ -138,7 +140,7 @@
   </div>
 
   <div class="article-detail-actions">
-    <a href="<?= base_url('artikel'); ?>">Kembali ke Artikel</a>
+    <a href="<?= esc($backUrl); ?>">Kembali ke Artikel</a>
   </div>
 </div>
 

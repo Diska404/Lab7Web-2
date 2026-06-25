@@ -17,6 +17,9 @@ $navActive = static function (string $page) use ($segment1, $segment2, $currentP
 };
 
 $spaVueUrl = 'http://localhost/lab11_ci/Lab7Web-2/lab8_vuejs/#/';
+$modeBetaActive = (bool) session()->get('mode_beta');
+$modeToggleUrl = $modeBetaActive ? base_url('/mode-normal') : base_url('/mode-beta');
+$modeToggleLabel = $modeBetaActive ? 'Mode Normal' : 'Mode Beta';
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -37,23 +40,32 @@ $spaVueUrl = 'http://localhost/lab11_ci/Lab7Web-2/lab8_vuejs/#/';
             <div class="header-actions">
                 <?php if (session()->get('logged_in')): ?>
                     <a href="<?= base_url('/admin/artikel'); ?>" class="header-admin-btn">Admin Panel</a>
+                    <a href="<?= esc($modeToggleUrl); ?>" class="header-admin-btn secondary"><?= esc($modeToggleLabel); ?></a>
                     <a href="<?= base_url('/dashboard'); ?>" class="header-admin-btn secondary">Dashboard</a>
                     <a href="<?= esc($spaVueUrl); ?>" class="header-admin-btn secondary" title="Buka frontend VueJS SPA">SPA VueJS</a>
                     <a href="<?= base_url('/user/logout'); ?>" class="header-admin-btn secondary">Logout</a>
                 <?php else: ?>
                     <a href="<?= base_url('/user/login'); ?>" class="header-admin-btn">Login Admin</a>
+                    <a href="<?= esc($modeToggleUrl); ?>" class="header-admin-btn secondary"><?= esc($modeToggleLabel); ?></a>
                 <?php endif; ?>
             </div>
         </header>
 
         <nav class="main-nav" aria-label="Navigasi utama">
-            <a href="<?= base_url('/'); ?>" class="nav-link <?= $navActive('home') ?>">Home</a>
-            <a href="<?= base_url('/artikel'); ?>" class="nav-link <?= $navActive('artikel') ?>">Artikel</a>
-            <a href="<?= base_url('/about'); ?>" class="nav-link <?= $navActive('about') ?>">About</a>
-            <a href="<?= base_url('/contact'); ?>" class="nav-link <?= $navActive('contact') ?>">Kontak</a>
-            <?php if (session()->get('logged_in')): ?>
-                <a href="<?= base_url('/dashboard'); ?>" class="nav-link <?= $navActive('dashboard') ?>">Dashboard</a>
-                <a href="<?= esc($spaVueUrl); ?>" class="nav-link">SPA VueJS</a>
+            <?php if ($modeBetaActive): ?>
+                <a href="<?= base_url('/artikel'); ?>" class="nav-link active">Mode Beta</a>
+                <a href="<?= base_url('/artikel#materi-kuliah-web'); ?>" class="nav-link">Materi</a>
+                <a href="<?= base_url('/artikel#daftar-artikel-web'); ?>" class="nav-link">Artikel</a>
+                <a href="<?= base_url('/mode-normal'); ?>" class="nav-link">Mode Normal</a>
+            <?php else: ?>
+                <a href="<?= base_url('/'); ?>" class="nav-link <?= $navActive('home') ?>">Home</a>
+                <a href="<?= base_url('/artikel'); ?>" class="nav-link <?= $navActive('artikel') ?>">Artikel</a>
+                <a href="<?= base_url('/about'); ?>" class="nav-link <?= $navActive('about') ?>">About</a>
+                <a href="<?= base_url('/contact'); ?>" class="nav-link <?= $navActive('contact') ?>">Kontak</a>
+                <?php if (session()->get('logged_in')): ?>
+                    <a href="<?= base_url('/dashboard'); ?>" class="nav-link <?= $navActive('dashboard') ?>">Dashboard</a>
+                    <a href="<?= esc($spaVueUrl); ?>" class="nav-link">SPA VueJS</a>
+                <?php endif; ?>
             <?php endif; ?>
         </nav>
 
